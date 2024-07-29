@@ -13,6 +13,11 @@ switch (document.location.hostname) {
 const dispTableID = ["eList", "eListNon"];
 let empDetails = [];
 let groupList = [];
+let filterVar = {
+  empstatus : 0,
+  monthYear: null,
+  group: null,
+};
 let monthNames = [
   "January",
   "February",
@@ -45,16 +50,16 @@ const sampleData = [
   {
     req_id: 39,
     emp_name: "Herrera, Rhanzces Julia",
-    group_id: 16,
+    group_id: 15,
     specific_loc: "Tokyo Tokyo",
     location: "Japan",
-    group_name: "Systems Group",
+    group_name: "Piping Group",
     requester_name: "Becina, Artemio Roel",
     requester_group: "Electrical Engineering Group",
     from: "2024-06-01",
     to: "2024-06-05",
     duration: 5,
-    req_date: "2024-07-22",
+    req_date: "2024-04-22",
     passValid: false,
     visaValid: false,
     status: null,
@@ -71,7 +76,7 @@ const sampleData = [
     from: "2024-05-01",
     to: "2024-05-03",
     duration: 3,
-    req_date: "2024-07-19",
+    req_date: "2024-03-19",
     passValid: false,
     visaValid: false,
     status: null,
@@ -88,7 +93,7 @@ const sampleData = [
     from: "2024-04-04",
     to: "2024-04-05",
     duration: 2,
-    req_date: "2024-07-19",
+    req_date: "2024-05-19",
     passValid: true,
     visaValid: true,
     status: 1,
@@ -105,7 +110,7 @@ const sampleData = [
     from: "2024-03-27",
     to: "2024-03-30",
     duration: 4,
-    req_date: "2024-07-19",
+    req_date: "2024-05-19",
     passValid: false,
     visaValid: false,
     status: null,
@@ -122,7 +127,7 @@ const sampleData = [
     from: "2024-02-21",
     to: "2024-03-01",
     duration: 10,
-    req_date: "2024-07-19",
+    req_date: "2024-06-19",
     passValid: true,
     visaValid: true,
     status: null,
@@ -193,7 +198,7 @@ const sampleData = [
     req_date: "2024-07-19",
     passValid: false,
     visaValid: false,
-    status: 1,
+    status: 0,
   },
   {
     req_id: 20,
@@ -208,6 +213,23 @@ const sampleData = [
     to: "2024-06-29",
     duration: 4,
     req_date: "2024-07-19",
+    passValid: false,
+    visaValid: false,
+    status: 0,
+  },
+  {
+    req_id: 51,
+    emp_name: "Herrera, Rhanzces Julia",
+    group_id: 15,
+    specific_loc: "Tokyo Tokyo",
+    location: "Japan",
+    group_name: "Piping Group",
+    requester_name: "Becina, Artemio Roel",
+    requester_group: "Electrical Engineering Group",
+    from: "2024-07-01",
+    to: "2024-09-05",
+    duration: 5,
+    req_date: "2024-01-22",
     passValid: false,
     visaValid: false,
     status: null,
@@ -225,6 +247,7 @@ const cardData = {
     total: 29,
   },
 };
+let filtered_employees = [];
 //#endregion
 checkAccess()
   .then((emp) => {
@@ -262,14 +285,23 @@ $(document).on("click", "#closeNav", function () {
   $("body").removeClass("overflow-hidden");
 });
 
+$(document).on("input", "#search-bar", function () {
+  searchEmployee();
+});
+
 $(document).on("change", "#grpSel", function () {
   var sel = $("#grpSel option:selected").text();
-  var grp = $(this).val().split(",").length;
+  var grphl = $(this).val().split(",").length;
+  var grp = $(this).val();
 
-  if (grp === 1) {
+  if (grphl === 1) {
     $(this).addClass("active");
+    filterVar.group = grp;
+    filterDisplay();
   } else {
     $(this).removeClass("active");
+    filterVar.group = null;
+    filterDisplay();
   }
   $(".grpCont").html(
     `<i class='bx bx-group'></i>
@@ -286,6 +318,8 @@ $(document).on("click", "#removeGroup", function () {
         <i class='bx bx-chevron-down text-[18px] ml-3'></i>`
   );
   $("#grpSel").val("");
+  filterVar.group = null;
+  filterDisplay();
 });
 
 $(document).on("change", "#monthSel", function () {
@@ -294,15 +328,23 @@ $(document).on("change", "#monthSel", function () {
 
   var monthName = monthNames[parseInt(month) - 1];
   $(".monthCont").html(`<i class='bx bx-calendar'></i>
-                      <span class="" id="monthLabel">${monthName} ${year}</span>
+                      <span id="monthLabel">${monthName} ${year}</span>
                       <i class='bx bx-x text-[18px] ml-3 z-[100]' id="removeMonth"></i>`);
+  filterVar.monthYear = month;
+  // console.log(filterVar.monthYear);
+  filterDisplay();
 });
 $(document).on("click", "#removeMonth", function () {
   $("#monthSel").removeClass("active");
-  $(".monthCont").html(`<i class='bx bx-calendar'></i>
-                      <span class="" id="monthLabel">Requested Month</span>
-                      <i class='bx bx-chevron-down text-[18px] ml-3'></i>`);
   $("#monthSel").val("");
+  $(".monthCont").html(
+    `   <i class='bx bx-calendar'></i>
+        <span id="monthLabel">Requested Month</span>
+        <i class='bx bx-chevron-down text-[18px] ml-3'></i>`
+    );
+  
+  filterVar.monthYear = null;
+  filterDisplay();
 });
 // $(document).on("click", "#btnExport", function () {
 //   exportTable();
@@ -337,16 +379,24 @@ $(document).on("click", ".tab", function () {
   // });
 
   if (tabID === "tab-1") {
-    fillTable(sampleData);
+    filterVar.empstatus = 0;
+    filterDisplay();
+    // searchEmployee2();
   }
   if (tabID === "tab-2") {
-    filterStatus(null);
+    filterVar.empstatus = 1;
+    filterDisplay();
+    // searchEmployee2();
   }
   if (tabID === "tab-3") {
-    filterStatus(1);
+    filterVar.empstatus = 2;
+    filterDisplay();
+    // searchEmployee2();
   }
   if (tabID === "tab-4") {
-    filterStatus(0);
+    filterVar.empstatus = 3;
+    filterDisplay();
+    // searchEmployee2();
   }
 });
 $(document).on("click", "td", function () {
@@ -525,10 +575,84 @@ function fillTable(sampleData) {
   }
 }
 
+function filterDisplay() {
+  let filteredEmp = [];
+  if (filterVar.empstatus === 0) {
+    displayConditions(sampleData);
+  }
+  else if (filterVar.empstatus === 1) {
+    filteredEmp = filterStatus(null);
+    displayConditions(filteredEmp);
+  }
+  else if (filterVar.empstatus === 2) {
+    filteredEmp = filterStatus(1);
+    displayConditions(filteredEmp);
+  }
+  else if (filterVar.empstatus === 3) {
+    filteredEmp = filterStatus(0);
+    displayConditions(filteredEmp);
+  }
+}
+
+function displayConditions(filteredEmp) {
+  if (filterVar.group && filterVar.monthYear) {
+    filteredEmp = filterGroup(filteredEmp, filterVar.group);
+    filteredEmp = filterYearMonth(filteredEmp, filterVar.monthYear);
+    fillTable(filteredEmp);
+  }
+  else if (filterVar.group) {
+    filteredEmp = filterGroup(filteredEmp, filterVar.group);
+    fillTable(filteredEmp);
+  }
+  else if (filterVar.monthYear) {
+    filteredEmp = filterYearMonth(filteredEmp, filterVar.monthYear);
+    fillTable(filteredEmp);
+  }
+  else {
+    fillTable(filteredEmp);
+  }
+}
+
 function filterStatus(statusFilter) {
   var filteredData = sampleData.filter((stat) => statusFilter == stat.status);
-  fillTable(filteredData);
+  return filteredData;
 }
+
+function filterGroup(presentData, groupFilter) {
+    var filteredData = presentData.filter((stat) => groupFilter == stat.group_id);
+    return filteredData;
+}
+
+function filterYearMonth(presentData, yearMonthFilter) {
+  var filteredData = presentData.filter((stat) => yearMonthFilter == stat.req_date.split("-")[1]);
+  return filteredData;
+}
+
+function searchEmployee() {
+  const keyword = $("#search-bar").val().toLowerCase().trim();
+  const results = sampleData.filter((emp) => {
+    const searchMatch =
+      emp.emp_name.toLowerCase().includes(keyword);
+    return searchMatch;
+  });
+  // filtered_employees = results;
+  displayConditions(results);
+}
+
+// function searchEmployee2() {
+//   const keyword = $("#search-bar").val().toLowerCase().trim();
+//   const grp = $("#grpSel").val();
+//   const [year, month] = $("#monthSel").val().split("-");
+//   const results = sampleData.filter((emp) => {
+//     const searchMatch =
+//       emp.emp_name.toLowerCase().includes(keyword);
+//     const groupMatch = grp == null || emp.group_id == grp;
+//     const dateMatch = month == null || emp.req_date.split("-")[1] == month
+//     return searchMatch && groupMatch && dateMatch;
+//   });
+//   filtered_employees = results;
+//   fillTable(results);
+// }
 
 function getGroups() {
   return new Promise((resolve, reject) => {
@@ -555,7 +679,7 @@ function getGroups() {
 function fillGroups(grps) {
   const groupIDS = grps.map((obj) => obj.newID);
   var grpSelect = $("#grpSel");
-  grpSelect.html(`<option value=${groupIDS.toString()}>All Groups</option>`);
+  grpSelect.html(`<option value=${groupIDS}>All Groups</option>`);
   $.each(grps, function (index, item) {
     var option = $("<option>")
       .attr("value", item.newID)
