@@ -41,259 +41,264 @@ let monthNames2 = [
   "Nov",
   "Dec",
 ];
-const sampleData = [
-  {
-    req_id: 46,
-    emp_name: "Coquia, Joshua Mari",
-    emp_number: 464,
-    group_id: 16,
-    specific_loc: "Kobe",
-    location: "Japan",
-    group_name: "Systems Group",
-    requester_name: "Coquia, Joshua Mari",
-    requester_group: "Systems Group",
-    from: "2024-04-06",
-    to: "2024-04-07",
-    duration: 2,
-    req_date: "2024-07-29",
-    passValid: true,
-    visaValid: true,
-    status: null,
-  },
-  {
-    req_id: 37,
-    emp_name: "Coquia, Joshua Mari",
-    emp_number: 464,
-    group_id: 16,
-    specific_loc: "Kobe",
-    location: "Japan",
-    group_name: "Systems Group",
-    requester_name: "Coquia, Joshua Mari",
-    requester_group: "Systems Group",
-    from: "2024-04-04",
-    to: "2024-04-05",
-    duration: 2,
-    req_date: "2024-07-23",
-    passValid: true,
-    visaValid: true,
-    status: 1,
-  },
-  {
-    req_id: 23,
-    emp_name: "Herrera, Rhanzces Julia",
-    emp_number: 520,
-    group_id: 16,
-    specific_loc: "Tokyo Tokyo",
-    location: "Japan",
-    group_name: "Systems Group",
-    requester_name: "Reyes, Dave",
-    requester_group: "Systems Group",
-    from: "2024-07-18",
-    to: "2024-07-28",
-    duration: 11,
-    req_date: "2024-07-23",
-    passValid: false,
-    visaValid: false,
-    status: 1,
-  },
-  {
-    req_id: 39,
-    emp_name: "Herrera, Rhanzces Julia",
-    emp_number: 520,
-    group_id: 16,
-    specific_loc: "Tokyo Tokyo",
-    location: "Japan",
-    group_name: "Systems Group",
-    requester_name: "Becina, Artemio Roel",
-    requester_group: "Electrical Engineering Group",
-    from: "2024-06-01",
-    to: "2024-06-05",
-    duration: 5,
-    req_date: "2024-07-23",
-    passValid: false,
-    visaValid: false,
-    status: null,
-  },
-  {
-    req_id: 38,
-    emp_name: "Reyes, Dave",
-    emp_number: 518,
-    group_id: 16,
-    specific_loc: "gasg",
-    location: "Japan",
-    group_name: "Systems Group",
-    requester_name: "Reyes, Dave",
-    requester_group: "Systems Group",
-    from: "2024-05-01",
-    to: "2024-05-03",
-    duration: 3,
-    req_date: "2024-07-19",
-    passValid: false,
-    visaValid: false,
-    status: null,
-  },
-  {
-    req_id: 36,
-    emp_name: "Reyes, Dave",
-    emp_number: 518,
-    group_id: 16,
-    specific_loc: "dsdfsd",
-    location: "Japan",
-    group_name: "Systems Group",
-    requester_name: "Reyes, Dave",
-    requester_group: "Systems Group",
-    from: "2024-03-27",
-    to: "2024-03-30",
-    duration: 4,
-    req_date: "2024-07-19",
-    passValid: false,
-    visaValid: false,
-    status: null,
-  },
-  {
-    req_id: 35,
-    emp_name: "Coquia, Joshua Mari",
-    emp_number: 464,
-    group_id: 16,
-    specific_loc: "Tokyo Tokyo",
-    location: "Japan",
-    group_name: "Systems Group",
-    requester_name: "Reyes, Dave",
-    requester_group: "Systems Group",
-    from: "2024-02-21",
-    to: "2024-03-01",
-    duration: 10,
-    req_date: "2024-07-19",
-    passValid: true,
-    visaValid: true,
-    status: null,
-  },
-  {
-    req_id: 34,
-    emp_name: "Cabiso, Sean Patrick",
-    emp_number: 521,
-    group_id: 16,
-    specific_loc: "Tokyo Tokyo",
-    location: "Japan",
-    group_name: "Systems Group",
-    requester_name: "Reyes, Dave",
-    requester_group: "Systems Group",
-    from: "2024-09-25",
-    to: "2024-09-27",
-    duration: 3,
-    req_date: "2024-07-19",
-    passValid: false,
-    visaValid: false,
-    status: null,
-  },
-  {
-    req_id: 29,
-    emp_name: "Reyes, Dave",
-    emp_number: 518,
-    group_id: 16,
-    specific_loc: "fgsfgsf",
-    location: "Japan",
-    group_name: "Systems Group",
-    requester_name: "Reyes, Dave",
-    requester_group: "Systems Group",
-    from: "2024-06-05",
-    to: "2024-06-18",
-    duration: 14,
-    req_date: "2024-07-19",
-    passValid: false,
-    visaValid: false,
-    status: null,
-  },
-  {
-    req_id: 20,
-    emp_name: "Reyes, Dave",
-    emp_number: 518,
-    group_id: 16,
-    specific_loc: "fsdzfsdf",
-    location: "Japan",
-    group_name: "Systems Group",
-    requester_name: "Reyes, Dave",
-    requester_group: "Systems Group",
-    from: "2024-06-26",
-    to: "2024-06-29",
-    duration: 4,
-    req_date: "2024-07-19",
-    passValid: false,
-    visaValid: false,
-    status: null,
-  },
-];
-const samplePrintData = {
-  dispatch_request: {
-    request_id: 23,
-    requester_id: 518,
-    emp_number: 520,
-    location_id: 1,
-    specific_loc: "Tokyo Tokyo",
-    dispatch_from: "2024-07-18",
-    dispatch_to: "2024-07-28",
-    invitation_id: 1,
-    work_order: "123456",
-    project_name: "Kamehameha",
-    site_dispatch: 0,
-    allowance: 4000,
-    request_by_dept: "Kame House",
-    request_by_name: "Takeru",
-    date_requested: "2024-07-23 10:37:08",
-    request_status: 1,
-    date_modified: "2024-07-29 13:06:23",
-    emp_name: "Herrera, Rhanzces Julia",
-    requester_name: "Reyes, Dave",
-    start: "18 Jul 2024",
-    end: "28 Jul 2024",
-    date_request: "23 Jul 2024",
-    location: "Japan",
-  },
-  work_history: [
-    {
-      company_name: "kdt",
-      company_business: "kahit ano",
-      business_content: "gumagawa ng kahit ano",
-      location: "QC",
-      start_year: "2021",
-      start_month: "3",
-      end_year: "2023",
-      end_month: "7",
-    },
-    {
-      company_name: "kdt",
-      company_business: "kahit ano",
-      business_content: "gumagawa ng hindi ko alam",
-      location: "manila",
-      start_year: "2020",
-      start_month: "6",
-      end_year: "2024",
-      end_month: "1",
-    },
-    {
-      company_name: "sample",
-      company_business: "test",
-      business_content: "sampletest",
-      location: "testsample",
-      start_year: "2000",
-      start_month: "4",
-      end_year: "2004",
-      end_month: "8",
-    },
-  ],
-};
-const cardData = {
-  isSuccess: true,
-  message: "",
-  data: {
-    pending: 27,
-    accepted: 2,
-    cancelled: 0,
-    todaytotal: 1,
-    todayaccept: 2,
-    total: 29,
-  },
-};
+// const sampleData = [
+//   {
+//     req_id: 46,
+//     emp_name: "Coquia, Joshua Mari",
+//     emp_number: 464,
+//     group_id: 16,
+//     specific_loc: "Kobe",
+//     location: "Japan",
+//     group_name: "Systems Group",
+//     requester_name: "Coquia, Joshua Mari",
+//     requester_group: "Systems Group",
+//     from: "2024-04-06",
+//     to: "2024-04-07",
+//     duration: 2,
+//     req_date: "2024-07-29",
+//     passValid: true,
+//     visaValid: true,
+//     status: null,
+//   },
+//   {
+//     req_id: 37,
+//     emp_name: "Coquia, Joshua Mari",
+//     emp_number: 464,
+//     group_id: 16,
+//     specific_loc: "Kobe",
+//     location: "Japan",
+//     group_name: "Systems Group",
+//     requester_name: "Coquia, Joshua Mari",
+//     requester_group: "Systems Group",
+//     from: "2024-04-04",
+//     to: "2024-04-05",
+//     duration: 2,
+//     req_date: "2024-07-23",
+//     passValid: true,
+//     visaValid: true,
+//     status: 1,
+//   },
+//   {
+//     req_id: 23,
+//     emp_name: "Herrera, Rhanzces Julia",
+//     emp_number: 520,
+//     group_id: 16,
+//     specific_loc: "Tokyo Tokyo",
+//     location: "Japan",
+//     group_name: "Systems Group",
+//     requester_name: "Reyes, Dave",
+//     requester_group: "Systems Group",
+//     from: "2024-07-18",
+//     to: "2024-07-28",
+//     duration: 11,
+//     req_date: "2024-07-23",
+//     passValid: false,
+//     visaValid: false,
+//     status: 1,
+//   },
+//   {
+//     req_id: 39,
+//     emp_name: "Herrera, Rhanzces Julia",
+//     emp_number: 520,
+//     group_id: 16,
+//     specific_loc: "Tokyo Tokyo",
+//     location: "Japan",
+//     group_name: "Systems Group",
+//     requester_name: "Becina, Artemio Roel",
+//     requester_group: "Electrical Engineering Group",
+//     from: "2024-06-01",
+//     to: "2024-06-05",
+//     duration: 5,
+//     req_date: "2024-07-23",
+//     passValid: false,
+//     visaValid: false,
+//     status: null,
+//   },
+//   {
+//     req_id: 38,
+//     emp_name: "Reyes, Dave",
+//     emp_number: 518,
+//     group_id: 16,
+//     specific_loc: "gasg",
+//     location: "Japan",
+//     group_name: "Systems Group",
+//     requester_name: "Reyes, Dave",
+//     requester_group: "Systems Group",
+//     from: "2024-05-01",
+//     to: "2024-05-03",
+//     duration: 3,
+//     req_date: "2024-07-19",
+//     passValid: false,
+//     visaValid: false,
+//     status: null,
+//   },
+//   {
+//     req_id: 36,
+//     emp_name: "Reyes, Dave",
+//     emp_number: 518,
+//     group_id: 16,
+//     specific_loc: "dsdfsd",
+//     location: "Japan",
+//     group_name: "Systems Group",
+//     requester_name: "Reyes, Dave",
+//     requester_group: "Systems Group",
+//     from: "2024-03-27",
+//     to: "2024-03-30",
+//     duration: 4,
+//     req_date: "2024-07-19",
+//     passValid: false,
+//     visaValid: false,
+//     status: null,
+//   },
+//   {
+//     req_id: 35,
+//     emp_name: "Coquia, Joshua Mari",
+//     emp_number: 464,
+//     group_id: 16,
+//     specific_loc: "Tokyo Tokyo",
+//     location: "Japan",
+//     group_name: "Systems Group",
+//     requester_name: "Reyes, Dave",
+//     requester_group: "Systems Group",
+//     from: "2024-02-21",
+//     to: "2024-03-01",
+//     duration: 10,
+//     req_date: "2024-07-19",
+//     passValid: true,
+//     visaValid: true,
+//     status: null,
+//   },
+//   {
+//     req_id: 34,
+//     emp_name: "Cabiso, Sean Patrick",
+//     emp_number: 521,
+//     group_id: 16,
+//     specific_loc: "Tokyo Tokyo",
+//     location: "Japan",
+//     group_name: "Systems Group",
+//     requester_name: "Reyes, Dave",
+//     requester_group: "Systems Group",
+//     from: "2024-09-25",
+//     to: "2024-09-27",
+//     duration: 3,
+//     req_date: "2024-07-19",
+//     passValid: false,
+//     visaValid: false,
+//     status: null,
+//   },
+//   {
+//     req_id: 29,
+//     emp_name: "Reyes, Dave",
+//     emp_number: 518,
+//     group_id: 16,
+//     specific_loc: "fgsfgsf",
+//     location: "Japan",
+//     group_name: "Systems Group",
+//     requester_name: "Reyes, Dave",
+//     requester_group: "Systems Group",
+//     from: "2024-06-05",
+//     to: "2024-06-18",
+//     duration: 14,
+//     req_date: "2024-07-19",
+//     passValid: false,
+//     visaValid: false,
+//     status: null,
+//   },
+//   {
+//     req_id: 20,
+//     emp_name: "Reyes, Dave",
+//     emp_number: 518,
+//     group_id: 16,
+//     specific_loc: "fsdzfsdf",
+//     location: "Japan",
+//     group_name: "Systems Group",
+//     requester_name: "Reyes, Dave",
+//     requester_group: "Systems Group",
+//     from: "2024-06-26",
+//     to: "2024-06-29",
+//     duration: 4,
+//     req_date: "2024-07-19",
+//     passValid: false,
+//     visaValid: false,
+//     status: null,
+//   },
+// ];
+// const samplePrintData = {
+//   dispatch_request: {
+//     request_id: 23,
+//     requester_id: 518,
+//     emp_number: 520,
+//     location_id: 1,
+//     specific_loc: "Tokyo Tokyo",
+//     dispatch_from: "2024-07-18",
+//     dispatch_to: "2024-07-28",
+//     invitation_id: 1,
+//     work_order: "123456",
+//     project_name: "Kamehameha",
+//     site_dispatch: 0,
+//     allowance: 4000,
+//     request_by_dept: "Kame House",
+//     request_by_name: "Takeru",
+//     date_requested: "2024-07-23 10:37:08",
+//     request_status: 1,
+//     date_modified: "2024-07-29 13:06:23",
+//     emp_name: "Herrera, Rhanzces Julia",
+//     requester_name: "Reyes, Dave",
+//     start: "18 Jul 2024",
+//     end: "28 Jul 2024",
+//     date_request: "23 Jul 2024",
+//     location: "Japan",
+//   },
+//   work_history: [
+//     {
+//       company_name: "kdt",
+//       company_business: "kahit ano",
+//       business_content: "gumagawa ng kahit ano",
+//       location: "QC",
+//       start_year: "2021",
+//       start_month: "3",
+//       end_year: "2023",
+//       end_month: "7",
+//     },
+//     {
+//       company_name: "kdt",
+//       company_business: "kahit ano",
+//       business_content: "gumagawa ng hindi ko alam",
+//       location: "manila",
+//       start_year: "2020",
+//       start_month: "6",
+//       end_year: "2024",
+//       end_month: "1",
+//     },
+//     {
+//       company_name: "sample",
+//       company_business: "test",
+//       business_content: "sampletest",
+//       location: "testsample",
+//       start_year: "2000",
+//       start_month: "4",
+//       end_year: "2004",
+//       end_month: "8",
+//     },
+//   ],
+// };
+// const cardData = {
+//   isSuccess: true,
+//   message: "",
+//   data: {
+//     pending: 27,
+//     accepted: 2,
+//     cancelled: 0,
+//     todaytotal: 1,
+//     todayaccept: 2,
+//     total: 29,
+//   },
+// };
+let reqList = [];
+let cardData = [];
+let printData = {};
+let sortDateAsc = false;
+let presID = 0;
 const { jsPDF } = globalThis.jspdf;
 //#endregion
 checkAccess()
@@ -302,13 +307,16 @@ checkAccess()
       empDetails = emp.data;
       $(document).ready(function () {
         fillEmployeeDetails();
-        $(".tab")[0].click();
-        fillCards();
 
-        Promise.all([getGroups()])
-          .then(([grps]) => {
+        Promise.all([getGroups(), getRequests(), getCount(), getPresID()])
+          .then(([grps, reqs, counts, pres]) => {
             groupList = grps;
             fillGroups(groupList);
+            reqList = reqs["data"];
+            cardData = counts;
+            presID = pres["data"];
+            fillCards();
+            $(".tab")[0].click();
           })
           .catch((error) => {
             alert(`${error}`);
@@ -347,6 +355,7 @@ $(document).on("change", "#grpSel", function () {
       <i class='bx bx-x text-[18px] ml-3 z-[100]' id="removeGroup"></i>`
   );
   toggleLoadingAnimation(true);
+  searchFilter(reqList);
 });
 $(document).on("click", "#removeGroup", function () {
   $("#grpSel").removeClass("active");
@@ -355,17 +364,26 @@ $(document).on("click", "#removeGroup", function () {
         <span id="lblGrp">All Groups</span>
         <i class='bx bx-chevron-down text-[18px] ml-3'></i>`
   );
-  $("#grpSel").val("");
+  $("#grpSel").val($("#grpSel option:first").val());
+  $("#grpSel").change();
 });
 
-$(document).on("change", "#monthSel", function () {
+$(document).on("input", "#monthSel", function () {
   var [year, month] = $(this).val().split("-");
-  $(this).addClass("active");
-
+  $(this).removeClass("active");
   var monthName = monthNames[parseInt(month) - 1];
+  let display = `Requested Month`;
+  let iClass = `<i class='bx bx-chevron-down text-[18px] ml-3'></i>`;
+  if (monthName) {
+    $(this).addClass("active");
+    display = `${monthName} ${year}`;
+    iClass = `<i class='bx bx-x text-[18px] ml-3 z-[100]' id="removeMonth"></i>`;
+  }
   $(".monthCont").html(`<i class='bx bx-calendar'></i>
-                      <span class="" id="monthLabel">${monthName} ${year}</span>
-                      <i class='bx bx-x text-[18px] ml-3 z-[100]' id="removeMonth"></i>`);
+                      <span class="" id="monthLabel">${display}</span>
+                      ${iClass}
+                      `);
+  searchFilter(reqList);
 });
 $(document).on("click", "#removeMonth", function () {
   $("#monthSel").removeClass("active");
@@ -373,6 +391,7 @@ $(document).on("click", "#removeMonth", function () {
                       <span class="" id="monthLabel">Requested Month</span>
                       <i class='bx bx-chevron-down text-[18px] ml-3'></i>`);
   $("#monthSel").val("");
+  searchFilter(reqList);
 });
 // $(document).on("click", "#btnExport", function () {
 //   exportTable();
@@ -382,46 +401,39 @@ $(document).on("click", "#portalBtn", function () {
 });
 $(document).on("click", ".tab", function () {
   var indicator = document.querySelector(".indicator");
-  var tabTarget = $(this).attr("aria-controls");
-  console.log(tabTarget);
-  var $panels = $(".tab-panel");
   var $this = $(this);
-  var tabID = $this.attr("id");
   var rect = $this[0].getBoundingClientRect(); // Convert jQuery object to DOM element
   var parentRect = $this.parent()[0].getBoundingClientRect(); // Convert parent jQuery object to DOM element
 
   indicator.style.width = rect.width + "px";
   indicator.style.left = rect.left - parentRect.left + "px";
-  $(".tab span").removeClass("font-semibold text-[var(--dark)]");
-  $(this).find("span").addClass("font-semibold text-[var(--dark)]");
-
-  if (tabID === "tab-1") {
-    fillTable(sampleData);
-  }
-  if (tabID === "tab-2") {
-    filterStatus(null);
-  }
-  if (tabID === "tab-3") {
-    filterStatus(1);
-  }
-  if (tabID === "tab-4") {
-    filterStatus(0);
-  }
+  $(".tab p").removeClass("font-semibold text-[var(--dark)] active");
+  $(this).find("p").addClass("font-semibold text-[var(--dark)] active");
+  searchFilter(reqList);
 });
 $(document).on("click", ".mainTable td", function () {
   var rowID = $(this).closest("tr").attr("req-id");
   fillOpenModal(rowID);
+  getRequestData(rowID)
+    .then((res) => {
+      if (res.isSuccess) {
+        printData = res.data;
+      }
+    })
+    .catch((error) => {
+      alert(`Error: ${error}`);
+    });
 });
 $(document).on("click", "#openModal .btn-close", function () {
   $("#openModal").modal("hide");
 });
 $(document).on("click", "#attachment", function () {
-  fillAttachment(samplePrintData);
+  fillAttachment(printData);
   $("#openModal .btn-close").click();
   $("#attachmentModal").modal("show");
 });
 $(document).on("click", "#attachment2", function () {
-  fillAttachment2(samplePrintData);
+  fillAttachment2(printData);
   $("#openModal .btn-close").click();
   $("#attachmentModal2").modal("show");
 });
@@ -439,10 +451,130 @@ $(document).on("click", "#btnPrint", function () {
 $(document).on("click", "#btnPrint2", function () {
   saveToPDF2();
 });
+$(document).on("input", "#searchbar", function () {
+  searchFilter(reqList);
+});
+$(document).on("click", "#sortDate", function () {
+  sortDateAsc = !sortDateAsc;
+  searchFilter(reqList);
+});
+$(document).on("click", ".status", function () {
+  const stat = parseInt($(this).attr("stat-id"));
 
+  updateStatus(stat)
+    .then((res) => {
+      if (res.isSuccess) {
+        Promise.all([getRequests(), getCount()])
+          .then(([reqs, counts]) => {
+            reqList = reqs["data"];
+            cardData = counts;
+            fillCards();
+            searchFilter(reqList);
+          })
+          .catch((error) => {
+            alert(`Error: ${error}`);
+          });
+        $("#openModal .btn-close").click();
+      }
+    })
+    .catch((error) => {
+      alert(`Error: ${error}`);
+    });
+});
 //#endregion
 
 //#region FUNCTIONS
+function getRequests() {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "GET",
+      url: "php/get_requests.php",
+      dataType: "json",
+      success: function (response) {
+        const req = response;
+        resolve(req);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred while fetching requests.");
+        }
+      },
+    });
+  });
+}
+function getCount() {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "GET",
+      url: "php/get_count_requests.php",
+      dataType: "json",
+      success: function (response) {
+        const count = response;
+        resolve(count);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred while fetching counts.");
+        }
+      },
+    });
+  });
+}
+function getRequestData(req_id) {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "GET",
+      url: "php/get_request_data.php",
+      data: {
+        request_id: req_id,
+      },
+      dataType: "json",
+      success: function (response) {
+        const res = response;
+        resolve(res);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred while fetching request data.");
+        }
+      },
+    });
+  });
+}
+function getPresID() {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "GET",
+      url: "php/get_pres_id.php",
+      dataType: "json",
+      success: function (response) {
+        const res = response;
+        resolve(res);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred while fetching pres id.");
+        }
+      },
+    });
+  });
+}
 function saveToPDF() {
   // Ensure print styles are applied
   $("#toPrint").css("scale", "1");
@@ -511,7 +643,6 @@ function saveToPDF2() {
 
   $("#toPrint2 table td, #toPrint table th").css("padding", "0 10px 0 10px");
 }
-
 function fillCards() {
   var pending = cardData.data.pending;
   var accepted = cardData.data.accepted;
@@ -665,7 +796,7 @@ function insertIconInvitation(id) {
   }
 }
 function fillOpenModal(trID) {
-  const req = sampleData.find((req) => req.req_id == trID);
+  const req = reqList.find((req) => req.req_id == trID);
   const name = req.emp_name;
   const grp = req.group_name;
   const passValidity = req.passValid;
@@ -715,13 +846,13 @@ function fillOpenModal(trID) {
 }
 function formatButtons(status) {
   $("#openModal .modal-footer").remove();
-  if (status === null) {
+  if (status === null && empDetails["id"] == presID) {
     $("#openModal .modal-content")
       .append(`<div class="flex-nowrap modal-footer  flex gap-2 border-0 ">
         <button
-          class=" rounded-lg px-3 py-2 text-[var(--white)] bg-[var(--dark)] hover:bg-[var(--dark-200)] transition w-50">Reject</button>
+          class="status rounded-lg px-3 py-2 text-[var(--white)] bg-[var(--dark)] hover:bg-[var(--dark-200)] transition w-50" stat-id="0">Reject</button>
         <button
-          class=" bg-[var(--secondary)] hover:bg-[var(--tertiary)] font-semibold rounded-lg px-3 py-2 w-50 text-[var(--dark)]">Accept</button>
+          class="status bg-[var(--secondary)] hover:bg-[var(--tertiary)] font-semibold rounded-lg px-3 py-2 w-50 text-[var(--dark)]" stat-id="1">Accept</button>
       </div>`);
   } else {
     $("#openModal .modal-footer").remove();
@@ -816,11 +947,40 @@ function fillTable(sampleData) {
   }
 }
 
-function filterStatus(statusFilter) {
-  var filteredData = sampleData.filter((stat) => statusFilter == stat.status);
-  fillTable(filteredData);
-}
+function searchFilter(req_list) {
+  const keyword = $("#searchbar").val().toLowerCase().trim();
+  const grps = $("#grpSel").val().split(",").map(Number);
+  const dateFilter = $("#monthSel").val();
+  const activeTabId = $("button").has("p.active").attr("id");
+  const tabFilters = {
+    "tab-2": null,
+    "tab-3": 1,
+    "tab-4": 0,
+  };
+  const filter =
+    tabFilters[activeTabId] !== undefined ? tabFilters[activeTabId] : undefined;
+  const results = req_list.filter((emp) => {
+    const searchMatch =
+      emp.emp_name.toLowerCase().includes(keyword) ||
+      emp.requester_name.toLowerCase().includes(keyword);
 
+    const groupMatch = grps.includes(emp.group_id);
+
+    const dateMatch = dateFilter ? emp.req_date.startsWith(dateFilter) : true;
+
+    const statusMatch = filter !== undefined ? emp.status == filter : true;
+
+    return searchMatch && groupMatch && statusMatch && dateMatch;
+  });
+
+  results.sort((a, b) => {
+    return sortDateAsc
+      ? new Date(a.req_date) - new Date(b.req_date)
+      : new Date(b.req_date) - new Date(a.req_date);
+  });
+
+  fillTable(results);
+}
 function getGroups() {
   return new Promise((resolve, reject) => {
     $.ajax({
@@ -926,5 +1086,34 @@ function toggleLoadingAnimation(show) {
   } else {
     $("#loadingAnimation").remove();
   }
+}
+function updateStatus(status) {
+  console.log(printData["dispatch_request"]["request_id"]);
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "PUT",
+      url: "php/update_status.php",
+      data: JSON.stringify({
+        request_status: status,
+        request_id: printData["dispatch_request"]["request_id"],
+      }),
+      contentType: "application/json",
+      dataType: "json",
+      success: function (response) {
+        console.log(response);
+        const res = response;
+        resolve(res);
+      },
+      error: function (xhr, status, error) {
+        if (xhr.status === 404) {
+          reject("Not Found Error: The requested resource was not found.");
+        } else if (xhr.status === 500) {
+          reject("Internal Server Error: There was a server error.");
+        } else {
+          reject("An unspecified error occurred while updating status.");
+        }
+      },
+    });
+  });
 }
 //#endregion

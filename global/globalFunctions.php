@@ -315,7 +315,7 @@ function getWorkHistory($id)
 {
     global $connpcs;
     $workHistory = array();
-    $workQ = "SELECT * FROM `work_history` WHERE `emp_id`=:id";
+    $workQ = "SELECT * FROM `work_history` WHERE `emp_id`=:id ORDER BY `start_date`";
     $workStmt = $connpcs->prepare($workQ);
     $workStmt->execute([":id" => $id]);
     if ($workStmt->rowCount() > 0) {

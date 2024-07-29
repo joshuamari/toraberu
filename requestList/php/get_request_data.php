@@ -17,7 +17,6 @@ date_default_timezone_set('Asia/Manila');
 $result = [
     "isSuccess" => FALSE,
     "message" => "",
-    "data" => array()
 ];
 $userID = getID();
 $requestID = 0;
