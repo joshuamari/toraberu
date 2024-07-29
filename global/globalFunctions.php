@@ -253,12 +253,12 @@ function emailStatusChange($status, $details)
     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
     $headers .= "From: kdt_toraberur@global.kawasaki.com" . "\r\n";
     $subject = 'Dispatch Request Status(TEST ONLY)';
-    $CCarray = array('medrano_c-kdt@global.kawasaki.com', 'hernandez-kdt@global.kawasaki.com', 'reyes_d-kdt@global.kawasaki.com', 'cabiso-kdt@global.kawasaki.com', 'coquia-kdt@global.kawasaki.com');
+    $CCarray = array('medrano_c-kdt@global.kawasaki.com', 'hernandez-kdt@global.kawasaki.com', 'reyes_d-kdt@global.kawasaki.com', 'cabiso-kdt@global.kawasaki.com', 'coquia-kdt@global.kawasaki.com'); //COMMENT PAG PROD
     $khidetails = getKHIUserDetails($details['requester_id']);
     $admins = getAdminEmails();
     $khipic = getKHIPICEmail($details['emp_group'], $details['requester_id']);
-    // $CCarray = array_merge($admins, $khipic);
-    // $CCarray[] = getPresEmail();
+    // $CCarray = array_merge($admins, $khipic);//UNCOMMENT PAG PROD
+    // $CCarray[] = getPresEmail();//UNCOMMENT PAG PROD
     $CC = implode(",", $CCarray);
     $statusString = $status ? "approved" : "denied";
     $headers .= "CC: " . $CC;
