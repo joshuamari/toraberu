@@ -185,7 +185,7 @@ cursor: pointer;
   color: var(--gray-text2) !important;
 }
 #attachmentModal p{
-  font-size: 12px;
+  font-size: 14px;
   font-family: "Arial", sans-serif;
  line-height: normal;
 
@@ -199,7 +199,7 @@ cursor: pointer;
   border: 0.5px solid #000;
   border-radius: 0;
   text-transform: none;
-  font-size: 12px;
+  font-size: 14px;
   border-left: 0;
   line-height: normal;
   vertical-align: middle;
@@ -207,11 +207,14 @@ cursor: pointer;
 }
 #attachmentModal th{
   height: 20px;
+  
+
 }
 
 #attachmentModal td{
   border-top: 0;
   cursor: default;
+  
 }
 #attachmentModal th.sm{
   max-width: 45px;
