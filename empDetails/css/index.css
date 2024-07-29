@@ -1,5 +1,3 @@
-
-
 table tbody tr td {
   vertical-align: middle;
 }
@@ -62,7 +60,6 @@ table thead tr {
   font-weight: 700 !important;
 }
 .left .pic {
-
   border: 1px solid #cdcdcd;
   border-radius: 6px;
 }
@@ -77,9 +74,9 @@ table thead tr {
   background-size: cover;
   background-position: center;
 }
-.left .top {
+/* .left .top {
   height: 200px;
-}
+} */
 .right {
   flex-direction: column !important;
 }
@@ -98,42 +95,81 @@ table thead tr {
   font-weight: 600;
 }
 .totalThisYear {
+  background: #fff;
+  padding: 16px;
   border-radius: 8px;
-  background-color: #fff;
+  border: 1px solid var(--gray);
 }
 .totalThisYear .label {
   font-size: 14px;
 
   text-transform: uppercase;
 }
+.bot {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--gray);
+}
 .bot .title {
-  font-size: 20px !important;
-  font-weight: 500;
+  font-size: 14px;
+
+  text-transform: uppercase;
+}
+.bot table {
+  border-collapse: separate !important;
+  border-spacing: 0;
+  width: 100%;
+}
+.bot table thead tr th,
+.bot table tbody tr td {
+  vertical-align: middle;
+  white-space: nowrap;
 }
 .bot table thead tr th {
-  background-color: inherit;
+  background-color: var(--tableheader);
   font-size: 12px !important;
   text-transform: uppercase;
   white-space: nowrap;
   vertical-align: middle;
-  font-weight: 700;
-  padding: 1.25rem 0.75rem;
+  color: var(--text-color);
+  padding: 0.75rem;
+  border-top: 1px solid #ebebeb;
+  border-bottom: 1px solid #ebebeb;
 }
+
 .bot table thead tr th:first-of-type {
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
+  border-left: 1px solid #ebebeb;
 }
 .bot table thead tr th:last-of-type {
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
+  justify-content: end;
+  border-right: 1px solid #ebebeb;
+  width: 3%;
 }
-.bot table tbody td {
+.bot table tbody tr td:last-of-type {
+  justify-content: end;
+  width: 25px;
+}
+.bot table tbody tr td {
+  background-color: #fff;
+  padding: 16px 10px;
+  font-weight: 400;
+  border-bottom: 1px solid var(--gray);
+}
+.bot tbody tr:hover td {
+  background-color: var(--tablehover);
+}
+/* .bot table tbody td {
   font-size: 14px;
   vertical-align: middle;
-}
-.bot table tbody tr:hover {
+} */
+/* .bot table tbody tr:hover {
   background-color: #ededed;
-}
+} */
 .btn-edit,
 .btn-delete {
   border: none;
@@ -146,7 +182,7 @@ table thead tr {
   color: var(--red-color) !important;
 }
 .table-cont {
-  height: calc(100% - 54px);
+  height: calc(100% - 45px);
 }
 
 .disStat i {
@@ -168,12 +204,12 @@ table thead tr {
 .emptyState-visa {
   opacity: 0.25;
 }
-.totalDays{
+.totalDays {
   font-size: 24px;
   font-weight: 700;
 }
 
-.bg-success{
+.bg-success {
   background-color: var(--tertiary) !important;
 }
 
@@ -183,8 +219,6 @@ table thead tr {
     width: 100% !important;
   }
 }
-
-
 
 /* SMALLSCREEN NAVIGATION */
 #closeNav,
@@ -242,4 +276,115 @@ table thead tr {
   #closeNav {
     display: block;
   }
+}
+/* .work-hist .title {
+  font-size: 14px;
+
+  text-transform: uppercase;
+}
+.work-hist table thead tr th {
+  background-color: #e5e7eb;
+  font-size: 12px !important;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: middle;
+  font-weight: 700;
+  padding: 1.25rem 0.75rem;
+}
+
+.work-hist table tbody td {
+  font-size: 14px;
+  vertical-align: middle;
+}
+.work-hist table tbody tr:hover {
+  background-color: #e6e6e6;
+}
+.work-hist table thead th {
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #000;
+}
+.work-hist table thead th {
+  text-transform: uppercase;
+  font-size: 12px !important;
+  word-wrap: break-word;
+}
+.work-hist table .add-work {
+  cursor: pointer;
+}
+.work-hist table .add-work:hover {
+  background-color: #e6e6e6;
+  color: var(--text-color);
+}
+.work-hist table .add-work:active {
+  background-color: #999999;
+  color: var(--bg);
+} */
+.work-hist {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--gray);
+}
+.work-hist .title {
+  font-size: 14px;
+
+  text-transform: uppercase;
+}
+.work-hist table {
+  border-collapse: separate !important;
+  border-spacing: 0;
+  width: 100%;
+}
+.work-hist table thead tr th,
+.work-hist table tbody tr td {
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.work-hist table thead tr th {
+  background-color: var(--tableheader);
+  font-size: 12px !important;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: middle;
+  color: var(--text-color);
+  padding: 0.75rem;
+
+  border: 1px solid #000;
+  border-left: 0;
+}
+
+.work-hist table thead tr th:first-of-type {
+  border-left: 1px solid #000;
+}
+.work-hist table thead tr:nth-of-type(2) th:first-of-type {
+  border-left: 0;
+}
+.work-hist table thead tr:nth-of-type(2) th {
+  border-top: 0;
+}
+/* .work-hist table thead tr th:last-of-type {
+
+  justify-content: end;
+  border-right: 1px solid #ebebeb;
+  width: 3%;
+} */
+.work-hist table tbody tr td:last-of-type {
+  justify-content: end;
+  width: 25px;
+}
+.work-hist table tbody tr td {
+  background-color: #fff;
+  padding: 16px 10px;
+  font-weight: 400;
+  border-bottom: 1px solid var(--gray);
+}
+.work-hist tbody tr:hover td {
+  background-color: var(--tablehover);
+}
+.work-hist .header {
+  padding-bottom: 14px;
+}
+.work-hist table .add-work {
+  cursor: pointer;
 }

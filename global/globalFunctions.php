@@ -311,4 +311,28 @@ function checkRequestListAccess($empnum)
     }
     return $access;
 }
+function getWorkHistory($id)
+{
+    global $connpcs;
+    $workHistory = array();
+    $workQ = "SELECT * FROM `work_history` WHERE `emp_id`=:id";
+    $workStmt = $connpcs->prepare($workQ);
+    $workStmt->execute([":id" => $id]);
+    if ($workStmt->rowCount() > 0) {
+        $workArr = $workStmt->fetchAll();
+        foreach ($workArr as $work) {
+            $output = array();
+            $output['company_name'] = $work['comp_name'];
+            $output['company_business'] = $work['comp_business'];
+            $output['business_content'] = $work['business_cont'];
+            $output['location'] = $work['work_loc'];
+            $output['start_year'] = date("Y", strtotime($work['start_date']));
+            $output['start_month'] = date("n", strtotime($work['start_date']));
+            $output['end_year'] = !empty($work['end_date']) ? date("Y", strtotime($work['end_date'])) : null;
+            $output['end_month'] = !empty($work['end_date']) ? date("n", strtotime($work['end_date'])) : null;
+            $workHistory[] = $output;
+        }
+    }
+    return $workHistory;
+}
 #endregion
