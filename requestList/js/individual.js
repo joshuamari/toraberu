@@ -470,6 +470,8 @@ $(document).on("click", ".status", function () {
             cardData = counts;
             fillCards();
             searchFilter(reqList);
+            $(".btn-reject").prop("disabled", false);
+            $(".btn-accept").prop("disabled", false);
           })
           .catch((error) => {
             alert(`Error: ${error}`);
@@ -480,6 +482,13 @@ $(document).on("click", ".status", function () {
     .catch((error) => {
       alert(`Error: ${error}`);
     });
+});
+
+$(document).on("click", ".btn-reject", function () {
+  $(".btn-reject").prop("disabled", true);
+});
+$(document).on("click", ".btn-accept", function () {
+  $(".btn-accept").prop("disabled", true);
 });
 //#endregion
 
@@ -909,7 +918,7 @@ function fillTable(sampleData) {
           ? ` <span class=" status pending ">
                         Pending
                       </span>`
-          : item.status === 1
+          : item.status == 1
           ? `  <span class=" status accepted ">
                         Accepted
                       </span>`

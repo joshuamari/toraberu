@@ -290,6 +290,10 @@ tbody tr:hover td {
 .btn-reject:hover {
   background-color: var(--dark-200);
 }
+.btn-reject:disabled,
+.btn-accept:disabled {
+  opacity: 0.5;
+}
 .btn-accept {
   background-color: var(--secondary);
   color: var(--dark);
