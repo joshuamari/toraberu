@@ -685,7 +685,7 @@ function fillAttachment(data) {
   var siteDispatch = data.dispatch_request.site_dispatch;
   var salary = data.dispatch_request.allowance;
 
-  if (country === 1) {
+  if (country == 1) {
     insertIconCountry(1);
     $("#printJap").text(loc);
   }
@@ -909,7 +909,7 @@ function fillTable(sampleData) {
           ? ` <span class=" status pending ">
                         Pending
                       </span>`
-          : item.status === 1
+          : item.status == 1
           ? `  <span class=" status accepted ">
                         Accepted
                       </span>`
