@@ -850,9 +850,9 @@ function formatButtons(status) {
     $("#openModal .modal-content")
       .append(`<div class="flex-nowrap modal-footer  flex gap-2 border-0 ">
         <button
-          class="status rounded-lg px-3 py-2 text-[var(--white)] bg-[var(--dark)] hover:bg-[var(--dark-200)] transition w-50" stat-id="0">Reject</button>
+          class="status btn-reject transition w-50" stat-id="0">Reject</button>
         <button
-          class="status bg-[var(--secondary)] hover:bg-[var(--tertiary)] font-semibold rounded-lg px-3 py-2 w-50 text-[var(--dark)]" stat-id="1">Accept</button>
+          class="status btn-accept w-50" stat-id="1">Accept</button>
       </div>`);
   } else {
     $("#openModal .modal-footer").remove();
@@ -964,7 +964,7 @@ function searchFilter(req_list) {
       emp.emp_name.toLowerCase().includes(keyword) ||
       emp.requester_name.toLowerCase().includes(keyword);
 
-    const groupMatch = grps.includes(emp.group_id);
+    const groupMatch = grps.includes(parseInt(emp.group_id));
 
     const dateMatch = dateFilter ? emp.req_date.startsWith(dateFilter) : true;
 
@@ -1039,13 +1039,21 @@ function checkAccess() {
   });
 }
 function fillEmployeeDetails() {
-  const fName = empDetails.empname.firstname;
-  const sName = empDetails.empname.surname;
+  const fName = capitalizeWord(empDetails.empname.firstname);
+  const sName = capitalizeWord(empDetails.empname.surname);
   const initials = getInitials(fName, sName);
   const grpName = empDetails.group;
   $("#empLabel").html(`${fName} ${sName}`);
   $("#empInitials").html(`${initials}`);
   $("#grpLabel").html(`${grpName}`);
+}
+function capitalizeWord(name) {
+  return name
+    .split(" ")
+    .map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join(" ");
 }
 function getInitials(firstname, surname) {
   let initials = "";

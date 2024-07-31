@@ -1457,12 +1457,12 @@ function addWorkHistory() {
     $(".dateError").addClass("block flex items-center gap-1 text-red-600");
     errcount++;
   }
-  // if (!endMonthYear) {
-  //   $("#addEndMonthYear").addClass("bg-red-100  border-red-400");
-  //   $(".dateError").removeClass("hidden");
-  //   $(".dateError").addClass("block flex items-center gap-1 text-red-600");
-  //   errcount++;
-  // }
+  if (!endMonthYear) {
+    $("#addEndMonthYear").addClass("bg-red-100  border-red-400");
+    $(".dateError").removeClass("hidden");
+    $(".dateError").addClass("block flex items-center gap-1 text-red-600");
+    errcount++;
+  }
   if (!comp_business) {
     $("#addcompanyBusiness").addClass("bg-red-100  border-red-400");
     $(".BusiError").removeClass("hidden");
@@ -1609,12 +1609,12 @@ function saveEditWorkHistEntry() {
     $(".dateError").addClass("block flex items-center gap-1 text-red-600");
     errcount++;
   }
-  // if (!endMonthYear) {
-  //   $("#edit-EndMonthYear").addClass("bg-red-100  border-red-400");
-  //   $(".dateError").removeClass("hidden");
-  //   $(".dateError").addClass("block flex items-center gap-1 text-red-600");
-  //   errcount++;
-  // }
+  if (!endMonthYear) {
+    $("#edit-EndMonthYear").addClass("bg-red-100  border-red-400");
+    $(".dateError").removeClass("hidden");
+    $(".dateError").addClass("block flex items-center gap-1 text-red-600");
+    errcount++;
+  }
   if (!compBusiness) {
     $("#edit-companyBusiness").addClass("bg-red-100  border-red-400");
     $(".BusiError").removeClass("hidden");

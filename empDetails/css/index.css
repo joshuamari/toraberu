@@ -49,13 +49,7 @@ table thead tr {
   opacity: 0.75;
   cursor: pointer;
 }
-.btn-update {
-  background-color: var(--secondary) !important;
-  transition: background-color 0.25s ease-out;
-}
-.btn-update:hover {
-  background-color: var(--tertiary) !important;
-}
+
 #dispatchStatus {
   font-weight: 700 !important;
 }
@@ -170,17 +164,7 @@ table thead tr {
 /* .bot table tbody tr:hover {
   background-color: #ededed;
 } */
-.btn-edit,
-.btn-delete {
-  border: none;
-  background-color: transparent;
-}
-.btn-edit:hover {
-  color: var(--yellow-color) !important;
-}
-.btn-delete:hover {
-  color: var(--red-color) !important;
-}
+
 .table-cont {
   height: calc(100% - 45px);
 }
@@ -212,7 +196,52 @@ table thead tr {
 .bg-success {
   background-color: var(--tertiary) !important;
 }
+/* BUTTON CSS */
+.btn-update {
+  background-color: var(--secondary) !important;
+  transition: background-color 0.25s ease-out;
+}
+.btn-update:hover {
+  background-color: var(--tertiary) !important;
+}
+.btn-edit,
+.btn-delete {
+  border: none;
+  background-color: transparent;
+}
+.btn-edit:hover {
+  color: var(--yellow-color) !important;
+}
+.btn-delete:hover {
+  color: var(--red-color) !important;
+}
 
+.btn-update,
+.btn-success {
+  background-color: var(--secondary) !important;
+  font-weight: 600;
+  color: var(--dark);
+  transition: background-color 0.25s ease-in-out;
+  border: none;
+}
+.btn-update:hover,
+.btn-success:hover {
+  background-color: var(--tertiary) !important;
+  font-weight: 600;
+  color: var(--dark);
+}
+.btn-cancel,
+.btn-wh-cancel {
+  background-color: var(--dark);
+  color: var(--white);
+  font-weight: 600;
+}
+.btn-cancel:hover,
+.btn-wh-cancel:hover {
+  background-color: var(--dark-200);
+  color: var(--white);
+  font-weight: 600;
+}
 @media (max-width: 991px) {
   .kaliwa,
   .kanan {
@@ -325,6 +354,9 @@ table thead tr {
   padding: 16px;
   border-radius: 8px;
   border: 1px solid var(--gray);
+}
+.work-hist .table-cont::-webkit-scrollbar {
+  display: none;
 }
 .work-hist .title {
   font-size: 14px;

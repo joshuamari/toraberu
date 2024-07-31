@@ -45,7 +45,18 @@ thead {
 table tbody tr td {
   background-color: #fff !important;
 }
-
+.btn-export {
+  background-color: var(--secondary) !important;
+  font-weight: 600;
+  color: var(--dark);
+  transition: background-color 0.25s ease-in-out;
+  border: none;
+}
+.btn-export:hover {
+  background-color: var(--tertiary) !important;
+  font-weight: 600;
+  color: var(--dark);
+}
 @media (max-width: 946px) {
   .selection {
     flex-direction: column;
