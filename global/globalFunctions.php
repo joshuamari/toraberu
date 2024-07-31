@@ -6,7 +6,7 @@ function checkOverlap($empnum, $range)
     $isOverlap = false;
     $starttime = $range['start'];
     $endtime = $range['end'];
-    $dispatchQ = "SELECT * FROM `dispatch_list` WHERE `emp_number` = 464 AND((`dispatch_from` BETWEEN :starttime AND :endtime OR `dispatch_to` BETWEEN :starttime AND :endtime) OR(:starttime BETWEEN `dispatch_from` AND `dispatch_to` OR :endtime BETWEEN `dispatch_from` AND `dispatch_to`))";
+    $dispatchQ = "SELECT * FROM `dispatch_list` WHERE `emp_number` = :empnum AND((`dispatch_from` BETWEEN :starttime AND :endtime OR `dispatch_to` BETWEEN :starttime AND :endtime) OR(:starttime BETWEEN `dispatch_from` AND `dispatch_to` OR :endtime BETWEEN `dispatch_from` AND `dispatch_to`))";
     $dispatchStmt = $connpcs->prepare($dispatchQ);
     $dispatchStmt->execute([":empnum" => $empnum, ":starttime" => $starttime, ":endtime" => $endtime]);
     if ($dispatchStmt->rowCount() > 0) {
@@ -15,6 +15,7 @@ function checkOverlap($empnum, $range)
 
     return $isOverlap;
 }
+
 function checkAccess($empnum)
 {
     global $connkdt;
@@ -29,6 +30,7 @@ function checkAccess($empnum)
     }
     return $access;
 }
+
 function checkEditAccess($empnum)
 {
     global $connkdt;
@@ -43,6 +45,7 @@ function checkEditAccess($empnum)
     }
     return $access;
 }
+
 function alLGroupAccess($empnum)
 {
     global $connkdt;
@@ -57,6 +60,7 @@ function alLGroupAccess($empnum)
     }
     return $access;
 }
+
 function getMembers($empnum)
 {
     global $connnew;
@@ -76,6 +80,7 @@ function getMembers($empnum)
     }
     return $members;
 }
+
 function getGroups($empnum)
 {
     global $connnew;
@@ -92,9 +97,21 @@ function getGroups($empnum)
                 array_push($myGroups, $group);
             }
         }
+    } else {
+        $groupsQ = "SELECT `id` FROM `group_list`";
+        $groupsStmt = $connnew->prepare($groupsQ);
+        $groupsStmt->execute();
+        if ($groupsStmt->rowCount() > 0) {
+            $groupArr = $groupsStmt->fetchAll();
+            foreach ($groupArr as $grp) {
+                $group = $grp['id'];
+                array_push($myGroups, $group);
+            }
+        }
     }
     return $myGroups;
 }
+
 function getID()
 {
     global $connpcs;
@@ -236,12 +253,12 @@ function emailStatusChange($status, $details)
     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
     $headers .= "From: kdt_toraberur@global.kawasaki.com" . "\r\n";
     $subject = 'Dispatch Request Status(TEST ONLY)';
-    $CCarray = array('medrano_c-kdt@global.kawasaki.com', 'hernandez-kdt@global.kawasaki.com', 'reyes_d-kdt@global.kawasaki.com', 'cabiso-kdt@global.kawasaki.com', 'coquia-kdt@global.kawasaki.com');
+    $CCarray = array('medrano_c-kdt@global.kawasaki.com', 'hernandez-kdt@global.kawasaki.com', 'reyes_d-kdt@global.kawasaki.com', 'cabiso-kdt@global.kawasaki.com', 'coquia-kdt@global.kawasaki.com'); //COMMENT PAG PROD
     $khidetails = getKHIUserDetails($details['requester_id']);
     $admins = getAdminEmails();
     $khipic = getKHIPICEmail($details['emp_group'], $details['requester_id']);
-    // $CCarray = array_merge($admins, $khipic);
-    // $CCarray[] = getPresEmail();
+    // $CCarray = array_merge($admins, $khipic);//UNCOMMENT PAG PROD
+    // $CCarray[] = getPresEmail();//UNCOMMENT PAG PROD
     $CC = implode(",", $CCarray);
     $statusString = $status ? "approved" : "denied";
     $headers .= "CC: " . $CC;
@@ -293,5 +310,29 @@ function checkRequestListAccess($empnum)
         $access = TRUE;
     }
     return $access;
+}
+function getWorkHistory($id)
+{
+    global $connpcs;
+    $workHistory = array();
+    $workQ = "SELECT * FROM `work_history` WHERE `emp_id`=:id ORDER BY `start_date`";
+    $workStmt = $connpcs->prepare($workQ);
+    $workStmt->execute([":id" => $id]);
+    if ($workStmt->rowCount() > 0) {
+        $workArr = $workStmt->fetchAll();
+        foreach ($workArr as $work) {
+            $output = array();
+            $output['company_name'] = $work['comp_name'];
+            $output['company_business'] = $work['comp_business'];
+            $output['business_content'] = $work['business_cont'];
+            $output['location'] = $work['work_loc'];
+            $output['start_year'] = date("Y", strtotime($work['start_date']));
+            $output['start_month'] = date("n", strtotime($work['start_date']));
+            $output['end_year'] = !empty($work['end_date']) ? date("Y", strtotime($work['end_date'])) : null;
+            $output['end_month'] = !empty($work['end_date']) ? date("n", strtotime($work['end_date'])) : null;
+            $workHistory[] = $output;
+        }
+    }
+    return $workHistory;
 }
 #endregion

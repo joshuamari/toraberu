@@ -183,10 +183,10 @@ function getGroups() {
   return new Promise((resolve, reject) => {
     $.ajax({
       type: "GET",
-      url: "php/get_groups.php",
+      url: "../global/get_groups.php",
       dataType: "json",
       success: function (response) {
-        // console.log(response);
+        console.log(response);
         const grps = response;
         resolve(grps);
       },
@@ -203,9 +203,8 @@ function getGroups() {
   });
 }
 function fillGroups(grps) {
-  const groupIDS = grps.map((obj) => obj.newID);
   var grpSelect = $("#grpSel");
-  grpSelect.html(`<option value=${groupIDS.toString()}>All Groups</option>`);
+  grpSelect.html(`<option value=0>All Groups</option>`);
   $.each(grps, function (index, item) {
     var option = $("<option>")
       .attr("value", item.newID)
@@ -215,29 +214,6 @@ function fillGroups(grps) {
   });
 }
 function checkAccess() {
-  // const response = {
-  //   isSuccess: true,
-  //   data: {
-  //     empNum: 464,
-  //     empGroup: {
-  //       id: 21,
-  //       name: "System Group",
-  //       acr: "SYS",
-  //     },
-  //     empName: {
-  //       firstname: "Collene Keith",
-  //       surname: "Medrano",
-  //     },
-  //   },
-  // };
-  // const response = {
-  //   isSuccess: false,
-  //   message: "Access Denied",
-  // };
-  // const response = {
-  //   isSuccess: false,
-  //   message: "Not logged in",
-  // };
   return new Promise((resolve, reject) => {
     $.ajax({
       type: "GET",

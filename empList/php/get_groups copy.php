@@ -34,6 +34,7 @@ try {
     // $userStmt->execute([":empID" => "$empID"]);
     // $userCount = $userStmt->fetchColumn();
     $userCount = alLGroupAccess($empID);
+    
     if ($userCount) {
         $groupQ = "SELECT `id` as `newID`, `name`, `abbreviation`, (SELECT COUNT(*) FROM employee_list WHERE `group_id` = `newID` AND `emp_status` = 1) as `empCount` 
         FROM group_list HAVING `empCount` > 0 ORDER BY `name`";
@@ -47,8 +48,19 @@ try {
         $groupStmt->execute([":empID" => $empID]);
         $groups = $groupStmt->fetchAll();
     }
+
+    foreach($groups as &$group) {
+        $groupID = $group["newID"];
+
+        $cipher = "AES-256-CBC";
+        $encrypt = openssl_encrypt($groupID, $cipher, "PCSGROUPENC", 0, "HAHTASDFSDFT6634");
+        // $decrypt = openssl_decrypt($encrypt, $cipher, "PCSGROUPENC", 0, "HAHTASDFSDFT6634");
+        $group["newID"] = $encrypt;
+    }
+
+    echo json_encode($groups);
 } catch (Exception $e) {
     echo "Connection failed: " . $e->getMessage();
 }
 #endregion
-echo json_encode($groups);
+

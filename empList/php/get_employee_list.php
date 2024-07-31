@@ -1,6 +1,9 @@
 <?php
 #region DB Connect
 require_once '../../dbconn/dbconnectpcs.php';
+require_once '../../global/globalFunctions.php';
+require_once '../../dbconn/dbconnectnew.php';
+require_once '../../dbconn/dbconnectkdtph.php';
 #endregion
 
 #region set timezone
@@ -14,12 +17,20 @@ $employees = array();
 $groupQuery = "1";
 $searchStmt = "";
 $sortKey = 1;
+
+$cipher = "AES-256-CBC";
+
+$userID = getID();
 #endregion
 
 #region Set Variable Values
-if (!empty($_POST["groupID"])) {
-    $groupID = $_POST["groupID"];
-    $groups = $groupID;
+if (!empty($_POST['groupID'])) {
+    $grpID = $_POST['groupID'];
+    
+    $decrypt = openssl_decrypt($grpID, $cipher, "PCSGROUPENC", 0, "HAHTASDFSDFT6634");
+    $groups = $decrypt;
+} else {
+    $groups = implode(",", getGroups($userID));
 }
 #endregion
 

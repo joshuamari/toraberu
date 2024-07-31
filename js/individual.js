@@ -220,25 +220,6 @@ function formatDays(numberOfDays) {
   }
 }
 function checkAccess() {
-  // const response = {
-  //   isSuccess: true,
-  //   data: {
-  //     id: 464,
-  //     group: "Systems Group",
-  //     empname: {
-  //       firstname: "Joshua Mari",
-  //       surname: "Coquia",
-  //     },
-  //   },
-  // };
-  // const response = {
-  //   isSuccess: false,
-  //   message: "Access Denied",
-  // };
-  // const response = {
-  //   isSuccess: false,
-  //   message: "Not logged in",
-  // };
   return new Promise((resolve, reject) => {
     $.ajax({
       type: "GET",

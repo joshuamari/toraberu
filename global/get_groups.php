@@ -1,9 +1,9 @@
 <?php
 #region DB Connect
-require_once '../../dbconn/dbconnectnew.php';
-require_once '../../dbconn/dbconnectpcs.php';
-require_once '../../dbconn/dbconnectkdtph.php';
-require_once '../../global/globalFunctions.php';
+require_once '../dbconn/dbconnectnew.php';
+require_once '../dbconn/dbconnectpcs.php';
+require_once '../dbconn/dbconnectkdtph.php';
+require_once 'globalFunctions.php';
 #endregion
 
 #region set timezone
@@ -22,7 +22,7 @@ if (!empty($_COOKIE["userID"])) {
 
 #region main query
 try {
-    $empidQ = "SELECT fldEmployeeNum as empID FROM kdtphdb.kdtlogin WHERE fldUserHash = :userHash";
+    $empidQ = "SELECT `fldEmployeeNum` as empID FROM kdtphdb.kdtlogin WHERE fldUserHash = :userHash";
     $empidStmt = $connpcs->prepare($empidQ);
     $empidStmt->execute([":userHash" => "$userHash"]);
     if ($empidStmt->rowCount() > 0) {
@@ -34,10 +34,11 @@ try {
     // $userStmt->execute([":empID" => "$empID"]);
     // $userCount = $userStmt->fetchColumn();
     $userCount = alLGroupAccess($empID);
+    
     if ($userCount) {
-        $groupQ = "SELECT `id` as `newID`, `name`, `abbreviation`, (SELECT COUNT(*) FROM kdtphdb_new.employee_group WHERE `group_id` = `newID`) as empCount 
-        FROM kdtphdb_new.group_list HAVING empCount > 0 ORDER BY `name`";
-        $groupStmt = $connpcs->prepare($groupQ);
+        $groupQ = "SELECT `id` as `newID`, `name`, `abbreviation`, (SELECT COUNT(*) FROM employee_list WHERE `group_id` = `newID` AND `emp_status` = 1) as `empCount` 
+        FROM group_list HAVING `empCount` > 0 ORDER BY `name`";
+        $groupStmt = $connnew->prepare($groupQ);
         $groupStmt->execute([]);
         $groups = $groupStmt->fetchAll();
     } else {
@@ -47,8 +48,19 @@ try {
         $groupStmt->execute([":empID" => $empID]);
         $groups = $groupStmt->fetchAll();
     }
+
+    foreach($groups as &$group) {
+        $groupID = $group["newID"];
+
+        $cipher = "AES-256-CBC";
+        $encrypt = openssl_encrypt($groupID, $cipher, "PCSGROUPENC", 0, "HAHTASDFSDFT6634");
+        // $decrypt = openssl_decrypt($encrypt, $cipher, "PCSGROUPENC", 0, "HAHTASDFSDFT6634");
+        $group["newID"] = $encrypt;
+    }
+
+    echo json_encode($groups);
 } catch (Exception $e) {
     echo "Connection failed: " . $e->getMessage();
 }
 #endregion
-echo json_encode($groups);
+

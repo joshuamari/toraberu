@@ -199,9 +199,10 @@ function getGroups() {
   return new Promise((resolve, reject) => {
     $.ajax({
       type: "GET",
-      url: "php/get_groups.php",
+      url: "../global/get_groups.php",
       dataType: "json",
       success: function (response) {
+        console.log(response);
         const grps = response;
         resolve(grps);
       },
@@ -218,9 +219,8 @@ function getGroups() {
   });
 }
 function fillGroups(grps) {
-  const groupIDS = grps.map((obj) => obj.newID);
   var grpSelect = $("#grpSel");
-  grpSelect.html(`<option value=${groupIDS.toString()}>Select Group</option>`);
+  grpSelect.html(`<option value=0>Select Group</option>`);
   $.each(grps, function (index, item) {
     var option = $("<option>")
       .attr("value", item.newID)
@@ -241,6 +241,7 @@ function getEmployees() {
       },
       dataType: "json",
       success: function (response) {
+        console.log(response);
         const emps = response;
         resolve(emps);
       },
@@ -768,48 +769,8 @@ function deleteDispatch() {
     },
   });
 }
-// function checkAccess() {
-//   return new Promise((resolve, reject) => {
-//     $.ajax({
-//       type: "GET",
-//       url: "php/check_permission.php",
-//       dataType: "json",
-//       success: function (data) {
-//         const acc = data;
-//         resolve(acc);
-//       },
-//       error: function (xhr, status, error) {
-//         if (xhr.status === 404) {
-//           reject("Not Found Error: The requested resource was not found.");
-//         } else if (xhr.status === 500) {
-//           reject("Internal Server Error: There was a server error.");
-//         } else {
-//           reject("An unspecified error occurred.1");
-//         }
-//       },
-//     });
-//   });
-// }
+
 function checkAccess() {
-  // const response = {
-  //   isSuccess: true,
-  //   data: {
-  //     id: 6969,
-  //     group: "Systems Group",
-  //     empname: {
-  //       firstname: "Korin Kitto",
-  //       surname: "Medurano",
-  //     },
-  //   },
-  // };
-  // const response = {
-  //   isSuccess: false,
-  //   message: "Access Denied",
-  // };
-  // const response = {
-  //   isSuccess: false,
-  //   message: "Not logged in",
-  // };
   return new Promise((resolve, reject) => {
     $.ajax({
       type: "GET",

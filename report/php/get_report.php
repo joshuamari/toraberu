@@ -2,6 +2,8 @@
 #region DB Connect
 require_once '../../dbconn/dbconnectpcs.php';
 require_once '../../dbconn/dbconnectnew.php';
+require_once '../../dbconn/dbconnectkdtph.php';
+require_once '../../global/globalFunctions.php';
 #endregion
 
 #region set timezone
@@ -12,16 +14,25 @@ date_default_timezone_set('Asia/Manila');
 $dateNow = date('Y');
 $groupID = 0;
 $finalReport = New ArrayObject();
+$cipher = "AES-256-CBC";
+
+$userID = getID();
 #endregion
 
 #region get data values
 if (!empty($_POST["yearSelected"])) {
     $dateNow = $_POST["yearSelected"];
 }
-if (!empty($_POST["groupID"])) {
-    $groupID = $_POST["groupID"];
+
+if (!empty($_POST['groupID'])) {
+    $grpID = $_POST['groupID'];
+    
+    $decrypt = openssl_decrypt($grpID, $cipher, "PCSGROUPENC", 0, "HAHTASDFSDFT6634");
+    $groups = $decrypt;
+} else {
+    $groups = implode(",", getGroups($userID));
 }
-$groupQuery = "WHERE `id` IN ($groupID)";
+
 
 if (!empty($_COOKIE["userID"])) {
     $userHash = $_COOKIE["userID"];
@@ -34,7 +45,7 @@ $endYear = $dateNow . "-12-31";
 #region main
 try {
     $getGroups = "SELECT `id` as `newID`, `name`, (SELECT COUNT(*) FROM `employee_list` WHERE `group_id` = `newID` AND `emp_status` != 0) as `empCount` FROM 
-    `group_list` $groupQuery HAVING `empCount` > 0 ORDER BY `name`";
+    `group_list` WHERE `id` IN ($groups) HAVING `empCount` > 0 ORDER BY `name`";
     $groupsStmt = $connnew->prepare($getGroups);
     $groupsStmt->execute([]);
     $groups = $groupsStmt->fetchAll();

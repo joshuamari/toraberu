@@ -427,6 +427,347 @@
     </div>
   </div>
 
+  <!-- #region workhistory -->
+  <div
+    class="modal fade"
+    id="addNewWork"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Work History Entry</h1>
+          <button
+            type="button"
+            class="btn-wh-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-grid">
+            
+            <div class="row mb-2">
+              <label
+                for="addcompanyName"
+                class="col-form-label col-form-label-sm"
+                >Company Name</label
+              >
+              <div>
+                <input
+                  type="text"
+                  class="input company-name"
+                  id="addcompanyName"
+                  placeholder="Company Name"
+                />
+              </div>
+            </div>
+            <small class="compNameError hidden">Please Complete the Field</small>
+
+            <div class="MYDates mb-2 d-flex flex-row">
+              <div class="col-sm-6">
+                <label
+                  for="addStartMonthYear"
+                  class="col-form-label col-form-label-sm"
+                  >Start Month and Year</label
+                >
+                <input
+                  type="month"
+                  class="input add-start-year"
+                  id="addStartMonthYear"
+                  min="1900-01"
+                  max="2025-12"
+                />
+              </div>
+
+              <div class="col-sm-6">
+                <label
+                  for="addEndMonthYear"
+                  class="col-form-label col-form-label-sm"
+                  >End Month and Year</label
+                >
+                <input
+                  type="month"
+                  class="input add-start-year"
+                  id="addEndMonthYear"
+                  min="1900-01"
+                  max="2025-12"
+                />
+              </div>
+            </div>
+            <small class="dateError hidden">Please Complete the Fields</small>
+
+            <div class="row mb-2">
+              <label
+                for="addcompanyBusiness"
+                class="col-form-label col-form-label-sm"
+                >Company Business</label
+              >
+              <div>
+                <input
+                  type="text"
+                  class="input company-business"
+                  id="addcompanyBusiness"
+                  placeholder="Company Business"
+                />
+              </div>
+            </div>
+            <small class="BusiError hidden">Please Complete the Field</small>
+
+            <div class="row mb-2">
+              <label
+                for="addbusinessContent"
+                class="col-form-label col-form-label-sm"
+                >Business Content</label
+              >
+              <div>
+                <input
+                  type="text"
+                  class="input business-content"
+                  id="addbusinessContent"
+                  placeholder="Business Content"
+                />
+              </div>
+            </div>
+            <small class="ContentError hidden">Please Complete the Field</small>
+
+            <div class="row mb-2">
+              <label
+                for="addworkLocation"
+                class="col-form-label col-form-label-sm"
+                >Work Location</label
+              >
+              <div>
+                <input
+                  type="text"
+                  class="input work-location"
+                  id="addworkLocation"
+                  placeholder="Work Location"
+                />
+              </div>
+            </div>
+            <small class="LocError hidden">Please Complete the Field</small>
+
+            <div class="add-wh-error"></div>
+     
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-wh-cancel btn-secondary">
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-success fw-medium"
+            id="btn-addWorkEntry"
+            
+          >
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="editWorkHistory"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Work History Entry</h1>
+          <button
+            type="button"
+            class="btn-wh-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-wh-body">
+          <div class="d-grid">
+            <div class="row mb-2">
+              <label
+                for="edit-companyName"
+                class="col-form-label col-form-label-sm"
+                >Company Name</label
+              >
+              <div>
+                <input
+                  type="text"
+                  class="input company-name"
+                  id="edit-companyName"
+                  placeholder="Company Name"
+                />
+              </div>
+            </div>
+            <small class="compNameError hidden">Please Complete the Field</small>
+
+            <div class="MYDates mb-2 d-flex flex-row">
+              <div class="col-sm-6">
+                <label
+                  for="edit-StartMonthYear"
+                  class="col-form-label col-form-label-sm"
+                  >Start Month and Year</label
+                >
+                <input
+                  type="month"
+                  class="input add-start-year"
+                  id="edit-StartMonthYear"
+                  min="1900-01"
+                  max="2025-12"
+                />
+              </div>
+              <div class="col-sm-6">
+                <label
+                  for="edit-EndMonthYear"
+                  class="col-form-label col-form-label-sm"
+                  >End Month and Year</label
+                >
+                <input
+                  type="month"
+                  class="input add-start-year"
+                  id="edit-EndMonthYear"
+                  min="1900-01"
+                  max="2025-12"
+                />
+              </div>
+            </div>
+            <small class="dateError hidden">Please Complete the Field</small>
+
+            <div class="row mb-2">
+              <label
+                for="edit-companyBusiness"
+                class="col-form-label col-form-label-sm"
+                >Company Business</label
+              >
+              <div>
+                <input
+                  type="text"
+                  class="input company-business"
+                  id="edit-companyBusiness"
+                  placeholder="Company Business"
+                />
+              </div>
+            </div>
+            <small class="BusiError hidden">Please Complete the Field</small>
+
+            <div class="row mb-2">
+              <label
+                for="edit-businessContent"
+                class="col-form-label col-form-label-sm"
+                >Business Content</label
+              >
+              <div>
+                <input
+                  type="text"
+                  class="input business-content"
+                  id="edit-businessContent"
+                  placeholder="Business Content"
+                />
+              </div>
+            </div>
+            <small class="ContentError hidden">Please Complete the Field</small>
+
+            <div class="row mb-2">
+              <label
+                for="edit-workLocation"
+                class="col-form-label col-form-label-sm"
+                >Work Location</label
+              >
+              <div>
+                <input
+                  type="text"
+                  class="input work-location"
+                  id="edit-workLocation"
+                  placeholder="Work Location"
+                />
+              </div>
+            </div>
+            <small class="LocError hidden">Please Complete the Field</small>
+
+            <div class="edit-wh-error"></div>
+     
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-wh-cancel btn-secondary">
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-success fw-medium"
+            id="btn-updateWorkEntry"
+            e-wh-id="0"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="deleteWorkHistory"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="staticBackdropLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">
+            Delete Work History Entry
+          </h1>
+          <button
+            type="button"
+            class="btn-wh-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-2">
+            Are you sure you want to delete
+            <span class="fw-semibold" id="selectedEmp"></span>'s Work History Entry
+            <span class="fw-semibold"
+              >no. <span id="storeWorkId" del-work-id="0"></span
+            ></span>
+            ?
+          </p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-wh-cancel btn-secondary">
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger fw-medium"
+            id="btn-deleteWorkHistory"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+   <!-- #endregion workhistory -->
+
   <!-- #endregion modal-->
 
   <body>
@@ -568,7 +909,7 @@
                 </div>
                 <div class="mid d-flex">
                   <div
-                    class="d-flex totalThisYear flex-column shadow-sm gap-3 p-3 w-100"
+                    class="d-flex totalThisYear flex-column gap-3 p-3 w-100"
                   >
                     <div class="label fw-medium">
                       Total Days of Dispatch this Year
@@ -598,7 +939,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="bot h-full flex flex-column">
+                <div class="bot h-full flex flex-column" style="height: calc(100%-450px);">
                   <div
                     class="d-flex justify-content-between align-items-center header"
                   >
@@ -674,6 +1015,159 @@
                         </tr>
                       </thead>
                       <tbody id="dList"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="work-hist h-full pb-3 xl:pb-0">
+                  <div class="top flex justify-content-between header">
+                    <div class="wh title">Work History</div>
+                    <!-- <div>
+                      <button class="btn btn-success bg-[var(--darkest)]" id="btnExportss">
+                        Export table
+                      </button>
+                    </div> -->
+                  </div>
+                  <div class="table-cont overflow-auto min-h-[300px]">
+                    <table class="table" id="workhistTable">
+                      <thead class="sticky top-0 bg-gray-200">
+                        <tr>
+                          <th 
+                            data-exclude="true"
+                            rowspan="2"
+                            >
+                            No.
+                          </th>
+                          <th
+                            data-f-name="Arial"
+                            data-f-sz="9"
+                            data-f-bold="true"
+                            data-a-h="center"
+                            data-a-v="middle"
+                            data-b-a-s="thin"
+                            data-b-a-c="000000"
+                            colspan="2"
+                          >
+                            Start
+                          </th>
+                          <th
+                            data-f-name="Arial"
+                            data-f-sz="9"
+                            data-f-bold="true"
+                            data-a-h="center"
+                            data-a-v="middle"
+                            data-b-a-s="thin"
+                            data-b-a-c="000000"
+                            colspan="2"
+                          >
+                            End
+                          </th>
+                          <th
+                            data-f-name="Arial"
+                            data-f-sz="9"
+                            data-f-bold="true"
+                            data-a-h="center"
+                            data-a-v="middle"
+                            data-b-a-s="thin"
+                            data-b-a-c="000000"
+                            rowspan="2"
+                          >
+                            Company's Name
+                          </th>
+                          <th
+                            data-f-name="Arial"
+                            data-f-sz="9"
+                            data-f-bold="true"
+                            data-a-h="center"
+                            data-a-v="middle"
+                            data-b-a-s="thin"
+                            data-b-a-c="000000"
+                            rowspan="2"
+                          >
+                            Company's Business
+                          </th>
+                          <th
+                            data-f-name="Arial"
+                            data-f-sz="9"
+                            data-f-bold="true"
+                            data-a-h="center"
+                            data-a-v="middle"
+                            data-b-a-s="thin"
+                            data-b-a-c="000000"
+                            rowspan="2"
+                          >
+                            Business Content
+                          </th>
+                          <th
+                            data-f-name="Arial"
+                            data-f-sz="9"
+                            data-f-bold="true"
+                            data-a-h="center"
+                            data-a-v="middle"
+                            data-b-a-s="thin"
+                            data-b-a-c="000000"
+                            rowspan="2"
+                          >
+                            Work Location
+                          </th>
+
+                          <th 
+                            data-exclude="true"
+                            rowspan="2"
+                          ></th>
+                        </tr>
+                        <tr>
+                          <th
+                            data-f-name="Arial"
+                            data-f-sz="9"
+                            data-f-bold="true"
+                            data-a-h="center"
+                            data-a-v="middle"
+                            data-b-a-s="thin"
+                            data-b-a-c="000000"
+                          >
+                            Year
+                          </th>
+                          <th
+                            data-f-name="Arial"
+                            data-f-sz="9"
+                            data-f-bold="true"
+                            data-a-h="center"
+                            data-a-v="middle"
+                            data-b-a-s="thin"
+                            data-b-a-c="000000"
+                          >
+                            Month
+                          </th>
+                          <th
+                          data-f-name="Arial"
+                          data-f-sz="9"
+                          data-f-bold="true"
+                          data-a-h="center"
+                          data-a-v="middle"
+                          data-b-a-s="thin"
+                          data-b-a-c="000000"
+                          >
+                          Year
+                          </th>
+                          <th
+                            data-f-name="Arial"
+                            data-f-sz="9"
+                            data-f-bold="true"
+                            data-a-h="center"
+                            data-a-v="middle"
+                            data-b-a-s="thin"
+                            data-b-a-c="000000"
+                          >
+                            Month
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody id="wList">
+                        <tr>
+                          <td colspan="10" class="text-center">No data found</td>
+                        </tr>
+                        <tr> <td colspan='10' class='add-work text-center'> + Add New Item</td></tr>
+                      </tbody>
                     </table>
                   </div>
                 </div>

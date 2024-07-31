@@ -13,16 +13,20 @@ date_default_timezone_set('Asia/Manila');
 #region Initialize Variable
 $emps = array();
 $grpStmt = $userHash = "";
-$grpID = $userID = 0;
+$grpID = 0;
+$cipher = "AES-256-CBC";
 
-if (!empty($_COOKIE["userID"])) {
-    $userHash = $_COOKIE["userID"];
-}
+$userID = getID();
 
 if (!empty($_POST['grpID'])) {
     $grpID = $_POST['grpID'];
-    $groups = $grpID;
+    
+    $decrypt = openssl_decrypt($grpID, $cipher, "PCSGROUPENC", 0, "HAHTASDFSDFT6634");
+    $groups = $decrypt;
+} else {
+    $groups = implode(",", getGroups($userID));
 }
+
 #endregion
 
 #region main query

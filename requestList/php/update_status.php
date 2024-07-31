@@ -39,6 +39,7 @@ foreach ($required_fields as $field) {
     }
 }
 $status = $input['request_status'];
+$currentDatetime = date("Y-m-d H:i:s");
 #endregion
 
 #region validations
@@ -65,9 +66,9 @@ if (!in_array($userID, $devs)) {
 #region main function
 $connpcs->beginTransaction();
 try {
-    $udpateQ = "UPDATE `request_list` SET `request_status`=:request_status WHERE `request_id`=:request_id ";
+    $udpateQ = "UPDATE `request_list` SET `request_status`=:request_status,`date_modified`=:date_modified WHERE `request_id`=:request_id ";
     $updateStmt = $connpcs->prepare($udpateQ);
-    $updateStmt->execute([":request_status" => $status, ":request_id" => $input['request_id']]);
+    $updateStmt->execute([":request_status" => $status, ":request_id" => $input['request_id'], ":date_modified" => $currentDatetime]);
     if ($updateStmt->rowCount() > 0) {
         $details = getRequestDetails($input['request_id']);
         if ($status == 1) {
@@ -102,6 +103,7 @@ try {
         die(json_encode($result));
     }
 } catch (Exception $e) {
+    $connpcs->rollBack();
     $result['isSuccess'] = FALSE;
     $result['message'] = "Connection failed: " . $e->getMessage();
 }
