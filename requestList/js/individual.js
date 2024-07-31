@@ -13,6 +13,11 @@ switch (document.location.hostname) {
 const dispTableID = ["eList", "eListNon"];
 let empDetails = [];
 let groupList = [];
+let filterVar = {
+  empstatus : 0,
+  monthYear: null,
+  group: null,
+};
 let monthNames = [
   "January",
   "February",
@@ -340,14 +345,23 @@ $(document).on("click", "#closeNav", function () {
   $("body").removeClass("overflow-hidden");
 });
 
+$(document).on("input", "#search-bar", function () {
+  searchEmployee();
+});
+
 $(document).on("change", "#grpSel", function () {
   var sel = $("#grpSel option:selected").text();
-  var grp = $(this).val().split(",").length;
+  var grphl = $(this).val().split(",").length;
+  var grp = $(this).val();
 
-  if (grp === 1) {
+  if (grphl === 1) {
     $(this).addClass("active");
+    filterVar.group = grp;
+    filterDisplay();
   } else {
     $(this).removeClass("active");
+    filterVar.group = null;
+    filterDisplay();
   }
   $(".grpCont").html(
     `<i class='bx bx-group'></i>
@@ -387,9 +401,6 @@ $(document).on("input", "#monthSel", function () {
 });
 $(document).on("click", "#removeMonth", function () {
   $("#monthSel").removeClass("active");
-  $(".monthCont").html(`<i class='bx bx-calendar'></i>
-                      <span class="" id="monthLabel">Requested Month</span>
-                      <i class='bx bx-chevron-down text-[18px] ml-3'></i>`);
   $("#monthSel").val("");
   searchFilter(reqList);
 });
@@ -470,6 +481,8 @@ $(document).on("click", ".status", function () {
             cardData = counts;
             fillCards();
             searchFilter(reqList);
+            $(".btn-reject").prop("disabled", false);
+            $(".btn-accept").prop("disabled", false);
           })
           .catch((error) => {
             alert(`Error: ${error}`);
@@ -480,6 +493,13 @@ $(document).on("click", ".status", function () {
     .catch((error) => {
       alert(`Error: ${error}`);
     });
+});
+
+$(document).on("click", ".btn-reject", function () {
+  $(".btn-reject").prop("disabled", true);
+});
+$(document).on("click", ".btn-accept", function () {
+  $(".btn-accept").prop("disabled", true);
 });
 //#endregion
 
@@ -694,7 +714,7 @@ function fillAttachment(data) {
   var siteDispatch = data.dispatch_request.site_dispatch;
   var salary = data.dispatch_request.allowance;
 
-  if (country === 1) {
+  if (country == 1) {
     insertIconCountry(1);
     $("#printJap").text(loc);
   }
@@ -859,9 +879,9 @@ function formatButtons(status) {
     $("#openModal .modal-content")
       .append(`<div class="flex-nowrap modal-footer  flex gap-2 border-0 ">
         <button
-          class="status rounded-lg px-3 py-2 text-[var(--white)] bg-[var(--dark)] hover:bg-[var(--dark-200)] transition w-50" stat-id="0">Reject</button>
+          class="status btn-reject transition w-50" stat-id="0">Reject</button>
         <button
-          class="status bg-[var(--secondary)] hover:bg-[var(--tertiary)] font-semibold rounded-lg px-3 py-2 w-50 text-[var(--dark)]" stat-id="1">Accept</button>
+          class="status btn-accept w-50" stat-id="1">Accept</button>
       </div>`);
   } else {
     $("#openModal .modal-footer").remove();
@@ -918,7 +938,7 @@ function fillTable(sampleData) {
           ? ` <span class=" status pending ">
                         Pending
                       </span>`
-          : item.status === 1
+          : item.status == 1
           ? `  <span class=" status accepted ">
                         Accepted
                       </span>`
@@ -956,6 +976,44 @@ function fillTable(sampleData) {
   }
 }
 
+function filterDisplay() {
+  let filteredEmp = [];
+  if (filterVar.empstatus === 0) {
+    displayConditions(sampleData);
+  }
+  else if (filterVar.empstatus === 1) {
+    filteredEmp = filterStatus(null);
+    displayConditions(filteredEmp);
+  }
+  else if (filterVar.empstatus === 2) {
+    filteredEmp = filterStatus(1);
+    displayConditions(filteredEmp);
+  }
+  else if (filterVar.empstatus === 3) {
+    filteredEmp = filterStatus(0);
+    displayConditions(filteredEmp);
+  }
+}
+
+function displayConditions(filteredEmp) {
+  if (filterVar.group && filterVar.monthYear) {
+    filteredEmp = filterGroup(filteredEmp, filterVar.group);
+    filteredEmp = filterYearMonth(filteredEmp, filterVar.monthYear);
+    fillTable(filteredEmp);
+  }
+  else if (filterVar.group) {
+    filteredEmp = filterGroup(filteredEmp, filterVar.group);
+    fillTable(filteredEmp);
+  }
+  else if (filterVar.monthYear) {
+    filteredEmp = filterYearMonth(filteredEmp, filterVar.monthYear);
+    fillTable(filteredEmp);
+  }
+  else {
+    fillTable(filteredEmp);
+  }
+}
+
 function searchFilter(req_list) {
   const keyword = $("#searchbar").val().toLowerCase().trim();
   const grps = $("#grpSel").val().split(",").map(Number);
@@ -973,7 +1031,7 @@ function searchFilter(req_list) {
       emp.emp_name.toLowerCase().includes(keyword) ||
       emp.requester_name.toLowerCase().includes(keyword);
 
-    const groupMatch = grps.includes(emp.group_id);
+    const groupMatch = grps.includes(parseInt(emp.group_id));
 
     const dateMatch = dateFilter ? emp.req_date.startsWith(dateFilter) : true;
 
@@ -1015,7 +1073,7 @@ function getGroups() {
 function fillGroups(grps) {
   const groupIDS = grps.map((obj) => obj.newID);
   var grpSelect = $("#grpSel");
-  grpSelect.html(`<option value=${groupIDS.toString()}>All Groups</option>`);
+  grpSelect.html(`<option value=${groupIDS}>All Groups</option>`);
   $.each(grps, function (index, item) {
     var option = $("<option>")
       .attr("value", item.newID)
@@ -1048,13 +1106,21 @@ function checkAccess() {
   });
 }
 function fillEmployeeDetails() {
-  const fName = empDetails.empname.firstname;
-  const sName = empDetails.empname.surname;
+  const fName = capitalizeWord(empDetails.empname.firstname);
+  const sName = capitalizeWord(empDetails.empname.surname);
   const initials = getInitials(fName, sName);
   const grpName = empDetails.group;
   $("#empLabel").html(`${fName} ${sName}`);
   $("#empInitials").html(`${initials}`);
   $("#grpLabel").html(`${grpName}`);
+}
+function capitalizeWord(name) {
+  return name
+    .split(" ")
+    .map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join(" ");
 }
 function getInitials(firstname, surname) {
   let initials = "";

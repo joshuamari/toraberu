@@ -193,13 +193,21 @@ function checkAccess() {
   });
 }
 function fillEmployeeDetails() {
-  const fName = empDetails.empname.firstname;
-  const sName = empDetails.empname.surname;
+  const fName = capitalizeWord(empDetails.empname.firstname);
+  const sName = capitalizeWord(empDetails.empname.surname);
   const initials = getInitials(fName, sName);
   const grpName = empDetails.group;
   $("#empLabel").html(`${fName} ${sName}`);
   $("#empInitials").html(`${initials}`);
   $("#grpLabel").html(`${grpName}`);
+}
+function capitalizeWord(name) {
+  return name
+    .split(" ")
+    .map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    })
+    .join(" ");
 }
 function getInitials(firstname, surname) {
   let initials = "";
