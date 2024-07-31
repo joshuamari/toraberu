@@ -13,6 +13,11 @@ switch (document.location.hostname) {
 const dispTableID = ["eList", "eListNon"];
 let empDetails = [];
 let groupList = [];
+let filterVar = {
+  empstatus : 0,
+  monthYear: null,
+  group: null,
+};
 let monthNames = [
   "January",
   "February",
@@ -340,14 +345,23 @@ $(document).on("click", "#closeNav", function () {
   $("body").removeClass("overflow-hidden");
 });
 
+$(document).on("input", "#search-bar", function () {
+  searchEmployee();
+});
+
 $(document).on("change", "#grpSel", function () {
   var sel = $("#grpSel option:selected").text();
-  var grp = $(this).val().split(",").length;
+  var grphl = $(this).val().split(",").length;
+  var grp = $(this).val();
 
-  if (grp === 1) {
+  if (grphl === 1) {
     $(this).addClass("active");
+    filterVar.group = grp;
+    filterDisplay();
   } else {
     $(this).removeClass("active");
+    filterVar.group = null;
+    filterDisplay();
   }
   $(".grpCont").html(
     `<i class='bx bx-group'></i>
@@ -387,9 +401,6 @@ $(document).on("input", "#monthSel", function () {
 });
 $(document).on("click", "#removeMonth", function () {
   $("#monthSel").removeClass("active");
-  $(".monthCont").html(`<i class='bx bx-calendar'></i>
-                      <span class="" id="monthLabel">Requested Month</span>
-                      <i class='bx bx-chevron-down text-[18px] ml-3'></i>`);
   $("#monthSel").val("");
   searchFilter(reqList);
 });
@@ -694,7 +705,7 @@ function fillAttachment(data) {
   var siteDispatch = data.dispatch_request.site_dispatch;
   var salary = data.dispatch_request.allowance;
 
-  if (country === 1) {
+  if (country == 1) {
     insertIconCountry(1);
     $("#printJap").text(loc);
   }
@@ -956,6 +967,44 @@ function fillTable(sampleData) {
   }
 }
 
+function filterDisplay() {
+  let filteredEmp = [];
+  if (filterVar.empstatus === 0) {
+    displayConditions(sampleData);
+  }
+  else if (filterVar.empstatus === 1) {
+    filteredEmp = filterStatus(null);
+    displayConditions(filteredEmp);
+  }
+  else if (filterVar.empstatus === 2) {
+    filteredEmp = filterStatus(1);
+    displayConditions(filteredEmp);
+  }
+  else if (filterVar.empstatus === 3) {
+    filteredEmp = filterStatus(0);
+    displayConditions(filteredEmp);
+  }
+}
+
+function displayConditions(filteredEmp) {
+  if (filterVar.group && filterVar.monthYear) {
+    filteredEmp = filterGroup(filteredEmp, filterVar.group);
+    filteredEmp = filterYearMonth(filteredEmp, filterVar.monthYear);
+    fillTable(filteredEmp);
+  }
+  else if (filterVar.group) {
+    filteredEmp = filterGroup(filteredEmp, filterVar.group);
+    fillTable(filteredEmp);
+  }
+  else if (filterVar.monthYear) {
+    filteredEmp = filterYearMonth(filteredEmp, filterVar.monthYear);
+    fillTable(filteredEmp);
+  }
+  else {
+    fillTable(filteredEmp);
+  }
+}
+
 function searchFilter(req_list) {
   const keyword = $("#searchbar").val().toLowerCase().trim();
   const grps = $("#grpSel").val().split(",").map(Number);
@@ -1015,7 +1064,7 @@ function getGroups() {
 function fillGroups(grps) {
   const groupIDS = grps.map((obj) => obj.newID);
   var grpSelect = $("#grpSel");
-  grpSelect.html(`<option value=${groupIDS.toString()}>All Groups</option>`);
+  grpSelect.html(`<option value=${groupIDS}>All Groups</option>`);
   $.each(grps, function (index, item) {
     var option = $("<option>")
       .attr("value", item.newID)
