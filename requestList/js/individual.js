@@ -14,7 +14,7 @@ const dispTableID = ["eList", "eListNon"];
 let empDetails = [];
 let groupList = [];
 let filterVar = {
-  empstatus : 0,
+  empstatus: 0,
   monthYear: null,
   group: null,
 };
@@ -304,12 +304,19 @@ let cardData = [];
 let printData = {};
 let sortDateAsc = false;
 let presID = 0;
+let reqAccess = false;
 const { jsPDF } = globalThis.jspdf;
 //#endregion
 checkAccess()
   .then((emp) => {
     if (emp.isSuccess) {
       empDetails = emp.data;
+      reqAccess = empDetails["request"];
+      if (!reqAccess) {
+        alert("Access Denied");
+        window.location.href = `${rootFolder}/PCS`;
+        return;
+      }
       $(document).ready(function () {
         fillEmployeeDetails();
 
@@ -834,7 +841,7 @@ function fillOpenModal(trID) {
   const endDate = req.to;
   const reqName = req.requester_name;
   const reqDate = req.req_date;
-  const status = req.status;
+  const status = parseInt(req.status);
   const location = req.specific_loc;
   const country = req.location;
   const duration = req.duration;
@@ -895,7 +902,11 @@ function formatDate(date) {
 }
 function formatStatus(status) {
   let statusString =
-    status === null ? "pending" : status === 1 ? "accepted" : "cancelled";
+    isNaN(status) || status === null
+      ? "pending"
+      : status === 1
+      ? "accepted"
+      : "cancelled";
   $("#titleModal").html(
     `  Dispatch Request<span class="status lg ${statusString} ms-3">${statusString}</span>`
   );
@@ -980,16 +991,13 @@ function filterDisplay() {
   let filteredEmp = [];
   if (filterVar.empstatus === 0) {
     displayConditions(sampleData);
-  }
-  else if (filterVar.empstatus === 1) {
+  } else if (filterVar.empstatus === 1) {
     filteredEmp = filterStatus(null);
     displayConditions(filteredEmp);
-  }
-  else if (filterVar.empstatus === 2) {
+  } else if (filterVar.empstatus === 2) {
     filteredEmp = filterStatus(1);
     displayConditions(filteredEmp);
-  }
-  else if (filterVar.empstatus === 3) {
+  } else if (filterVar.empstatus === 3) {
     filteredEmp = filterStatus(0);
     displayConditions(filteredEmp);
   }
@@ -1000,16 +1008,13 @@ function displayConditions(filteredEmp) {
     filteredEmp = filterGroup(filteredEmp, filterVar.group);
     filteredEmp = filterYearMonth(filteredEmp, filterVar.monthYear);
     fillTable(filteredEmp);
-  }
-  else if (filterVar.group) {
+  } else if (filterVar.group) {
     filteredEmp = filterGroup(filteredEmp, filterVar.group);
     fillTable(filteredEmp);
-  }
-  else if (filterVar.monthYear) {
+  } else if (filterVar.monthYear) {
     filteredEmp = filterYearMonth(filteredEmp, filterVar.monthYear);
     fillTable(filteredEmp);
-  }
-  else {
+  } else {
     fillTable(filteredEmp);
   }
 }
