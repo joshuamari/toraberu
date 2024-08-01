@@ -152,13 +152,15 @@ function getName($id)
 function getPresID()
 {
     global $connnew;
+    $arrayID = [];
     $idp = 0;
     $idQ = "SELECT `id` FROM `employee_list` WHERE `designation`=29 AND `resignation_date` < CURRENT_DATE()";
     $idStmt = $connnew->query($idQ);
     if ($idStmt->rowCount() > 0) {
         $idp = $idStmt->fetchColumn();
+        $arrayID[] = (int)$idp;
     }
-    return (int)$idp;
+    return $arrayID;
 }
 function getPresEmail()
 {
