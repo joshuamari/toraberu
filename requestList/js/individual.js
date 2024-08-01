@@ -364,11 +364,11 @@ $(document).on("change", "#grpSel", function () {
   if (grphl === 1) {
     $(this).addClass("active");
     filterVar.group = grp;
-    filterDisplay();
+    // filterDisplay();
   } else {
     $(this).removeClass("active");
     filterVar.group = null;
-    filterDisplay();
+    // filterDisplay();
   }
   $(".grpCont").html(
     `<i class='bx bx-group'></i>
@@ -986,39 +986,6 @@ function fillTable(sampleData) {
     $("#tableBody").append(str);
   }
 }
-
-function filterDisplay() {
-  let filteredEmp = [];
-  if (filterVar.empstatus === 0) {
-    displayConditions(sampleData);
-  } else if (filterVar.empstatus === 1) {
-    filteredEmp = filterStatus(null);
-    displayConditions(filteredEmp);
-  } else if (filterVar.empstatus === 2) {
-    filteredEmp = filterStatus(1);
-    displayConditions(filteredEmp);
-  } else if (filterVar.empstatus === 3) {
-    filteredEmp = filterStatus(0);
-    displayConditions(filteredEmp);
-  }
-}
-
-function displayConditions(filteredEmp) {
-  if (filterVar.group && filterVar.monthYear) {
-    filteredEmp = filterGroup(filteredEmp, filterVar.group);
-    filteredEmp = filterYearMonth(filteredEmp, filterVar.monthYear);
-    fillTable(filteredEmp);
-  } else if (filterVar.group) {
-    filteredEmp = filterGroup(filteredEmp, filterVar.group);
-    fillTable(filteredEmp);
-  } else if (filterVar.monthYear) {
-    filteredEmp = filterYearMonth(filteredEmp, filterVar.monthYear);
-    fillTable(filteredEmp);
-  } else {
-    fillTable(filteredEmp);
-  }
-}
-
 function searchFilter(req_list) {
   const keyword = $("#searchbar").val().toLowerCase().trim();
   const grps = $("#grpSel").val().split(",").map(Number);
