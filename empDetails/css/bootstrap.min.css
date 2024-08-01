@@ -5398,7 +5398,8 @@ fieldset:disabled .btn {
   max-height: 100%;
   overflow: hidden;
 }
-.modal-dialog-scrollable .modal-body {
+.modal-dialog-scrollable .modal-body,
+.modal-dialog-scrollable .modal-wh-body {
   overflow-y: auto;
 }
 .modal-dialog-centered {
@@ -5460,7 +5461,8 @@ fieldset:disabled .btn {
   margin-bottom: 0;
   line-height: var(--bs-modal-title-line-height);
 }
-.modal-body {
+.modal-body,
+.modal-wh-body {
   position: relative;
   flex: 1 1 auto;
   padding: var(--bs-modal-padding);
@@ -5521,7 +5523,8 @@ fieldset:disabled .btn {
 .modal-fullscreen .modal-header {
   border-radius: 0;
 }
-.modal-fullscreen .modal-body {
+.modal-fullscreen .modal-body,
+.modal-fullscreen .modal-wh-body {
   overflow-y: auto;
 }
 @media (max-width: 575.98px) {
@@ -5540,7 +5543,8 @@ fieldset:disabled .btn {
   .modal-fullscreen-sm-down .modal-header {
     border-radius: 0;
   }
-  .modal-fullscreen-sm-down .modal-body {
+  .modal-fullscreen-sm-down .modal-body,
+  .modal-fullscreen-sm-down .modal-wh-body {
     overflow-y: auto;
   }
 }
@@ -5560,7 +5564,8 @@ fieldset:disabled .btn {
   .modal-fullscreen-md-down .modal-header {
     border-radius: 0;
   }
-  .modal-fullscreen-md-down .modal-body {
+  .modal-fullscreen-md-down .modal-body,
+  .modal-fullscreen-md-down .modal-wh-body {
     overflow-y: auto;
   }
 }
@@ -5580,7 +5585,8 @@ fieldset:disabled .btn {
   .modal-fullscreen-lg-down .modal-header {
     border-radius: 0;
   }
-  .modal-fullscreen-lg-down .modal-body {
+  .modal-fullscreen-lg-down .modal-body,
+  .modal-fullscreen-lg-down .modal-wh-body {
     overflow-y: auto;
   }
 }
@@ -5600,7 +5606,8 @@ fieldset:disabled .btn {
   .modal-fullscreen-xl-down .modal-header {
     border-radius: 0;
   }
-  .modal-fullscreen-xl-down .modal-body {
+  .modal-fullscreen-xl-down .modal-body,
+  .modal-fullscreen-xl-down .modal-wh-body {
     overflow-y: auto;
   }
 }
@@ -5620,7 +5627,8 @@ fieldset:disabled .btn {
   .modal-fullscreen-xxl-down .modal-header {
     border-radius: 0;
   }
-  .modal-fullscreen-xxl-down .modal-body {
+  .modal-fullscreen-xxl-down .modal-body,
+  .modal-fullscreen-xxl-down .modal-wh-body {
     overflow-y: auto;
   }
 }

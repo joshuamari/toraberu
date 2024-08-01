@@ -164,6 +164,10 @@ $(document).on("click", ".btn-delete", function () {
   var trID = $(this).closest("tr").attr("d-id");
   $("#storeId").html(num);
   $("#storeId").attr("del-id", trID);
+  let sn = $(".surname").text();
+  let fn = $(".givenname").text();
+  const fullname = sn.concat(fn);
+  $("#selectedEmp").text(fullname);
 });
 $(document).on("click", "#btn-deleteEntry", function () {
   deleteDispatch()
@@ -403,6 +407,10 @@ $(document).on("click", ".btn-delete-work", function () {
   let WHtrID = $(this).closest("tr").attr("wh-id");
   $("#storeWorkId").html(num);
   $("#storeWorkId").attr("del-work-id", WHtrID);
+  let sn = $(".surname").text();
+  let fn = $(".givenname").text();
+  const fullname = sn.concat(fn);
+  $("#selectedEmpWH").text(fullname);
 });
 $(document).on("click", "#btn-deleteWorkHistory", function () {
   deleteWork().then((res) => {
