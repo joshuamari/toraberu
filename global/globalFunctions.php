@@ -251,7 +251,7 @@ function emailStatusChange($status, $details)
 {
     $headers = "MIME-Version: 1.0" . "\r\n";
     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= "From: kdt_toraberur@global.kawasaki.com" . "\r\n";
+    $headers .= "From: kdt_toraberu@global.kawasaki.com" . "\r\n";
     $subject = 'Dispatch Request Status(TEST ONLY)';
     $CCarray = array('medrano_c-kdt@global.kawasaki.com', 'hernandez-kdt@global.kawasaki.com', 'reyes_d-kdt@global.kawasaki.com', 'cabiso-kdt@global.kawasaki.com', 'coquia-kdt@global.kawasaki.com'); //COMMENT PAG PROD
     $khidetails = getKHIUserDetails($details['requester_id']);
