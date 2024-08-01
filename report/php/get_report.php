@@ -13,7 +13,7 @@ date_default_timezone_set('Asia/Manila');
 #region Initialize Variable
 $dateNow = date('Y');
 $groupID = 0;
-$finalReport = New ArrayObject();
+$finalReport = new ArrayObject();
 $cipher = "AES-256-CBC";
 
 $userID = getID();
@@ -26,7 +26,7 @@ if (!empty($_POST["yearSelected"])) {
 
 if (!empty($_POST['groupID'])) {
     $grpID = $_POST['groupID'];
-    
+
     $decrypt = openssl_decrypt($grpID, $cipher, "PCSGROUPENC", 0, "HAHTASDFSDFT6634");
     $groups = $decrypt;
 } else {
@@ -49,8 +49,8 @@ try {
     $groupsStmt = $connnew->prepare($getGroups);
     $groupsStmt->execute([]);
     $groups = $groupsStmt->fetchAll();
-    
-    foreach($groups as $gval) {
+
+    foreach ($groups as $gval) {
         $oneGroupID = $gval["newID"];
         $groupName = $gval["name"];
 
@@ -70,24 +70,24 @@ try {
         $report = $reportStmt->fetchAll();
         $reportCount = count($report);
 
-        if($reportCount > 0) {
+        if ($reportCount > 0) {
             $userArray = array();
             foreach ($report as $val) {
                 $empID = $val["id"];
-    
+
                 $dispatchQ = "SELECT dispatch_from, dispatch_to FROM dispatch_list WHERE emp_number = :empID AND ((`dispatch_from` >= :startYear AND `dispatch_from` <= :endYear) OR 
-                (`dispatch_to` <= :endYear AND `dispatch_to` >= :startYear))";
+                (`dispatch_to` <= :endYear AND `dispatch_to` >= :startYear)) ORDER BY `dispatch_from` DESC";
                 $dispatchStmt = $connpcs->prepare($dispatchQ);
                 $dispatchStmt->execute([":empID" => "$empID", ":startYear" => "$startYear", ":endYear" => "$endYear"]);
                 $dispatch = $dispatchStmt->fetchAll();
-    
+
                 $days = 0;
                 $dispatchArray = array();
 
                 foreach ($dispatch as $disval) {
                     $fromDate = $disval["dispatch_from"];
                     $toDate = $disval["dispatch_to"];
-    
+
                     if ($fromDate !== null) {
                         $fDate = strtotime($fromDate);
                         $disval["dispatch_from"] = date("d M Y", $fDate);
@@ -101,15 +101,15 @@ try {
                         $disval["dispatch_to"] = "None";
                     }
                     $disval["totalPast"] =  getPastOneYear($empID, $toDate);
-    
+
                     $daysDiff = getDuration($fromDate, $toDate, $dateNow);
                     $disval["duration"] = $daysDiff;
                     $days += $daysDiff;
-    
+
                     array_push($dispatchArray, $disval);
                 }
 
-                
+
 
                 if ($val["visaExpiry"] != null) {
                     $vExp = strtotime($val["visaExpiry"]);
@@ -117,7 +117,7 @@ try {
 
                     $difference = convertStoY($vExp - $vIssue);
                     $visaDiff = $difference . " year/s ";
-                    if($difference == 0) {
+                    if ($difference == 0) {
                         $difference = convertStoM($vExp - $vIssue);
                         $visaDiff = $difference . " month/s ";
                     }
@@ -125,10 +125,10 @@ try {
                 } else {
                     $val["visaExpiry"] = "None";
                 }
-    
+
                 $val["dispatch"] = $dispatchArray;
                 $val["totalDays"] = $days;
-    
+
                 array_push($userArray, $val);
             }
             $finalReport->offsetSet($groupName, $userArray);
@@ -148,7 +148,7 @@ function getDuration($dateFrom, $dateTo, $dateNow)
     $dateFromYear = date("Y", strtotime($dateFrom));
     $dateToYear = date("Y", strtotime($dateTo));
 
-    if($dateFrom > $dateTo) {
+    if ($dateFrom > $dateTo) {
         return 0;
     }
 
@@ -173,14 +173,16 @@ function getDuration($dateFrom, $dateTo, $dateNow)
     return $difference->days + 1;
 }
 
-function convertStoY($secs) {
+function convertStoY($secs)
+{
     $secs += 86400;
     $secondsInAYear = 365 * 24 * 60 * 60;
     $years = floor($secs / $secondsInAYear);
     return $years;
 }
 
-function convertStoM($secs) {
+function convertStoM($secs)
+{
     $secs += 86400;
     $secondsInAMonth = 2628000;
     $months = floor($secs / $secondsInAMonth);

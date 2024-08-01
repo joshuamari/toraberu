@@ -48,6 +48,8 @@ try {
         $editAccess = checkEditAccess($empnum);
         $empDetails["edit"] = $editAccess;
         $userAccess = checkAccess($empnum);
+        $requestAccess = checkRequestListAccess($empnum);
+        $empDetails["request"] = $requestAccess;
         if ($userAccess) {
             $result["isSuccess"] = true;
             $result["data"] = $empDetails;

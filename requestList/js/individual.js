@@ -13,6 +13,11 @@ switch (document.location.hostname) {
 const dispTableID = ["eList", "eListNon"];
 let empDetails = [];
 let groupList = [];
+let filterVar = {
+  empstatus: 0,
+  monthYear: null,
+  group: null,
+};
 let monthNames = [
   "January",
   "February",
@@ -298,13 +303,20 @@ let reqList = [];
 let cardData = [];
 let printData = {};
 let sortDateAsc = false;
-let presID = 0;
+let presID = [];
+let reqAccess = false;
 const { jsPDF } = globalThis.jspdf;
 //#endregion
 checkAccess()
   .then((emp) => {
     if (emp.isSuccess) {
       empDetails = emp.data;
+      reqAccess = empDetails["request"];
+      if (!reqAccess) {
+        alert("Access Denied");
+        window.location.href = `${rootFolder}/PCS`;
+        return;
+      }
       $(document).ready(function () {
         fillEmployeeDetails();
 
@@ -340,14 +352,23 @@ $(document).on("click", "#closeNav", function () {
   $("body").removeClass("overflow-hidden");
 });
 
+$(document).on("input", "#search-bar", function () {
+  searchEmployee();
+});
+
 $(document).on("change", "#grpSel", function () {
   var sel = $("#grpSel option:selected").text();
-  var grp = $(this).val().split(",").length;
+  var grphl = $(this).val().split(",").length;
+  var grp = $(this).val();
 
-  if (grp === 1) {
+  if (grphl === 1) {
     $(this).addClass("active");
+    filterVar.group = grp;
+    // filterDisplay();
   } else {
     $(this).removeClass("active");
+    filterVar.group = null;
+    // filterDisplay();
   }
   $(".grpCont").html(
     `<i class='bx bx-group'></i>
@@ -387,9 +408,6 @@ $(document).on("input", "#monthSel", function () {
 });
 $(document).on("click", "#removeMonth", function () {
   $("#monthSel").removeClass("active");
-  $(".monthCont").html(`<i class='bx bx-calendar'></i>
-                      <span class="" id="monthLabel">Requested Month</span>
-                      <i class='bx bx-chevron-down text-[18px] ml-3'></i>`);
   $("#monthSel").val("");
   searchFilter(reqList);
 });
@@ -411,7 +429,7 @@ $(document).on("click", ".tab", function () {
   $(this).find("p").addClass("font-semibold text-[var(--dark)] active");
   searchFilter(reqList);
 });
-$(document).on("click", ".mainTable td", function () {
+$(document).on("click", ".mainTable tr", function () {
   var rowID = $(this).closest("tr").attr("req-id");
   fillOpenModal(rowID);
   getRequestData(rowID)
@@ -458,7 +476,7 @@ $(document).on("click", "#sortDate", function () {
   sortDateAsc = !sortDateAsc;
   searchFilter(reqList);
 });
-$(document).on("click", ".status", function () {
+$(document).on("click", ".statusBtn", function () {
   const stat = parseInt($(this).attr("stat-id"));
 
   updateStatus(stat)
@@ -658,18 +676,27 @@ function fillCards() {
   var cancelled = cardData.data.cancelled;
   var todayTotal = cardData.data.todaytotal;
   var todayAccept = cardData.data.todayaccept;
-
   var total = cardData.data.total;
-
-  $("#cardPending, #pendingTab").text(pending);
+  $("#tab-2 p").nextAll().remove();
+  if (pending != 0) {
+    $("#tab-2").append(`
+         <small
+                      class="rounded-full w-[14px] h-[14px] bg-[var(--dark)] text-white text-[8px] flex items-center justify-content-center font-semibold" >${pending}</small>
+      `);
+  }
+  $("#cardPending").text(pending);
   $("#cardAccepted").text(accepted);
-  $("#cardTodayAccepted").html(
-    `<small class="font-semibold" >+${todayAccept} today</small>`
-  );
+  if (todayAccept != 0) {
+    $("#cardTodayAccepted").html(
+      `<small class="font-semibold" >+${todayAccept} today</small>`
+    );
+  }
   $("#cardCancelled").text(cancelled);
-  $("#cardTodayTotal").html(
-    `<small class="font-semibold" >+${todayTotal} today</small>`
-  );
+  if (todayTotal != 0) {
+    $("#cardTodayTotal").html(
+      `<small class="font-semibold" >+${todayTotal} today</small>`
+    );
+  }
   $("#cardTotal").text(total);
 }
 function formatName(name) {
@@ -694,7 +721,7 @@ function fillAttachment(data) {
   var siteDispatch = data.dispatch_request.site_dispatch;
   var salary = data.dispatch_request.allowance;
 
-  if (country === 1) {
+  if (country == 1) {
     insertIconCountry(1);
     $("#printJap").text(loc);
   }
@@ -814,7 +841,7 @@ function fillOpenModal(trID) {
   const endDate = req.to;
   const reqName = req.requester_name;
   const reqDate = req.req_date;
-  const status = req.status;
+  const status = parseInt(req.status);
   const location = req.specific_loc;
   const country = req.location;
   const duration = req.duration;
@@ -855,13 +882,13 @@ function fillOpenModal(trID) {
 }
 function formatButtons(status) {
   $("#openModal .modal-footer").remove();
-  if (status === null && empDetails["id"] == presID) {
+  if ((status === null || isNaN(status)) && presID.includes(empDetails["id"])) {
     $("#openModal .modal-content")
       .append(`<div class="flex-nowrap modal-footer  flex gap-2 border-0 ">
         <button
-          class="status btn-reject transition w-50" stat-id="0">Reject</button>
+          class="statusBtn btn-reject transition w-50" stat-id="0">Reject</button>
         <button
-          class="status btn-accept w-50" stat-id="1">Accept</button>
+          class="statusBtn btn-accept w-50" stat-id="1">Accept</button>
       </div>`);
   } else {
     $("#openModal .modal-footer").remove();
@@ -875,7 +902,11 @@ function formatDate(date) {
 }
 function formatStatus(status) {
   let statusString =
-    status === null ? "pending" : status === 1 ? "accepted" : "cancelled";
+    isNaN(status) || status === null
+      ? "pending"
+      : status === 1
+      ? "accepted"
+      : "cancelled";
   $("#titleModal").html(
     `  Dispatch Request<span class="status lg ${statusString} ms-3">${statusString}</span>`
   );
@@ -955,7 +986,6 @@ function fillTable(sampleData) {
     $("#tableBody").append(str);
   }
 }
-
 function searchFilter(req_list) {
   const keyword = $("#searchbar").val().toLowerCase().trim();
   const grps = $("#grpSel").val().split(",").map(Number);
@@ -1015,7 +1045,7 @@ function getGroups() {
 function fillGroups(grps) {
   const groupIDS = grps.map((obj) => obj.newID);
   var grpSelect = $("#grpSel");
-  grpSelect.html(`<option value=${groupIDS.toString()}>All Groups</option>`);
+  grpSelect.html(`<option value=${groupIDS}>All Groups</option>`);
   $.each(grps, function (index, item) {
     var option = $("<option>")
       .attr("value", item.newID)
@@ -1105,6 +1135,7 @@ function toggleLoadingAnimation(show) {
   }
 }
 function updateStatus(status) {
+  console.log(printData);
   console.log(printData["dispatch_request"]["request_id"]);
   return new Promise((resolve, reject) => {
     $.ajax({
@@ -1115,7 +1146,7 @@ function updateStatus(status) {
         request_id: printData["dispatch_request"]["request_id"],
       }),
       contentType: "application/json",
-      dataType: "json",
+      // dataType: "json",
       success: function (response) {
         console.log(response);
         const res = response;
