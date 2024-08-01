@@ -218,6 +218,21 @@ function getKHIPICEmail($group_id, $exclude = 0)
     }
     return $khiEmail;
 }
+function getKHIAdminEmails()
+{
+    global $connpcs;
+    $khiEmail = array();
+    $khiQ = "SELECT `email` FROM `khi_details` WHERE `group_id`=2 AND `number` != 905007";
+    $khiStmt = $connpcs->prepare($khiQ);
+    $khiStmt->execute();
+    if ($khiStmt->rowCount() > 0) {
+        $khiArr = $khiStmt->fetchAll();
+        foreach ($khiArr as $emails) {
+            $khiEmail[] = $emails['email'];
+        }
+    }
+    return $khiEmail;
+}
 function getRequestDetails($request_id)
 {
     global $connpcs;
@@ -259,7 +274,8 @@ function emailStatusChange($status, $details)
     $khidetails = getKHIUserDetails($details['requester_id']);
     $admins = getAdminEmails();
     $khipic = getKHIPICEmail($details['emp_group'], $details['requester_id']);
-    // $CCarray = array_merge($admins, $khipic);//UNCOMMENT PAG PROD
+    $khiAdmins = getKHIAdminEmails();
+    // $CCarray = array_merge($admins, $khipic, $khiAdmins);//UNCOMMENT PAG PROD
     // $CCarray[] = getPresEmail();//UNCOMMENT PAG PROD
     $CC = implode(",", $CCarray);
     $statusString = $status ? "approved" : "denied";
