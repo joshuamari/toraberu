@@ -15,7 +15,7 @@ $result = [
 #endregion
 try {
     // $presID = getPresID(); // UNCOMMENT KAPAG PROD
-    $presID = 518; // COMMENT KAPAG PROD
+    $presID = [464, 487, 510, 518, 521]; // COMMENT KAPAG PROD
     $result['isSuccess'] = TRUE;
     $result['data'] = $presID;
     $result['message'] = "Success";

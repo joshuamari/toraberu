@@ -303,7 +303,7 @@ let reqList = [];
 let cardData = [];
 let printData = {};
 let sortDateAsc = false;
-let presID = 0;
+let presID = [];
 let reqAccess = false;
 const { jsPDF } = globalThis.jspdf;
 //#endregion
@@ -882,7 +882,7 @@ function fillOpenModal(trID) {
 }
 function formatButtons(status) {
   $("#openModal .modal-footer").remove();
-  if ((status === null || isNaN(status)) && empDetails["id"] == presID) {
+  if ((status === null || isNaN(status)) && presID.includes(empDetails["id"])) {
     $("#openModal .modal-content")
       .append(`<div class="flex-nowrap modal-footer  flex gap-2 border-0 ">
         <button
