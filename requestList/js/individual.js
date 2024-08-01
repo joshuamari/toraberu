@@ -14,7 +14,7 @@ const dispTableID = ["eList", "eListNon"];
 let empDetails = [];
 let groupList = [];
 let filterVar = {
-  empstatus : 0,
+  empstatus: 0,
   monthYear: null,
   group: null,
 };
@@ -422,7 +422,7 @@ $(document).on("click", ".tab", function () {
   $(this).find("p").addClass("font-semibold text-[var(--dark)] active");
   searchFilter(reqList);
 });
-$(document).on("click", ".mainTable td", function () {
+$(document).on("click", ".mainTable tr", function () {
   var rowID = $(this).closest("tr").attr("req-id");
   fillOpenModal(rowID);
   getRequestData(rowID)
@@ -469,7 +469,7 @@ $(document).on("click", "#sortDate", function () {
   sortDateAsc = !sortDateAsc;
   searchFilter(reqList);
 });
-$(document).on("click", ".status", function () {
+$(document).on("click", ".statusBtn", function () {
   const stat = parseInt($(this).attr("stat-id"));
 
   updateStatus(stat)
@@ -875,13 +875,13 @@ function fillOpenModal(trID) {
 }
 function formatButtons(status) {
   $("#openModal .modal-footer").remove();
-  if (status === null && empDetails["id"] == presID) {
+  if ((status === null || isNaN(status)) && empDetails["id"] == presID) {
     $("#openModal .modal-content")
       .append(`<div class="flex-nowrap modal-footer  flex gap-2 border-0 ">
         <button
-          class="status btn-reject transition w-50" stat-id="0">Reject</button>
+          class="statusBtn btn-reject transition w-50" stat-id="0">Reject</button>
         <button
-          class="status btn-accept w-50" stat-id="1">Accept</button>
+          class="statusBtn btn-accept w-50" stat-id="1">Accept</button>
       </div>`);
   } else {
     $("#openModal .modal-footer").remove();
@@ -980,16 +980,13 @@ function filterDisplay() {
   let filteredEmp = [];
   if (filterVar.empstatus === 0) {
     displayConditions(sampleData);
-  }
-  else if (filterVar.empstatus === 1) {
+  } else if (filterVar.empstatus === 1) {
     filteredEmp = filterStatus(null);
     displayConditions(filteredEmp);
-  }
-  else if (filterVar.empstatus === 2) {
+  } else if (filterVar.empstatus === 2) {
     filteredEmp = filterStatus(1);
     displayConditions(filteredEmp);
-  }
-  else if (filterVar.empstatus === 3) {
+  } else if (filterVar.empstatus === 3) {
     filteredEmp = filterStatus(0);
     displayConditions(filteredEmp);
   }
@@ -1000,16 +997,13 @@ function displayConditions(filteredEmp) {
     filteredEmp = filterGroup(filteredEmp, filterVar.group);
     filteredEmp = filterYearMonth(filteredEmp, filterVar.monthYear);
     fillTable(filteredEmp);
-  }
-  else if (filterVar.group) {
+  } else if (filterVar.group) {
     filteredEmp = filterGroup(filteredEmp, filterVar.group);
     fillTable(filteredEmp);
-  }
-  else if (filterVar.monthYear) {
+  } else if (filterVar.monthYear) {
     filteredEmp = filterYearMonth(filteredEmp, filterVar.monthYear);
     fillTable(filteredEmp);
-  }
-  else {
+  } else {
     fillTable(filteredEmp);
   }
 }
@@ -1163,6 +1157,7 @@ function toggleLoadingAnimation(show) {
   }
 }
 function updateStatus(status) {
+  console.log(printData);
   console.log(printData["dispatch_request"]["request_id"]);
   return new Promise((resolve, reject) => {
     $.ajax({
@@ -1173,7 +1168,7 @@ function updateStatus(status) {
         request_id: printData["dispatch_request"]["request_id"],
       }),
       contentType: "application/json",
-      dataType: "json",
+      // dataType: "json",
       success: function (response) {
         console.log(response);
         const res = response;
