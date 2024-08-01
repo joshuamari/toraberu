@@ -676,8 +676,8 @@ function fillCards() {
   var cancelled = cardData.data.cancelled;
   var todayTotal = cardData.data.todaytotal;
   var todayAccept = cardData.data.todayaccept;
-
   var total = cardData.data.total;
+  $("#tab-2 p").nextAll().remove();
   if (pending != 0) {
     $("#tab-2").append(`
          <small
