@@ -768,6 +768,12 @@ function fillAttachment2(data) {
   $("#workHistoryTable tbody").empty();
   if (data.work_history.length != 0) {
     $.each(data.work_history, function (index, item) {
+      if (item.end_year == null) {
+        item.end_year = "";
+      }
+      if (item.end_month == null) {
+        item.end_month = "";
+      }
       str = `
       <tr>
         <td>${item.start_year}</td>
