@@ -1417,10 +1417,13 @@ function fillWorkHistory(wList) {
 
       tableBody.append(row);
     });
-    let addDataRow = $(
-      "<tr> <td colspan='10' class='add-work text-center'> + Add New Item</td></tr>"
-    );
-    tableBody.append(addDataRow);
+
+    if (wList.length < 3) {
+      let addDataRow = $(
+        "<tr> <td colspan='10' class='add-work text-center'> + Add New Item</td></tr>"
+      );
+      tableBody.append(addDataRow);
+    }
   }
 }
 function removeOutline() {
