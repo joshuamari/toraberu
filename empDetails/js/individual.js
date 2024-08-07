@@ -1365,6 +1365,12 @@ function fillWorkHistory(wList) {
     tableBody.append(addDataRow);
   } else {
     $.each(wList, function (index, item) {
+      if (item.end_year == 0) {
+        item.end_year = null;
+      }
+      if (item.end_month == 0) {
+        item.end_month = null;
+      }
       let row = $(`<tr wh-id=${item.id}>`);
       row.append(`<td data-exclude='true'>${index + 1}</td>`);
       row.append(

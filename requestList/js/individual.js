@@ -774,6 +774,12 @@ function fillAttachment2(data) {
       if (item.end_month == null) {
         item.end_month = "";
       }
+      if (item.end_year == "-0001") {
+        item.end_year = "";
+      }
+      if (item.end_month == "11") {
+        item.end_month = "";
+      }
       str = `
       <tr>
         <td>${item.start_year}</td>
