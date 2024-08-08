@@ -1366,39 +1366,6 @@ function fillWorkHistory(wList) {
     tableBody.append(addDataRow);
   } else {
     $.each(wList, function (index, item) {
-<<<<<<< HEAD
-      if (count < 3) {
-        let row = $(`<tr wh-id=${item.id}>`);
-        row.append(`<td data-exclude='true'>${index + 1}</td>`);
-        row.append(
-          `<td  data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.start_year}</td>`
-        );
-        row.append(
-          `<td  data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.start_month}</td>`
-        );
-        row.append(
-          `<td  data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${
-            item.end_year ? item.end_year : ""
-          }</td>`
-        );
-        row.append(
-          `<td  data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${
-            item.end_month ? item.end_month : ""
-          }</td>`
-        );
-        row.append(
-          `<td  data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.comp_name}</td>`
-        );
-        row.append(
-          `<td  data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.comp_business}</td>`
-        );
-        row.append(
-          `<td  data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.business_cont}</td>`
-        );
-        row.append(
-          `<td  data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.work_loc}</td>`
-        );
-=======
       if (item.end_year == 0) {
         item.end_year = null;
       }
@@ -1435,9 +1402,8 @@ function fillWorkHistory(wList) {
       row.append(
         `<td  data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.work_loc}</td>`
       );
->>>>>>> 452f8be72a32d3254dd714252d288f14f209bbf8
 
-        row.append(`<td data-exclude='true'>
+      row.append(`<td data-exclude='true'>
           <div class="d-flex gap-2">
             <button
               class="btn-edit-work"
@@ -1456,16 +1422,10 @@ function fillWorkHistory(wList) {
             </button>
           </div></td>`);
 
-        tableBody.append(row);
-        count++;
-      }
+      tableBody.append(row);
+      count++;
     });
-<<<<<<< HEAD
     if (count < 3) {
-=======
-
-    if (wList.length < 3) {
->>>>>>> 452f8be72a32d3254dd714252d288f14f209bbf8
       let addDataRow = $(
         "<tr> <td colspan='10' class='add-work text-center'> + Add New Item</td></tr>"
       );
