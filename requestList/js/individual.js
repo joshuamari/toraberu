@@ -646,7 +646,9 @@ function saveToPDF() {
   );
 }
 function saveToPDF2() {
-  $("#toPrint2 table td, #toPrint table th").css("padding", "0 10px 6px 10px");
+  $("#toPrint2 table td").css("padding", "0 10px 12px 10px");
+  $("#toPrint2 table th").css("padding-top", "0");
+  $("#toPrint2 table th").css("padding-bottom", "12px");
   var str = $("#attachment2").text();
 
   document.body.offsetHeight;
@@ -667,8 +669,9 @@ function saveToPDF2() {
   });
 
   // Revert scale if needed
-
-  $("#toPrint2 table td, #toPrint table th").css("padding", "0 10px 0 10px");
+  $("#toPrint2 table td").css("padding", "6px");
+  $("#toPrint2 table th").css("padding-top", "6px");
+  $("#toPrint2 table th").css("padding-bottom", "6px");
 }
 function fillCards() {
   var pending = cardData.data.pending;
