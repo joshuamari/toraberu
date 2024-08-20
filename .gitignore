@@ -3,3 +3,6 @@
 
 #ignore dbconn folder
 /dbconn
+
+#ignore email template
+mail.html

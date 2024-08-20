@@ -22,9 +22,9 @@ try {
     $getAdminStmt->execute([]);
     $members = $getAdminStmt->fetchAll();
 
-    foreach($members as $admin) {
+    foreach ($members as $admin) {
         $email = $admin['email'];
-        if(!empty($email)) {
+        if (!empty($email)) {
             array_push($adminMembers, $email);
         }
     }
@@ -50,7 +50,7 @@ try {
 
     $expiryVisaQ = "SELECT ed.email as empEmail, TIMESTAMPDIFF(DAY, CURDATE(), vd.visa_expiry) AS expiringIn, vd.visa_expiry as expiringDate, vd.visa_number as 
     idNum FROM kdtphdb_new.employee_list as ed LEFT JOIN visa_details as vd ON ed.id = vd.emp_number WHERE vd.visa_expiry >= CURDATE() AND vd.visa_expiry <= 
-    DATE_ADD(CURDATE(), INTERVAL 9 MONTH)";
+    DATE_ADD(CURDATE(), INTERVAL 6 MONTH)";
     $expiryVisaStmt = $connpcs->prepare($expiryVisaQ);
     $expiryVisaStmt->execute([]);
     if ($expiryVisaStmt->rowCount() > 0) {
@@ -77,12 +77,12 @@ function sendEmail($expiryID, $sendDays, $type)
         if (in_array($expiringIn, $sendDays)) {
             $expiringDate = strtotime($expiringDate);
             $expiringDate = date("d M Y", $expiringDate);
-                $message = "Your " . $type . " with number " . $idNum . " will be expiring in " . $expiringDate;
+            $message = "Your " . $type . " with number " . $idNum . " will be expiring in " . $expiringDate;
             if ($expiringIn == 0) {
                 $message = "Your " . $type . " with number " . $idNum . " will be expiring today";
             }
 
-            if(mail($email, $subject, $message, $headers)) {
+            if (mail($email, $subject, $message, $headers)) {
                 echo "success " . $expiringIn . " " . $email;
             } else {
                 echo "fail on sending email";

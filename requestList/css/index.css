@@ -27,7 +27,7 @@ thead tr th:first-of-type {
   border-bottom-left-radius: 8px;
   border-left: 1px solid #ebebeb;
 }
-thead tr th:last-of-type {
+.mainTable thead tr th:last-of-type {
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
   justify-content: end;
@@ -238,7 +238,7 @@ tbody tr:hover td {
   border: 0.5px solid #000;
   border-radius: 0;
   text-align: center;
-  white-space: normal;
+  /* white-space: normal; */
   text-transform: none;
   border-left: 0;
   font-family: "Arial", sans-serif;

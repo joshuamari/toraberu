@@ -1353,6 +1353,7 @@ function getWorkHistory() {
 }
 function fillWorkHistory(wList) {
   let tableBody = $("#wList");
+  let count = 0;
   tableBody.empty();
   if (wList.length === 0) {
     let noDataRow = $(
@@ -1365,6 +1366,12 @@ function fillWorkHistory(wList) {
     tableBody.append(addDataRow);
   } else {
     $.each(wList, function (index, item) {
+      if (item.end_year == 0) {
+        item.end_year = null;
+      }
+      if (item.end_month == 0) {
+        item.end_month = null;
+      }
       let row = $(`<tr wh-id=${item.id}>`);
       row.append(`<td data-exclude='true'>${index + 1}</td>`);
       row.append(
@@ -1397,30 +1404,33 @@ function fillWorkHistory(wList) {
       );
 
       row.append(`<td data-exclude='true'>
-        <div class="d-flex gap-2">
-        <button
-          class="btn-edit-work"
-          title="Edit Work Entry"
-          
-        >
-        <i class='bx bxs-edit fs-5' ></i>
-        </button>
-        <button
-          class="btn-delete-work"
-          title="Delete Work Entry"
-          data-bs-toggle="modal"
-          data-bs-target="#deleteWorkHistory"
-        >
-          <i class="bx bx-trash fs-5"></i>
-        </button>
-      </div></td>`);
+          <div class="d-flex gap-2">
+            <button
+              class="btn-edit-work"
+              title="Edit Work Entry"
+              
+            >
+            <i class='bx bxs-edit fs-5' ></i>
+            </button>
+            <button
+              class="btn-delete-work"
+              title="Delete Work Entry"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteWorkHistory"
+            >
+              <i class="bx bx-trash fs-5"></i>
+            </button>
+          </div></td>`);
 
       tableBody.append(row);
+      count++;
     });
-    let addDataRow = $(
-      "<tr> <td colspan='10' class='add-work text-center'> + Add New Item</td></tr>"
-    );
-    tableBody.append(addDataRow);
+    if (count < 3) {
+      let addDataRow = $(
+        "<tr> <td colspan='10' class='add-work text-center'> + Add New Item</td></tr>"
+      );
+      tableBody.append(addDataRow);
+    }
   }
 }
 function removeOutline() {

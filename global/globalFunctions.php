@@ -275,7 +275,8 @@ function emailStatusChange($status, $details)
     $admins = getAdminEmails();
     $khipic = getKHIPICEmail($details['emp_group'], $details['requester_id']);
     $khiAdmins = getKHIAdminEmails();
-    // $CCarray = array_merge($admins, $khipic, $khiAdmins);//UNCOMMENT PAG PROD
+    $kdtManagers = getGroupManagersEmail($details['emp_group']);
+    // $CCarray = array_merge($admins, $khipic, $khiAdmins, $kdtManagers);//UNCOMMENT PAG PROD
     // $CCarray[] = getPresEmail();//UNCOMMENT PAG PROD
     $CC = implode(",", $CCarray);
     $statusString = $status ? "approved" : "denied";
@@ -294,6 +295,15 @@ function emailStatusChange($status, $details)
         <p>Date To: " . $details['dispatch_to'] . "</p>
         <p>Location: " . getLocationName($details['location_id']) . "</p>
         <p>Date Requested: " . $details['date_requested'] . "</p>
+        <br>
+        <p>For <strong>KDT</strong>, you may view the request details here:</p>
+        <ul>
+            <li><a href='http://kdt-ph/PCS/requestList/'>Dispatch Request List</a></li>
+        </ul>
+        <p>For <strong>KHI</strong>, you may view the request details here:</p>
+        <ul>
+            <li><a href='http://kdt-ph/PCSKHI/requestList/'>Track Request Status</a></li>
+        </ul>
         <p>Thank you for your patience. If you have any questions or need further assistance, please do not hesitate to contact us.</p>
         <p>Best regards,</p>
         <p>トラベる<br>KHI Design & Technical Service, Inc.</p>
@@ -352,5 +362,24 @@ function getWorkHistory($id)
         }
     }
     return $workHistory;
+}
+function getGroupManagersEmail($group_id)
+{
+    global $connnew;
+    $matik = [19, 55]; //GM & SM
+    $matikStmt = implode(",", $matik);
+    $mgs = [17, 18]; //AM & DM
+    $mgsStmt = implode(",", $mgs);
+    $mgEmail = array();
+    $emailQ = "SELECT DISTINCT `el`.email FROM `employee_list` el LEFT JOIN `employee_group` eg ON `el`.id=`eg`.employee_number WHERE (`el`.designation IN ($matikStmt) OR (`el`.designation IN ($mgsStmt) AND `eg`.group_id=:group_id)) AND (`el`.`resignation_date`>CURDATE() OR `el`.`resignation_date` IS NULL OR `el`.`resignation_date`='0000-00-00')";
+    $emailStmt = $connnew->prepare($emailQ);
+    $emailStmt->execute([":group_id" => $group_id]);
+    if ($emailStmt->rowCount() > 0) {
+        $mgArr = $emailStmt->fetchAll();
+        foreach ($mgArr as $mg) {
+            $mgEmail[] = $mg['email'];
+        }
+    }
+    return $mgEmail;
 }
 #endregion
