@@ -52,6 +52,7 @@ try {
         $details['location_id'] = (int)$details['location_id'];
         $details['invitation_id'] = (int)$details['invitation_id'];
         $details['site_dispatch'] = (int)$details['site_dispatch'];
+        $details['allowance'] = getAllowance($details['emp_number']);
         $details['business'] = $details['work_content'];
         $result['isSuccess'] = TRUE;
         $result['message'] = 'Successfully fetched data';

@@ -298,7 +298,7 @@ function emailStatusChange($status, $details)
     // $CCarray = array_reverse($CCarray);
     #endregion
     $CC = implode(",", $CCarray);
-    $statusString = $status ? "accepted" : "denied";
+    $statusString = $status ? "accepted" : "cancelled";
     $headers .= "CC: " . $CC;
     $msg = "
                 <html>
