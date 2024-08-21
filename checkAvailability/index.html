@@ -5,17 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="UTF-8" />
 
- 
     <script src="js/html2canvas.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/jquery.inview.min.js"></script>
 
     <!-- <script src="js/jquery.table2excel.js"></script> -->
     <script>
-      var busterCall = [
-        "js/individual.js",
-        "css/index.css",
-      ];
+      var busterCall = ["js/individual.js", "css/index.css"];
       $.post(
         "php/get_version.php",
         {
@@ -109,9 +105,7 @@
                 >Location</label
               >
               <div class="col-sm-8">
-                <select class="select" id="editentryLocation">
-                
-                </select>
+                <select class="select" id="editentryLocation"></select>
               </div>
             </div>
             <div class="row mb-2">
@@ -152,7 +146,6 @@
                 <span id="editentryDays" class="fw-medium fs-5">0</span>
               </div>
             </div>
-         
           </div>
         </div>
 
@@ -181,9 +174,9 @@
         <div
           class="title p-3 d-flex justify-content-between align-items-center"
         >
-        <div class="w-full h-[36px] px-[.75rem]">
-          <img src="../images/pcs logo bold.png" alt="logo" class="h-full" />
-        </div>
+          <div class="w-full h-[36px] px-[.75rem]">
+            <img src="../images/pcs logo bold.png" alt="logo" class="h-full" />
+          </div>
           <div
             id="closeNav"
             class="justify-content-center align-items-center m-0"
@@ -195,7 +188,7 @@
           <section>
             <ul class="list-unstyled d-grid gap-2">
               <a href="../"
-                ><li >
+                ><li>
                   <div class="d-flex align-items-center gap-2">
                     <i class="bx bxs-dashboard"></i>
                     <p>Dashboard</p>
@@ -203,13 +196,13 @@
                 </li></a
               >
               <a href="../requestList/"
-              ><li>
-                <div class="d-flex align-items-center gap-2">
-                  <i class="bx bx-task text-[18px]"></i>
-                  <p>Request List</p>
-                </div>
-              </li></a
-            >
+                ><li>
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bx bx-task text-[18px]"></i>
+                    <p>Request List</p>
+                  </div>
+                </li></a
+              >
               <a href="./"
                 ><li class="active">
                   <div class="d-flex align-items-center gap-2">
@@ -219,13 +212,13 @@
                 </li></a
               >
               <a href="../empList/"
-              ><li>
-                <div class="d-flex align-items-center gap-2">
-                  <i class="bx bxs-group"></i>
-                  <p>Employee List</p>
-                </div>
-              </li></a
-            >
+                ><li>
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="bx bxs-group"></i>
+                    <p>Employee List</p>
+                  </div>
+                </li></a
+              >
               <a href="../report/"
                 ><li>
                   <div class="d-flex align-items-center gap-2">
@@ -242,19 +235,18 @@
                 <div
                   class="bg-[var(--secondary)] rounded-full h-[45px] w-[45px] min-w-[45px] flex justify-content-center items-center"
                   id="empInitials"
-                >
-               
-                </div>
+                ></div>
 
                 <div class="w-full">
                   <div class="" id="empLabel"></div>
-                  <div class="text-uppercase text-[10px] text-gray-400" id="grpLabel">
-              
-                  </div>
+                  <div
+                    class="text-uppercase text-[10px] text-gray-400"
+                    id="grpLabel"
+                  ></div>
                 </div>
               </div>
             </li>
-          
+
             <a href="#" id="portalBtn"
               ><li>
                 <div class="d-flex align-items-center gap-2">
@@ -263,119 +255,107 @@
                 </div>
               </li></a
             >
+            <div class="relative">
+              <p
+                class="absolute bottom-[-10px] text-[var(--gray-text)] text-xs"
+              >
+                ©2024 KDT.トラベる v1.0.0
+              </p>
+            </div>
           </section>
         </nav>
       </div>
       <div class="content h-screen">
-        <div class="main flex  h-full">
-          <div class="flex flex-col gap-3 overflow-auto p-[14px] md:p-8 h-full w-full">
+        <div class="main flex h-full">
+          <div
+            class="flex flex-col gap-3 overflow-auto p-[14px] md:p-8 h-full w-full"
+          >
             <div class="pageTitle w-100 gap-3 d-flex">
               <div id="menu">
                 <i class="bx bx-menu-alt-left fs-3"></i>
               </div>
               <h1 class="fw-semibold m-0">Dispatch Request</h1>
             </div>
-        <div class="main w-100 d-flex h-[calc(100%-30px)]">
-        
-
-          <div class="left  pr-0 lg:pr-6 py-6  pt-0 ">
-            <div class="form">
-              <div class="mb-3 row">
-                <label for="" class="col-sm-3 col-form-label">Group</label>
-                <div class="col-sm-9">
-                  <select
-                    name=""
-                    class="select "
-                    id="grpSel"
-                  >
-               
-                  </select>
-                </div>
-              </div>
-              <div class="mb-3 row">
-                <label for="" class="col-sm-3 col-form-label">Name</label>
-                <div class="col-sm-9">
-                  <select
-                    name=""
-                    class="select "
-                    id="empSel"
-                  >
-                   
-                  </select>
-                </div>
-              </div>
-              <div class="mb-3 row">
-                <label for="" class="col-sm-3 col-form-label">Location</label>
-                <div class="col-sm-9">
-                  <select
-                    name=""
-                    class="select "
-                    id="locSel"
-                  >
-                    
-                  </select>
-                </div>
-              </div>
-              <div class="mb-3 row">
-                <label for="" class="col-sm-3 col-form-label"
-                  >Date to Japan</label
-                >
-                <div class="col-sm-9">
-                  <div class="h-100 d-flex align-items-center">
-                    <input
-                      type="date"
-                      class="input  ddates"
-                      id="startDate"
-                    />
+            <div class="main w-100 d-flex h-[calc(100%-30px)]">
+              <div class="left pr-0 lg:pr-6 py-6 pt-0">
+                <div class="form">
+                  <div class="mb-3 row">
+                    <label for="" class="col-sm-3 col-form-label">Group</label>
+                    <div class="col-sm-9">
+                      <select name="" class="select" id="grpSel"></select>
+                    </div>
+                  </div>
+                  <div class="mb-3 row">
+                    <label for="" class="col-sm-3 col-form-label">Name</label>
+                    <div class="col-sm-9">
+                      <select name="" class="select" id="empSel"></select>
+                    </div>
+                  </div>
+                  <div class="mb-3 row">
+                    <label for="" class="col-sm-3 col-form-label"
+                      >Location</label
+                    >
+                    <div class="col-sm-9">
+                      <select name="" class="select" id="locSel"></select>
+                    </div>
+                  </div>
+                  <div class="mb-3 row">
+                    <label for="" class="col-sm-3 col-form-label"
+                      >Date to Japan</label
+                    >
+                    <div class="col-sm-9">
+                      <div class="h-100 d-flex align-items-center">
+                        <input
+                          type="date"
+                          class="input ddates"
+                          id="startDate"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-3 row">
+                    <label for="" class="col-sm-3 col-form-label"
+                      >Date to Philippines</label
+                    >
+                    <div class="col-sm-9">
+                      <div class="h-100 d-flex align-items-center">
+                        <input type="date" class="input ddates" id="endDate" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-3 row">
+                    <label for="" class="col-sm-3 col-form-label"
+                      >Total days</label
+                    >
+                    <div class="col-sm-9">
+                      <h5
+                        class="d-flex align-items-center h-100"
+                        id="daysCount"
+                      ></h5>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="mb-3 row">
-                <label for="" class="col-sm-3 col-form-label"
-                  >Date to Philippines</label
-                >
-                <div class="col-sm-9">
-                  <div class="h-100 d-flex align-items-center">
-                    <input
-                      type="date"
-                      class="input ddates"
-                      id="endDate"
-                    />
-                  </div>
+                <div class="d-flex justify-content-end gap-2">
+                  <button class="btn btn-clear" id="btnClear">Clear</button>
+                  <button class="btn btn-dispatch" id="btnApply">
+                    Add dispatch entry
+                  </button>
                 </div>
               </div>
-              <div class="mb-3 row">
-                <label for="" class="col-sm-3 col-form-label">Total days</label>
-                <div class="col-sm-9">
-                  <h5
-                    class="d-flex align-items-center h-100"
-                    id="daysCount"
-                  ></h5>
-                </div>
-              </div>
-            </div>
-            <div class="d-flex justify-content-end gap-2">
-              <button class="btn btn-clear" id="btnClear">Clear</button>
-              <button class="btn btn-dispatch" id="btnApply">
-                Add dispatch entry
-              </button>
-            </div>
-          </div>
-          <div class="right h-full relative" id="appendHere">
-            <div class="d-flex withContent d-none flex-column gap-3 h-full">
-              <div
-                class="empDetails gap-3 flex justify-content-between align-items-center"
-              >
-                <div>
-                  <span>Employee No. <span id="empDetails__id">487</span></span>
+              <div class="right h-full relative" id="appendHere">
+                <div class="d-flex withContent d-none flex-column gap-3 h-full">
+                  <div
+                    class="empDetails gap-3 flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <span
+                        >Employee No. <span id="empDetails__id">487</span></span
+                      >
 
-                  <h5 id="empDetails__name">Employee Name</h5>
-                </div>
+                      <h5 id="empDetails__name">Employee Name</h5>
+                    </div>
 
-
-
-
-                <div>
+                    <div>
                       <button
                         class="btn btn-updateEmp d-flex align-items-center gap-1"
                         id="updateEmp"
@@ -383,288 +363,307 @@
                         <i class="bx bxs-edit"></i>
                         <span>Update Employee Details</span>
                       </button>
-                </div>
-              </div>
-              <div
-                class="flex flex-col empmoreDetails h-full gap-3 "
-              >
-                <div class="cards d-grid h-auto">
-                  <div class="card shadow-sm">
-                    <div class="card-body">
-                      <h5 class="card-title">Latest Passport</h5>
-
-                      <div class="card-content">
-                        <div id="passDeets" class="pass d-none">
-                          <div class="row">
-                            <label for="passStatus" class="col-5 col-form-label"
-                              >Validity</label
-                            >
-                            <div class="col-7 d-flex align-items-center">
-                              <span class="badge bg-[var(--tertiary)]">Valid</span>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <label for="passNo" class="col-5 col-form-label"
-                              >Passport no.</label
-                            >
-                            <div class="col-7 d-flex align-items-center">
-                              <span class="" id="passNo">P6241898A</span>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <label for="passBday" class="col-5 col-form-label"
-                              >Birth date</label
-                            >
-                            <div class="col-7 d-flex align-items-center">
-                              <span class="" id="passBday">1983/12/24</span>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <label for="passIssue" class="col-5 col-form-label"
-                              >Date issue</label
-                            >
-                            <div class="col-7 d-flex align-items-center">
-                              <span class="" id="passIssue">3/1/2018</span>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <label for="passExp" class="col-5 col-form-label"
-                              >Valid until</label
-                            >
-                            <div class="col-7 d-flex align-items-center">
-                              <span class="" id="passExp">2/29/2028</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          id="passEmpty"
-                          class="emptyState-pass w-100 p-3 d-flex justify-content-center align-items-center flex-column"
-                          style="opacity: 0.25"
-                        >
-                          <img
-                            src="../images/passport.png"
-                            alt=""
-                            style="width: 100px"
-                          />
-                          <span class="fw-semibold p-3">No Passport Found</span>
-                        </div>
-                      </div>
                     </div>
                   </div>
+                  <div class="flex flex-col empmoreDetails h-full gap-3">
+                    <div class="cards d-grid h-auto">
+                      <div class="card shadow-sm">
+                        <div class="card-body">
+                          <h5 class="card-title">Latest Passport</h5>
 
-                  <div class="card shadow-sm">
-                    <div class="card-body">
-                      <h5 class="card-title">Latest Japan Visa</h5>
-
-                      <div class="card-content">
-                        <div id="visaDeets" class="vis d-none">
-                          <div class="row">
-                            <label for="visaStatus" class="col-5 col-form-label"
-                              >Validity</label
-                            >
-                            <div class="col-7 d-flex align-items-center">
-                              <span class="badge bg-danger" id="visaStatus"
-                                ></span
-                              >
-                            </div>
-                          </div>
-
-                          <div class="row">
-                            <label for="visaNo" class="col-5 col-form-label"
-                              >Visa no.</label
-                            >
-                            <div class="col-7 d-flex align-items-center">
-                              <span class="" id="visaNo"></span>
-                            </div>
-                          </div>
-
-                          <div class="row">
-                            <label for="visaIssue" class="col-5 col-form-label"
-                              >Date Issue</label
-                            >
-                            <div class="col-7 d-flex align-items-center">
-                              <span class="" id="visaIssue"></span>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <label for="visaExp" class="col-5 col-form-label"
-                              >Valid until</label
-                            >
-                            <div class="col-7 d-flex align-items-center">
-                              <span class="" id="visaExp"></span>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          id="visaEmpty"
-                          class="emptyState-visa w-100 p-3 d-flex justify-content-center align-items-center flex-column"
-                        >
-                          <img
-                            src="../images/visa.png"
-                            alt=""
-                            style="width: 100px"
-                          />
-                          <span class="fw-semibold p-3">No Visa found</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="card shadow-sm">
-                    <div class="card-body">
-                      <h5 class="card-title text-capitalize">
-                        Total dispatch days per year
-                      </h5>
-
-                      <div class="card-content">
-                        <div class="dispatchyears-table w-100">
-                          <ul class="list-unstyled gap-3 d-grid p-2">
-                            <li>
-                              <div
-                                class="d-flex justify-content-between align-items-center"
-                              >
-                                <span class="fw-medium"
-                                  >Previous Year (<span id="y1"></span
-                                  >)</span
+                          <div class="card-content">
+                            <div id="passDeets" class="pass d-none">
+                              <div class="row">
+                                <label
+                                  for="passStatus"
+                                  class="col-5 col-form-label"
+                                  >Validity</label
                                 >
-                                <span class="totalDays" id="y1-days"></span>
+                                <div class="col-7 d-flex align-items-center">
+                                  <span class="badge bg-[var(--tertiary)]"
+                                    >Valid</span
+                                  >
+                                </div>
                               </div>
-                            </li>
-                            <li>
-                              <div
-                                class="d-flex justify-content-between align-items-center"
-                              >
-                                <span class="fw-medium"
-                                  >Current Year (<span id="y2"></span
-                                  >)</span
+                              <div class="row">
+                                <label for="passNo" class="col-5 col-form-label"
+                                  >Passport no.</label
                                 >
-                                <span class="totalDays" id="y2-days"></span>
+                                <div class="col-7 d-flex align-items-center">
+                                  <span class="" id="passNo">P6241898A</span>
+                                </div>
                               </div>
-                            </li>
-                            <li>
-                              <div
-                                class="d-flex justify-content-between align-items-center"
-                              >
-                                <span class="fw-medium"
-                                  >Next Year (<span id="y3"></span>)</span
+                              <div class="row">
+                                <label
+                                  for="passBday"
+                                  class="col-5 col-form-label"
+                                  >Birth date</label
                                 >
-                                <span class="totalDays" id="y3-days"></span>
+                                <div class="col-7 d-flex align-items-center">
+                                  <span class="" id="passBday">1983/12/24</span>
+                                </div>
                               </div>
-                            </li>
-                          </ul>
+                              <div class="row">
+                                <label
+                                  for="passIssue"
+                                  class="col-5 col-form-label"
+                                  >Date issue</label
+                                >
+                                <div class="col-7 d-flex align-items-center">
+                                  <span class="" id="passIssue">3/1/2018</span>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <label
+                                  for="passExp"
+                                  class="col-5 col-form-label"
+                                  >Valid until</label
+                                >
+                                <div class="col-7 d-flex align-items-center">
+                                  <span class="" id="passExp">2/29/2028</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              id="passEmpty"
+                              class="emptyState-pass w-100 p-3 d-flex justify-content-center align-items-center flex-column"
+                              style="opacity: 0.25"
+                            >
+                              <img
+                                src="../images/passport.png"
+                                alt=""
+                                style="width: 100px"
+                              />
+                              <span class="fw-semibold p-3"
+                                >No Passport Found</span
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="card shadow-sm">
+                        <div class="card-body">
+                          <h5 class="card-title">Latest Japan Visa</h5>
+
+                          <div class="card-content">
+                            <div id="visaDeets" class="vis d-none">
+                              <div class="row">
+                                <label
+                                  for="visaStatus"
+                                  class="col-5 col-form-label"
+                                  >Validity</label
+                                >
+                                <div class="col-7 d-flex align-items-center">
+                                  <span
+                                    class="badge bg-danger"
+                                    id="visaStatus"
+                                  ></span>
+                                </div>
+                              </div>
+
+                              <div class="row">
+                                <label for="visaNo" class="col-5 col-form-label"
+                                  >Visa no.</label
+                                >
+                                <div class="col-7 d-flex align-items-center">
+                                  <span class="" id="visaNo"></span>
+                                </div>
+                              </div>
+
+                              <div class="row">
+                                <label
+                                  for="visaIssue"
+                                  class="col-5 col-form-label"
+                                  >Date Issue</label
+                                >
+                                <div class="col-7 d-flex align-items-center">
+                                  <span class="" id="visaIssue"></span>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <label
+                                  for="visaExp"
+                                  class="col-5 col-form-label"
+                                  >Valid until</label
+                                >
+                                <div class="col-7 d-flex align-items-center">
+                                  <span class="" id="visaExp"></span>
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              id="visaEmpty"
+                              class="emptyState-visa w-100 p-3 d-flex justify-content-center align-items-center flex-column"
+                            >
+                              <img
+                                src="../images/visa.png"
+                                alt=""
+                                style="width: 100px"
+                              />
+                              <span class="fw-semibold p-3">No Visa found</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="card shadow-sm">
+                        <div class="card-body">
+                          <h5 class="card-title text-capitalize">
+                            Total dispatch days per year
+                          </h5>
+
+                          <div class="card-content">
+                            <div class="dispatchyears-table w-100">
+                              <ul class="list-unstyled gap-3 d-grid p-2">
+                                <li>
+                                  <div
+                                    class="d-flex justify-content-between align-items-center"
+                                  >
+                                    <span class="fw-medium"
+                                      >Previous Year (<span id="y1"></span
+                                      >)</span
+                                    >
+                                    <span class="totalDays" id="y1-days"></span>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div
+                                    class="d-flex justify-content-between align-items-center"
+                                  >
+                                    <span class="fw-medium"
+                                      >Current Year (<span id="y2"></span
+                                      >)</span
+                                    >
+                                    <span class="totalDays" id="y2-days"></span>
+                                  </div>
+                                </li>
+                                <li>
+                                  <div
+                                    class="d-flex justify-content-between align-items-center"
+                                  >
+                                    <span class="fw-medium"
+                                      >Next Year (<span id="y3"></span>)</span
+                                    >
+                                    <span class="totalDays" id="y3-days"></span>
+                                  </div>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div
-                class="d-flex totalThisYear flex-column shadow-sm p-3 gap-3
-                "
-                >
-                  <div class="label">
-                    Estimated Total Days of Dispatch this Year
-                  </div>
-                  <div>
-                    <div class="count" id="rangeCount"></div>
-                 
-                    <div class="prog-cont">
-                      <div class="progress mb-1" role="progressbar">
-                        <div
-                          id="progBar"
-                          class="progress-bar progress-bar-striped bg-danger"
-                          style="width: 0%"
-                        ></div>
+                    <div
+                      class="d-flex totalThisYear flex-column shadow-sm p-3 gap-3"
+                    >
+                      <div class="label">
+                        Estimated Total Days of Dispatch this Year
                       </div>
-                      <small id="daysWarning" class="d-none"
-                        ><i
-                          class="bx bx-error-circle"
-                          style="vertical-align: middle"
-                        ></i
-                        ><span class="ps-1"
-                          ></span
-                        ></small
-                      >
-                    </div>
-                  </div>
-                </div>
-                <div class="dispatch-hist h-full pb-6 xl:pb-0">
-                  <div class="top flex justify-content-between">
-                    <div class="title pb-3">Dispatch History to Japan</div>
-                    <div>
-                      <button class="btn btn-success bg-[var(--darkest)]" id="btnExport">
-                        Export table
-                      </button>
-                    </div>
-                  </div>
-                  <div class="table-cont overflow-auto min-h-[200px]">
-                    <table class="table" id="histTable">
-                      <thead class="sticky top-0 bg-gray-200">
-                        <tr>
-                          <th data-exclude="true">No.</th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            Location
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            Date to Japan
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            Date to Philippines
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            No. of Days
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            Total Days past 1 year
-                          </th>
+                      <div>
+                        <div class="count" id="rangeCount"></div>
 
-                          <th data-exclude="true"></th>
-                        </tr>
-                      </thead>
-                      <tbody id="dList">
-                        <tr>
-                          <td colspan="7" class="text-center">No data found</td>
-                        </tr>
-                        <!-- <tr>
+                        <div class="prog-cont">
+                          <div class="progress mb-1" role="progressbar">
+                            <div
+                              id="progBar"
+                              class="progress-bar progress-bar-striped bg-danger"
+                              style="width: 0%"
+                            ></div>
+                          </div>
+                          <small id="daysWarning" class="d-none"
+                            ><i
+                              class="bx bx-error-circle"
+                              style="vertical-align: middle"
+                            ></i
+                            ><span class="ps-1"></span
+                          ></small>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="dispatch-hist h-full pb-6 xl:pb-0">
+                      <div class="top flex justify-content-between">
+                        <div class="title pb-3">Dispatch History to Japan</div>
+                        <div>
+                          <button
+                            class="btn btn-success bg-[var(--darkest)]"
+                            id="btnExport"
+                          >
+                            Export table
+                          </button>
+                        </div>
+                      </div>
+                      <div class="table-cont overflow-auto min-h-[200px]">
+                        <table class="table" id="histTable">
+                          <thead class="sticky top-0 bg-gray-200">
+                            <tr>
+                              <th data-exclude="true">No.</th>
+                              <th
+                                data-f-name="Arial"
+                                data-f-sz="9"
+                                data-f-bold="true"
+                                data-a-h="center"
+                                data-a-v="middle"
+                                data-b-a-s="thin"
+                                data-b-a-c="000000"
+                              >
+                                Location
+                              </th>
+                              <th
+                                data-f-name="Arial"
+                                data-f-sz="9"
+                                data-f-bold="true"
+                                data-a-h="center"
+                                data-a-v="middle"
+                                data-b-a-s="thin"
+                                data-b-a-c="000000"
+                              >
+                                Date to Japan
+                              </th>
+                              <th
+                                data-f-name="Arial"
+                                data-f-sz="9"
+                                data-f-bold="true"
+                                data-a-h="center"
+                                data-a-v="middle"
+                                data-b-a-s="thin"
+                                data-b-a-c="000000"
+                              >
+                                Date to Philippines
+                              </th>
+                              <th
+                                data-f-name="Arial"
+                                data-f-sz="9"
+                                data-f-bold="true"
+                                data-a-h="center"
+                                data-a-v="middle"
+                                data-b-a-s="thin"
+                                data-b-a-c="000000"
+                              >
+                                No. of Days
+                              </th>
+                              <th
+                                data-f-name="Arial"
+                                data-f-sz="9"
+                                data-f-bold="true"
+                                data-a-h="center"
+                                data-a-v="middle"
+                                data-b-a-s="thin"
+                                data-b-a-c="000000"
+                              >
+                                Total Days past 1 year
+                              </th>
+
+                              <th data-exclude="true"></th>
+                            </tr>
+                          </thead>
+                          <tbody id="dList">
+                            <tr>
+                              <td colspan="7" class="text-center">
+                                No data found
+                              </td>
+                            </tr>
+                            <!-- <tr>
                             <td>1</td>
                             <td>Kobe</td>
                             <td>07 AUG 2023</td>
@@ -686,18 +685,22 @@
                             
                           </td>
                           </tr> -->
-                      </tbody>
-                    </table>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="emptyState h-100 d-flex justify-content-center align-items-center flex-column gap-2 pb-5"
+                >
+                  <i class="bx bxs-user-rectangle"></i>
+                  <div class="title fw-semibold fs-5">No details to view</div>
+                  <div class="text">
+                    Please select an employee to view details.
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="emptyState h-100 d-flex justify-content-center align-items-center flex-column gap-2 pb-5"
-            >
-              <i class="bx bxs-user-rectangle"></i>
-              <div class="title fw-semibold fs-5">No details to view</div>
-              <div class="text">Please select an employee to view details.</div>
             </div>
           </div>
         </div>
