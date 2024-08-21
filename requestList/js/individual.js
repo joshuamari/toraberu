@@ -709,7 +709,7 @@ function fillAttachment(data) {
   $("#printJap, #printPh, #printThird").text("");
   var date = data.date_request;
   var khi = data.dispatch_request.requester_name;
-  var khibu = data.dispatch_request.request_by_dept;
+  var khibu = data.dispatch_request.request_dept;
   var name = data.dispatch_request.emp_name;
   var from = data.dispatch_request.start;
   var to = data.dispatch_request.end;
@@ -748,6 +748,7 @@ function fillAttachment(data) {
   if (siteDispatch === 0) {
     $(".siteDispatch").empty();
   }
+  console.log(khibu);
   $("#printKHI").text(formatName(khi));
   $("#printBU").text(khibu);
   $("#printName").text(formatName(name));
@@ -780,7 +781,7 @@ function fillAttachment2(data) {
       if (item.end_month == "11") {
         item.end_month = "";
       }
-      str = `
+      str += `
       <tr>
         <td>${item.start_year}</td>
         <td>${item.start_month}</td>
@@ -792,7 +793,6 @@ function fillAttachment2(data) {
         <td>${item.location}</td>
       </tr>
     `;
-      $("#workHistoryTable tbody").append(str);
     });
   } else {
     str = `
@@ -802,14 +802,14 @@ function fillAttachment2(data) {
       </td>
     </tr>
     `;
-
-    $("#workHistoryTable tbody").append(str);
   }
 
+  $("#workHistoryTable tbody").append(str);
   $("#whYear").text(year);
   $("#whMonth").text(month + 1);
   $("#whDay").text(day);
   $("#whName").text(name);
+  $("#whBusiness").text(data.dispatch_request.business);
 }
 function insertIconCountry(id) {
   $(".countries").empty();
@@ -901,7 +901,7 @@ function formatButtons(status) {
     $("#openModal .modal-content")
       .append(`<div class="flex-nowrap modal-footer  flex gap-2 border-0 ">
         <button
-          class="statusBtn btn-reject transition w-50" stat-id="0">Reject</button>
+          class="statusBtn btn-reject transition w-50" stat-id="0">Deny</button>
         <button
           class="statusBtn btn-accept w-50" stat-id="1">Accept</button>
       </div>`);
