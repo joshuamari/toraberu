@@ -270,16 +270,35 @@ function emailStatusChange($status, $details)
     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
     $headers .= "From: kdt_toraberu@global.kawasaki.com" . "\r\n";
     $subject = 'Dispatch Request Status(TEST ONLY)';
-    $CCarray = array('medrano_c-kdt@global.kawasaki.com', 'hernandez-kdt@global.kawasaki.com', 'reyes_d-kdt@global.kawasaki.com', 'cabiso-kdt@global.kawasaki.com', 'coquia-kdt@global.kawasaki.com'); //COMMENT PAG PROD
     $khidetails = getKHIUserDetails($details['requester_id']);
-    $admins = getAdminEmails();
-    $khipic = getKHIPICEmail($details['emp_group'], $details['requester_id']);
-    $khiAdmins = getKHIAdminEmails();
-    $kdtManagers = getGroupManagersEmail($details['emp_group']);
-    // $CCarray = array_merge($admins, $khipic, $khiAdmins, $kdtManagers);//UNCOMMENT PAG PROD
-    // $CCarray[] = getPresEmail();//UNCOMMENT PAG PROD
+
+    #region TESTING
+
+    #region systesting
+    $CCarray = array('medrano_c-kdt@global.kawasaki.com', 'hernandez-kdt@global.kawasaki.com', 'reyes_d-kdt@global.kawasaki.com', 'cabiso-kdt@global.kawasaki.com', 'coquia-kdt@global.kawasaki.com');
+    #endregion
+
+    #region prekhitesting
+    // $admins = array("sangalang_m-kdt@global.kawasaki.com");
+    // $khipic = getKHIPICEmail($details['emp_group'], $details['requester_id']);
+    // $khiAdmins = getKHIAdminEmails($details['requester_id']);
+    // $kdtManagers = array("lazaro-kdt@global.kawasaki.com");
+    // $CCarray = array_unique(array_merge($admins, $khipic, $khiAdmins, $kdtManagers));
+    // $CCarray[] = "hernandez-kdt@global.kawasaki.com";
+    #endregion
+    #endregion
+
+    #region PROD
+    // $admins = getAdminEmails();
+    // $khipic = getKHIPICEmail($details['emp_group'], $details['requester_id']);
+    // $khiAdmins = getKHIAdminEmails($details['requester_id']);
+    // $kdtManagers = getGroupManagersEmail($details['emp_group']);
+    // $CCarray = array_unique(array_merge($khipic, $khiAdmins, $kdtManagers, $admins));
+    // $CCarray[] = getPresEmail();
+    // $CCarray = array_reverse($CCarray);
+    #endregion
     $CC = implode(",", $CCarray);
-    $statusString = $status ? "approved" : "denied";
+    $statusString = $status ? "accepted" : "cancelled";
     $headers .= "CC: " . $CC;
     $msg = "
                 <html>
@@ -288,7 +307,7 @@ function emailStatusChange($status, $details)
                 </head>
                 <body>
         <p>Dear " . ucwords(strtolower($khidetails['surname'])) . "-san,</p>
-        <p>We are writing to inform you that your request has been <strong>$statusString</strong>.</p>
+        <p>We are writing to inform you that your request has been $statusString.</p>
         <p>Details:</p>
         <p>Employee: " . getName($details['emp_number']) . "</p>
         <p>Date From: " . $details['dispatch_from'] . "</p>
@@ -296,15 +315,15 @@ function emailStatusChange($status, $details)
         <p>Location: " . getLocationName($details['location_id']) . "</p>
         <p>Date Requested: " . $details['date_requested'] . "</p>
         <br>
-        <p>For <strong>KDT</strong>, you may view the request details here:</p>
+        <p>For <strong>KDT</strong>, review the request details:</p>
         <ul>
             <li><a href='http://kdt-ph/PCS/requestList/'>Dispatch Request List</a></li>
         </ul>
-        <p>For <strong>KHI</strong>, you may view the request details here:</p>
+        <p>For <strong>KHI</strong>, track the request status:</p>
         <ul>
             <li><a href='http://kdt-ph/PCSKHI/requestList/'>Track Request Status</a></li>
         </ul>
-        <p>Thank you for your patience. If you have any questions or need further assistance, please do not hesitate to contact us.</p>
+        <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
         <p>Best regards,</p>
         <p>トラベる<br>KHI Design & Technical Service, Inc.</p>
          <p style='margin-top: 20px; font-size: 12px; color: #999;'>Please do not reply to this email as it is system generated.</p>
@@ -381,5 +400,17 @@ function getGroupManagersEmail($group_id)
         }
     }
     return $mgEmail;
+}
+function getAllowance($id)
+{
+    global $connpcs;
+    $allowance = array();
+    $allowanceQ = "SELECT `location_id`,`amount` FROM `allowance_list` WHERE `level_id` = IFNULL((SELECT `da`.level_id FROM `pcosdb`.designation_allowance da JOIN `kdtphdb_new`.employee_list el ON `da`.designation_id=`el`.designation WHERE el.id=:id),1)";
+    $allowanceStmt = $connpcs->prepare($allowanceQ);
+    $allowanceStmt->execute([":id" => $id]);
+    if ($allowanceStmt->rowCount() > 0) {
+        $allowance = $allowanceStmt->fetchAll();
+    }
+    return $allowance;
 }
 #endregion

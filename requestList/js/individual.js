@@ -46,259 +46,6 @@ let monthNames2 = [
   "Nov",
   "Dec",
 ];
-// const sampleData = [
-//   {
-//     req_id: 46,
-//     emp_name: "Coquia, Joshua Mari",
-//     emp_number: 464,
-//     group_id: 16,
-//     specific_loc: "Kobe",
-//     location: "Japan",
-//     group_name: "Systems Group",
-//     requester_name: "Coquia, Joshua Mari",
-//     requester_group: "Systems Group",
-//     from: "2024-04-06",
-//     to: "2024-04-07",
-//     duration: 2,
-//     req_date: "2024-07-29",
-//     passValid: true,
-//     visaValid: true,
-//     status: null,
-//   },
-//   {
-//     req_id: 37,
-//     emp_name: "Coquia, Joshua Mari",
-//     emp_number: 464,
-//     group_id: 16,
-//     specific_loc: "Kobe",
-//     location: "Japan",
-//     group_name: "Systems Group",
-//     requester_name: "Coquia, Joshua Mari",
-//     requester_group: "Systems Group",
-//     from: "2024-04-04",
-//     to: "2024-04-05",
-//     duration: 2,
-//     req_date: "2024-07-23",
-//     passValid: true,
-//     visaValid: true,
-//     status: 1,
-//   },
-//   {
-//     req_id: 23,
-//     emp_name: "Herrera, Rhanzces Julia",
-//     emp_number: 520,
-//     group_id: 16,
-//     specific_loc: "Tokyo Tokyo",
-//     location: "Japan",
-//     group_name: "Systems Group",
-//     requester_name: "Reyes, Dave",
-//     requester_group: "Systems Group",
-//     from: "2024-07-18",
-//     to: "2024-07-28",
-//     duration: 11,
-//     req_date: "2024-07-23",
-//     passValid: false,
-//     visaValid: false,
-//     status: 1,
-//   },
-//   {
-//     req_id: 39,
-//     emp_name: "Herrera, Rhanzces Julia",
-//     emp_number: 520,
-//     group_id: 16,
-//     specific_loc: "Tokyo Tokyo",
-//     location: "Japan",
-//     group_name: "Systems Group",
-//     requester_name: "Becina, Artemio Roel",
-//     requester_group: "Electrical Engineering Group",
-//     from: "2024-06-01",
-//     to: "2024-06-05",
-//     duration: 5,
-//     req_date: "2024-07-23",
-//     passValid: false,
-//     visaValid: false,
-//     status: null,
-//   },
-//   {
-//     req_id: 38,
-//     emp_name: "Reyes, Dave",
-//     emp_number: 518,
-//     group_id: 16,
-//     specific_loc: "gasg",
-//     location: "Japan",
-//     group_name: "Systems Group",
-//     requester_name: "Reyes, Dave",
-//     requester_group: "Systems Group",
-//     from: "2024-05-01",
-//     to: "2024-05-03",
-//     duration: 3,
-//     req_date: "2024-07-19",
-//     passValid: false,
-//     visaValid: false,
-//     status: null,
-//   },
-//   {
-//     req_id: 36,
-//     emp_name: "Reyes, Dave",
-//     emp_number: 518,
-//     group_id: 16,
-//     specific_loc: "dsdfsd",
-//     location: "Japan",
-//     group_name: "Systems Group",
-//     requester_name: "Reyes, Dave",
-//     requester_group: "Systems Group",
-//     from: "2024-03-27",
-//     to: "2024-03-30",
-//     duration: 4,
-//     req_date: "2024-07-19",
-//     passValid: false,
-//     visaValid: false,
-//     status: null,
-//   },
-//   {
-//     req_id: 35,
-//     emp_name: "Coquia, Joshua Mari",
-//     emp_number: 464,
-//     group_id: 16,
-//     specific_loc: "Tokyo Tokyo",
-//     location: "Japan",
-//     group_name: "Systems Group",
-//     requester_name: "Reyes, Dave",
-//     requester_group: "Systems Group",
-//     from: "2024-02-21",
-//     to: "2024-03-01",
-//     duration: 10,
-//     req_date: "2024-07-19",
-//     passValid: true,
-//     visaValid: true,
-//     status: null,
-//   },
-//   {
-//     req_id: 34,
-//     emp_name: "Cabiso, Sean Patrick",
-//     emp_number: 521,
-//     group_id: 16,
-//     specific_loc: "Tokyo Tokyo",
-//     location: "Japan",
-//     group_name: "Systems Group",
-//     requester_name: "Reyes, Dave",
-//     requester_group: "Systems Group",
-//     from: "2024-09-25",
-//     to: "2024-09-27",
-//     duration: 3,
-//     req_date: "2024-07-19",
-//     passValid: false,
-//     visaValid: false,
-//     status: null,
-//   },
-//   {
-//     req_id: 29,
-//     emp_name: "Reyes, Dave",
-//     emp_number: 518,
-//     group_id: 16,
-//     specific_loc: "fgsfgsf",
-//     location: "Japan",
-//     group_name: "Systems Group",
-//     requester_name: "Reyes, Dave",
-//     requester_group: "Systems Group",
-//     from: "2024-06-05",
-//     to: "2024-06-18",
-//     duration: 14,
-//     req_date: "2024-07-19",
-//     passValid: false,
-//     visaValid: false,
-//     status: null,
-//   },
-//   {
-//     req_id: 20,
-//     emp_name: "Reyes, Dave",
-//     emp_number: 518,
-//     group_id: 16,
-//     specific_loc: "fsdzfsdf",
-//     location: "Japan",
-//     group_name: "Systems Group",
-//     requester_name: "Reyes, Dave",
-//     requester_group: "Systems Group",
-//     from: "2024-06-26",
-//     to: "2024-06-29",
-//     duration: 4,
-//     req_date: "2024-07-19",
-//     passValid: false,
-//     visaValid: false,
-//     status: null,
-//   },
-// ];
-// const samplePrintData = {
-//   dispatch_request: {
-//     request_id: 23,
-//     requester_id: 518,
-//     emp_number: 520,
-//     location_id: 1,
-//     specific_loc: "Tokyo Tokyo",
-//     dispatch_from: "2024-07-18",
-//     dispatch_to: "2024-07-28",
-//     invitation_id: 1,
-//     work_order: "123456",
-//     project_name: "Kamehameha",
-//     site_dispatch: 0,
-//     allowance: 4000,
-//     request_by_dept: "Kame House",
-//     request_by_name: "Takeru",
-//     date_requested: "2024-07-23 10:37:08",
-//     request_status: 1,
-//     date_modified: "2024-07-29 13:06:23",
-//     emp_name: "Herrera, Rhanzces Julia",
-//     requester_name: "Reyes, Dave",
-//     start: "18 Jul 2024",
-//     end: "28 Jul 2024",
-//     date_request: "23 Jul 2024",
-//     location: "Japan",
-//   },
-//   work_history: [
-//     {
-//       company_name: "kdt",
-//       company_business: "kahit ano",
-//       business_content: "gumagawa ng kahit ano",
-//       location: "QC",
-//       start_year: "2021",
-//       start_month: "3",
-//       end_year: "2023",
-//       end_month: "7",
-//     },
-//     {
-//       company_name: "kdt",
-//       company_business: "kahit ano",
-//       business_content: "gumagawa ng hindi ko alam",
-//       location: "manila",
-//       start_year: "2020",
-//       start_month: "6",
-//       end_year: "2024",
-//       end_month: "1",
-//     },
-//     {
-//       company_name: "sample",
-//       company_business: "test",
-//       business_content: "sampletest",
-//       location: "testsample",
-//       start_year: "2000",
-//       start_month: "4",
-//       end_year: "2004",
-//       end_month: "8",
-//     },
-//   ],
-// };
-// const cardData = {
-//   isSuccess: true,
-//   message: "",
-//   data: {
-//     pending: 27,
-//     accepted: 2,
-//     cancelled: 0,
-//     todaytotal: 1,
-//     todayaccept: 2,
-//     total: 29,
-//   },
-// };
 let reqList = [];
 let cardData = [];
 let printData = {};
@@ -705,7 +452,7 @@ function fillAttachment(data) {
   $("#printJap, #printPh, #printThird").text("");
   var date = data.date_request;
   var khi = data.dispatch_request.requester_name;
-  var khibu = data.dispatch_request.request_by_dept;
+  var khibu = data.dispatch_request.request_dept;
   var name = data.dispatch_request.emp_name;
   var from = data.dispatch_request.start;
   var to = data.dispatch_request.end;
@@ -715,7 +462,8 @@ function fillAttachment(data) {
   var workOrder = data.dispatch_request.work_order;
   var project = data.dispatch_request.project_name;
   var siteDispatch = data.dispatch_request.site_dispatch;
-  var salary = data.dispatch_request.allowance;
+  var salary = data.dispatch_request.allowance[0].amount;
+  var salaryOthers = data.dispatch_request.allowance[1].amount;
 
   if (country == 1) {
     insertIconCountry(1);
@@ -744,6 +492,7 @@ function fillAttachment(data) {
   if (siteDispatch === 0) {
     $(".siteDispatch").empty();
   }
+  console.log(khibu);
   $("#printKHI").text(formatName(khi));
   $("#printBU").text(khibu);
   $("#printName").text(formatName(name));
@@ -752,6 +501,7 @@ function fillAttachment(data) {
   $("#printWO").text(workOrder);
   $("#printProject").text(project);
   $("#printSalary").text(salary);
+  $("#printSalaryOthers").text(salaryOthers);
   $("#printDate").text(date);
 }
 function fillAttachment2(data) {
@@ -776,7 +526,7 @@ function fillAttachment2(data) {
       if (item.end_month == "11") {
         item.end_month = "";
       }
-      str = `
+      str += `
       <tr>
         <td>${item.start_year}</td>
         <td>${item.start_month}</td>
@@ -788,7 +538,6 @@ function fillAttachment2(data) {
         <td>${item.location}</td>
       </tr>
     `;
-      $("#workHistoryTable tbody").append(str);
     });
   } else {
     str = `
@@ -798,14 +547,14 @@ function fillAttachment2(data) {
       </td>
     </tr>
     `;
-
-    $("#workHistoryTable tbody").append(str);
   }
 
+  $("#workHistoryTable tbody").append(str);
   $("#whYear").text(year);
   $("#whMonth").text(month + 1);
   $("#whDay").text(day);
   $("#whName").text(name);
+  $("#whBusiness").text(data.dispatch_request.business);
 }
 function insertIconCountry(id) {
   $(".countries").empty();
@@ -897,7 +646,7 @@ function formatButtons(status) {
     $("#openModal .modal-content")
       .append(`<div class="flex-nowrap modal-footer  flex gap-2 border-0 ">
         <button
-          class="statusBtn btn-reject transition w-50" stat-id="0">Reject</button>
+          class="statusBtn btn-reject transition w-50" stat-id="0">Cancel</button>
         <button
           class="statusBtn btn-accept w-50" stat-id="1">Accept</button>
       </div>`);
