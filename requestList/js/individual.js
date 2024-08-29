@@ -450,20 +450,27 @@ function formatName(name) {
 function fillAttachment(data) {
   $(".siteDispatch").empty();
   $("#printJap, #printPh, #printThird").text("");
-  var date = data.date_request;
-  var khi = data.dispatch_request.requester_name;
-  var khibu = data.dispatch_request.request_dept;
-  var name = data.dispatch_request.emp_name;
-  var from = data.dispatch_request.start;
-  var to = data.dispatch_request.end;
-  var country = data.dispatch_request.location_id;
-  var loc = data.dispatch_request.specific_loc;
-  var invitation = data.dispatch_request.invitation_id;
-  var workOrder = data.dispatch_request.work_order;
-  var project = data.dispatch_request.project_name;
-  var siteDispatch = data.dispatch_request.site_dispatch;
-  var salary = data.dispatch_request.allowance[0].amount;
-  var salaryOthers = data.dispatch_request.allowance[1].amount;
+  let date = data.dispatch_request.dh_date;
+  console.log(date);
+  let khi = data.dispatch_request.req_name;
+  let khibu = data.dispatch_request.request_dept;
+  let name = data.dispatch_request.emp_name;
+  let from = data.dispatch_request.start;
+  let to = data.dispatch_request.end;
+  let country = data.dispatch_request.location_id;
+  let loc = data.dispatch_request.specific_loc;
+  let invitation = data.dispatch_request.invitation_id;
+  let workOrder = data.dispatch_request.work_order;
+  let project = data.dispatch_request.project_name;
+  let siteDispatch = data.dispatch_request.site_dispatch;
+  let salary = data.dispatch_request.allowance[0].amount;
+  let salaryOthers = data.dispatch_request.allowance[1].amount;
+  let khiTel = data.dispatch_request.req_tel;
+  let khiFax = data.dispatch_request.req_fax;
+  let gap = data.dispatch_request.gap_name;
+  let cdcp = data.dispatch_request.cdcp_name;
+  let gap_tel = data.dispatch_request.gap_tel;
+  let cdcp_tel = data.dispatch_request.cdcp_tel;
 
   if (country == 1) {
     insertIconCountry(1);
@@ -492,8 +499,7 @@ function fillAttachment(data) {
   if (siteDispatch === 0) {
     $(".siteDispatch").empty();
   }
-  console.log(khibu);
-  $("#printKHI").text(formatName(khi));
+  $("#printKHI").text(khi);
   $("#printBU").text(khibu);
   $("#printName").text(formatName(name));
   $("#printFrom").text(from);
@@ -503,6 +509,12 @@ function fillAttachment(data) {
   $("#printSalary").text(salary);
   $("#printSalaryOthers").text(salaryOthers);
   $("#printDate").text(date);
+  $("#printTel").text(khiTel);
+  $("#printFax").text(khiFax);
+  $("#printGAPName").text(gap);
+  $("#printCDCPName").text(cdcp);
+  $("#printGAPNumber").text(gap_tel);
+  $("#printCDCPNumber").text(cdcp_tel);
 }
 function fillAttachment2(data) {
   var dates = data.dispatch_request.date_request;
@@ -555,6 +567,14 @@ function fillAttachment2(data) {
   $("#whDay").text(day);
   $("#whName").text(name);
   $("#whBusiness").text(data.dispatch_request.business);
+  $("#dic").text(data.dispatch_request.dept_in_charge);
+  $("#dic_name").text(data.dispatch_request.dic_name);
+  $("#dic_tel").text(data.dispatch_request.dic_tel);
+  $("#comp_jap").text(data.dispatch_request.company_jap);
+  $("#comp_desc").text(data.dispatch_request.company_desc);
+  $("#company_n_desc").text(
+    `${data.dispatch_request.company_jap} ${data.dispatch_request.company_desc}`
+  );
 }
 function insertIconCountry(id) {
   $(".countries").empty();
