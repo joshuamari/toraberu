@@ -603,21 +603,16 @@ function getPresID() {
   });
 }
 function saveToPDF() {
-  // Ensure print styles are applied
-  $("#toPrint").css("scale", "1");
-  $("body").css("margin", "0");
-  $("#toPrint .up").css("margin-top", "0.85rem");
+  $("#toPrint .td").css("margin-top", "-1rem");
+  $("#toPrint .up").css("margin-top", "-0.85rem");
+  $("#toPrint .top").css("margin-top", "-0.5rem");
+  $("#toPrint .bottom").css("margin-bottom", "0.5rem");
   $("#toPrint .down").css("margin-bottom", "0.85rem");
-  $("#toPrint .bottom-text").css("margin-top", "0");
-  $("#toPrint table td, #toPrint table th").css("padding", "0 10px 6px 10px");
-  $("#attachmentModal td, #attachmentModal th, #attachmentModal p").css(
-    "font-size",
-    "12px"
-  );
-  var str = $("#attachment").text();
+  $("#attachmentModal td p, #attachmentModal th p").css("margin-top", "-1rem");
+  $("#attachmentModal td p.top").css("margin-top", "-0.5rem");
+  $("#toPrint .alw").css("margin-top", "-0.2rem");
 
-  // Force reflow to ensure styles are applied
-  document.body.offsetHeight;
+  var str = $("#attachment").text();
 
   html2canvas($("#toPrint")[0], { scale: 2 }).then((canvas) => {
     var imgData = canvas.toDataURL("image/jpeg", 1.25);
@@ -634,16 +629,14 @@ function saveToPDF() {
     doc.save(str);
   });
 
-  // Revert scale if needed
-
+  $("#toPrint .td").css("margin-top", "0");
   $("#toPrint .up").css("margin-top", "0");
-  $("#toPrint table td, #toPrint table th").css("padding", "0 10px");
-  $("#toPrint .bottom-text").css("margin-top", "0.5rem");
+  $("#toPrint .top").css("margin-top", "0");
+  $("#toPrint .bottom").css("margin-bottom", "0");
   $("#toPrint .down").css("margin-bottom", "0");
-  $("#attachmentModal td, #attachmentModal th, #attachmentModal p").css(
-    "font-size",
-    "14px"
-  );
+  $("#attachmentModal td p, #attachmentModal th p").css("margin-top", "0");
+  $("#attachmentModal td p.top").css("margin-top", "0");
+  $("#toPrint .alw").css("margin-top", "0");
 }
 function saveToPDF2() {
   $("#toPrint2 table td").css("padding", "0 10px 12px 10px");

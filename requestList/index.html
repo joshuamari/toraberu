@@ -136,25 +136,25 @@
       </div>
       <div class="modal-body  flex items-center justify-content-center bg-[var(--gray)]">
         <div class="w-[210mm] h-[297mm] min-w-[210mm] min-h-[297mm] bg-[#fff] py-[7mm] ps-[15mm] pe-[7mm] my-[-37mm]" id="toPrint" style="transform: scale(0.75);">
-          <div class="top flex gap-[28px] mb-2">
+          <div class="top flex gap-[28px] pb-1">
             <img src="../images/kawasakilOGO.png" alt="kawasakilOGO" class="w-[250px] h-auto">
             <div class="flex flex-col justify-content-between items-start">
-              <div class="flex flex-col">
+              <div class="flex flex-col top">
                 <small class="font-['Arial'] text-[10px]"><span class="font-semibold text-[10px]">KOBE</span>: 1-1, Higashikawasaki 3-Chome, Chuo-ku, KOBE 650-8670 Japan</small>
                 <div class="flex gap-3">
                   <small class="font-['Arial'] text-[10px]">Phone: 81-(0)78-682-5202</small> <small class="font-['Arial'] text-[10px]">Facsimile:81-(0)78-682-5574</small>
                 </div> 
               </div>
-              <p class="font-semibold font-['Arial']">Kawasaki Heavy Industries, Ltd.</p>
+              <p class="font-semibold font-['Arial'] bottom">Kawasaki Heavy Industries, Ltd.</p>
             </div>
           </div>
           <div class="h-[5px] w-full bg-[var(--text-color)] mb-1 mt-2 " ></div>
           <div class="h-[1px] w-full bg-[var(--text-color)] " ></div>
-          <div class="flex items-end  ">
-            <p id="printDate" class="w-100 text-end font-['Arial']"></p>
+          <div class="flex items-end pt-2">
+            <p id="printDate" class=" w-100 text-end font-['Arial']">July 29, 2024</p>
           </div>
           <div>
-            <h1 class="text-[20px] text-center w-full font-semibold font-['Arial']">Request for Dispatch of Engineer</h1>
+            <h1 class="text-[20px] text-center w-full font-semibold font-['Arial'] text-black">Request for Dispatch of Engineer</h1>
           </div>
           <div class="flex mt-5 items-center gap-2">
             <div class="w-full">
@@ -176,123 +176,169 @@
                 </div>
               </div>
             </div>
-            <div class="w-[40%]">
-              <div class="  flex flex-col p-2" style="border: 1px solid var(--text-color);">
-                <div class="flex gap-2">
-                  <p  class=" font-['Arial'] min-w-[28px]">From:</p>
+            <div class="w-[40%] relative">
+              <div class="  flex flex-col p-2" style="border: 1px solid #000;">
+                <div class="flex gap-2 h-[54px]  ">
+                 <span class="h-[18px] ">
+                   <p  class=" font-['Arial'] min-w-[28px] top ">From:</p>
+                 </span>
                   <div class="flex flex-col">
-                    <p class="font-['Arial'] border-b-[1px] whitespace-nowrap">Kawasaki Heavy Industries, Ltd.</p>
-                    <p class="font-['Arial'] border-b-[1px] whitespace-nowrap font-semibold" id="printBU">Environmental Plant Dept.</p>
-                    <p class="font-['Arial'] border-b-[1px] whitespace-nowrap font-semibold" id="printKHI">Jun TOSHIHIRO</p>
+                  <span class="border-b-[1px] border-gray-300    h-[18px]">
+                      <p class="font-['Arial'] top whitespace-nowrap">
+                        Kawasaki Heavy Industries, Ltd.
+                      </p>
+                  </span>
+                    <span class="h-[18px] border-b-[1px]  border-gray-300">
+                      <p class="font-['Arial'] top  whitespace-nowrap font-semibold  " id="printBU">
+                        Environmental Plant Dept.
+                      </p>
+                    </span>
+                    <span class="h-[18px] border-b-[1px] border-gray-300">
+                      <p class="font-['Arial'] top  whitespace-nowrap font-semibold " id="printKHI">
+                        Jun TOSHIHIRO
+                      </p>
+                    </span>
                   </div>
                 </div>
-                <div class="flex gap-2">
-                  <p for="from" class=" font-['Arial'] min-w-[28px]">TEL:</p>
+                <div class="flex gap-2 ">
+                  <span class="h-[18px] min-w-[28px]">
+                    <p for="from" class="top h-[18px] font-['Arial'] ">
+                      TEL:
+                    </p>
+                  </span>
                   
-                    <p class="font-['Arial'] w-[calc(100%-28px)] border-b-[1px] whitespace-nowrap">+81-(0)78-682-5084</p>
+                   <span class="w-[calc(100%-28px)] border-b-[1px] border-gray-300 h-[18px]">
+                     <p class="font-['Arial']    whitespace-nowrap top ">
+                       +81-(0)78-682-5084
+                     </p>
+                   </span>
                 </div>
-                <div class="flex gap-2">
-                  <p for="from" class=" font-['Arial'] min-w-[28px]">FAX:</p>
-                    <p class="font-['Arial'] w-[calc(100%-28px)]  border-b-[1px] whitespace-nowrap">+81-(0)78-682-5433</p>
+                <div class="flex gap-2  ">
+                  <span class="h-[18px] min-w-[28px]">
+                    <p for="from" class="top  font-['Arial'] ">
+                      FAX:
+                    </p>
+                  </span>
+                 <span class="w-[calc(100%-28px)]  border-b-[1px] border-gray-300 [18px]">
+                   <p class="font-['Arial']  whitespace-nowrap top h-">
+                     +81-(0)78-682-5433
+                   </p>
+                 </span>
                 </div>
               </div>
             </div>
           </div>
-          <div class="mt-[2rem]">
+          <div class="mt-[2rem] ">
  
-             <p class="font-['Arial']">Dear Sir,</p>
-             <p class="font-['Arial']">This is to request you to dispatch your Engineer, with following terms & conditions;</p>
+             <p class="font-['Arial'] pb-1">Dear Sir,</p>
+             <p class="font-['Arial'] down">This is to request you to dispatch your Engineer, with following terms & conditions;</p>
            
            <div class="grid mt-2"  style=" grid-template-columns: 180px 1fr;">
-             <div class=" flex gap-1 p-1 " style="border: 1px solid var(--text-color);"><p class="font-['Arial']">1.</p><p class="font-['Arial']">Required name to be Dispatched</p> </div>
-             <div class="p-1 bg-[var(--white)]" style="border: 1px solid var(--text-color); border-left: 0px;"><p class="font-['Arial'] font-semibold" id="printName"> Blessel Desoloc</p></div>
-             <div class=" flex gap-1 p-1 border-[1px] border-[var(--dark)] border-t-0" ><p class="font-['Arial']">2.</p><p class="font-['Arial']">Required Period</p> </div>
-             <div class="flex" style="border: 1px solid var(--text-color); border-left: 0px; border-top: 0px;">
-               <p class="font-['Arial'] p-1 min-w-[50px]">From</p>
-               <p class="font-['Arial'] border-x-[1px] border-[var(--dark)] flex p-1 min-w-[200px] font-semibold bg-[var(--white)]" id="printFrom"></p>
-               <p class="font-['Arial'] p-1 min-w-[50px]">To</p>
-               <p class="font-['Arial'] border-l-[1px] border-[var(--dark)] flex p-1  min-w-[200px] font-semibold bg-[var(--white)]" id="printTo"></p>
+             <div class=" flex gap-1 p-1  " style="border: 1px solid #000;">
+              <p class="font-['Arial'] h-[54px] up">1.</p>
+              <p class="font-['Arial'] h-[54px] up">Required name to be Dispatched</p>
              </div>
-             <div class=" flex gap-1 p-1 border-[1px] border-[var(--dark)] border-t-0" ><p class="font-['Arial']">3.</p><p class="font-['Arial']">Place of Service</p> </div>
+             <div class="p-1 bg-[var(--white)] " style="border: 1px solid #000; border-left: 0px;">
+              <p class="font-['Arial'] font-semibold up" id="printName"> Blessel Desoloc</p>
+             </div>
+             <div class=" flex gap-1 p-1 border-[1px] border-black border-t-0 up" >
+              <p class="font-['Arial']">2.</p>
+              <p class="font-['Arial']">Required Period</p> 
+             </div>
+             <div class="flex" style="border: 1px solid #000; border-left: 0px; border-top: 0px;">
+               <p class="font-['Arial'] p-1 min-w-[50px] h-[18px] up">From</p>
+               <div class="border-x-[1px] border-black flex p-1 min-w-[200px] bg-[var(--white)] h-[18px]">
+                <p class="font-['Arial'] up font-semibold " id="printFrom"></p>
+               </div>
+               <p class="font-['Arial'] p-1 min-w-[50px] up h-[18px]">To</p>
+              <div class="border-l-[1px] border-black flex p-1  min-w-[200px] bg-[var(--white)] h-[18px]">
+                 <p class="font-['Arial']  font-semibold   up" id="printTo"></p>
+              </div>
+             </div>
+             <div class=" flex gap-1 p-1 border-[1px] border-black border-t-0 up" >
+              <p class="font-['Arial']">3.</p>
+              <p class="font-['Arial']">Place of Service</p> 
+             </div>
              <div class="flex flex-col w-full" >
-               <span class="p-1 border-l-0 border-t-0 border-[1px] border-[var(--dark)] grid w-full min-h-[20px]  m-0" style="grid-template-columns: 120px 1fr;">
+               <span class="p-1 border-l-0 border-t-0 border-[1px] border-black grid w-full min-h-[20px]  m-0" style="grid-template-columns: 120px 1fr;">
                 <div class="flex gap-2 items-center">
-                  <span class="w-[12px] h-[12px] up border-[1px] border-[var(--dark)] flex justify-content-center items-center countries">
+                  <span class="w-[12px] h-[12px]  border-[1px] border-black flex justify-content-center items-center countries">
                    
                   </span>
           
-                    <p class="font-['Arial'] whitespace-nowrap"> Japan</p>
+                    <span class="font-['Arial'] whitespace-nowrap up"> Japan</span>
                   
                 </div>
-                 <span class="inline-flex"> <p class="w-full bg-[var(--white)] font-['Arial'] font-semibold" id="printJap"></p></span>
+                 <span class="inline-flex bg-[var(--white)]"> <span class="w-full  font-['Arial'] h-[18px]  font-semibold up" id="printJap"></span></span>
                 
                </span>
-               <span class="p-1 border-l-0 border-t-0 border-[1px] border-[var(--dark)] grid w-full" style="grid-template-columns: 120px 1fr;">
+               <span class="p-1 border-l-0 border-t-0 border-[1px] border-black grid w-full" style="grid-template-columns: 120px 1fr;">
                  <div class="flex gap-2 items-center ">
-                   <span class="w-[12px] h-[12px] up border-[1px] border-[var(--dark)] flex justify-content-center items-center countries"></span>
-                   <p class="font-['Arial']">Philippines</p>
+                   <span class="w-[12px] h-[12px]  border-[1px] border-black flex justify-content-center items-center countries "></span>
+                   <span class="font-['Arial'] up">Philippines</span>
                  </div>
-                 <span class="inline-flex"> <p class="w-full bg-[var(--white)] font-['Arial'] font-semibold" id="printPh"></p></span>
+                 <span class="inline-flex bg-[var(--white)]"> <span class="w-full  font-['Arial'] h-[18px] font-semibold up" id="printPh"></span></span>
                 
                </span>
-               <span class="font-['Arial'] p-1 border-l-0 border-t-0 border-[1px] border-[var(--dark)] grid w-full" style="grid-template-columns: 120px 1fr;">
+               <span class="font-['Arial'] p-1 border-l-0 border-t-0 border-[1px] border-black grid w-full" style="grid-template-columns: 120px 1fr;">
                  <div class="flex gap-2 items-center">
-                   <span class="w-[12px] h-[12px] up border-[1px] border-[var(--dark)] flex justify-content-center items-center countries"></span>
-                   <p class="font-['Arial'] whitespace-nowrap">Third Countries</p>
+                   <span class="w-[12px] h-[12px]  border-[1px] border-black flex justify-content-center items-center countries"></span>
+                   <span class="font-['Arial'] whitespace-nowrap up">Third Countries</span>
                  </div>
-                 <span class="inline-flex"> <p class="w-full bg-[var(--white)] font-['Arial'] font-semibold" id="printThird"></p></span>
+                 <span class="inline-flex bg-[var(--white)]"> <span class="w-full  font-['Arial'] h-[18px]  font-semibold up" id="printThird"></span></span>
                 
                </span>
               
              </div>
-             <div class=" flex gap-1 p-1 border-[1px] border-[var(--dark)] border-t-0" ><p class="font-['Arial']">4.</p><p class="font-['Arial']">Invitation</p> </div>
+             <div class=" flex gap-1 p-1 border-[1px] border-black border-t-0 up" ><span class="font-['Arial'] h-]54px]">4.</span><span class="font-['Arial'] h-[54px]">Invitation</span> </div>
              
-             <div class=" p-1 border-[1px] border-l-0 border-[var(--dark)] border-t-0">
-               <div class="flex gap-2 items-center">
-                 <span class="up w-[12px] h-[12px] border-[1px] border-[var(--dark)] flex justify-content-center items-center inv"></span>
-                 <p class="font-['Arial']">Invitation letter for multiple business travel visa has already been sent via courier.</p>
+             <div class=" p-1 border-[1px] border-l-0 border-black border-t-0 ">
+               <div class="flex gap-2 py-1">
+                 <span class=" w-[12px] h-[12px] border-[1px] border-black flex justify-content-center items-center self-center inv"></span>
+                 <span class="font-['Arial'] h-[18px] up">Invitation letter for multiple business travel visa has already been sent via courier.</span>
                </div>
-               <div class="flex gap-2 items-center">
-                 <span class="up w-[12px] h-[12px] border-[1px] border-[var(--dark)] flex justify-content-center items-center inv"></span>
-                 <p class="font-['Arial']">Invitation letter for single business travel visa has already been sent via courier.</p>
+               <div class="flex gap-2 py-1">
+                 <span class=" w-[12px] h-[12px] border-[1px] border-black flex justify-content-center items-center self-center inv"></span>
+                 <span class="font-['Arial'] h-[18px] up">Invitation letter for single business travel visa has already been sent via courier.</span>
                </div>
-               <div class="flex gap-2 items-center">
-                 <span class="up w-[12px] h-[12px] border-[1px] border-[var(--dark)] flex justify-content-center items-center inv">
+               <div class="flex gap-2 py-1">
+                 <span class=" w-[12px] h-[12px] border-[1px] border-black self-center flex justify-content-center items-center inv ">
        
                  </span>
-                 <p class="font-['Arial']">Invitation letter is not required.</p>
+                 <span class="font-['Arial'] h-[18px] up">Invitation letter is not required.</span>
                </div>
              </div>
         
-             <div class=" flex gap-1 p-1 border-[1px] border-[var(--dark)] border-t-0" >
+             <div class=" flex gap-1 p-1 border-[1px] border-black border-t-0 up" >
                <p class="font-['Arial']">5.</p>
                <p class="font-['Arial']">Work Order and Project</p>
              </div>
              
-             <div class="border-r-[1px] border-b-[1px] border-[var(--dark)]">
-               <span class="font-['Arial'] p-1 grid w-full" style="grid-template-columns: 50px 1fr;">
-         
-                  
-                   <p class="font-['Arial']">W/O</p>
+             <div class="border-r-[1px] border-b-[1px] py-1 border-black">
+               <span class="font-['Arial'] px-1 grid w-full" style="grid-template-columns: 50px 1fr;">
+          
+                <span class="font-['Arial'] h-[18px] up">W/O</span>
                
-                 <span class="inline-flex h-[18px]"> <p class="w-full bg-[var(--white)] font-['Arial'] font-semibold" id="printWO"></p></span>
+                <span class="inline-flex bg-[var(--white)] h-[16px]"> 
+                  <span class="w-full font-['Arial'] font-semibold  up" id="printWO"></span>
+                </span>
                 
                </span>
                <span class="font-['Arial'] p-1  grid w-full" style="grid-template-columns: 50px 1fr;">
             
         
-                   <p class="font-['Arial']" >Project</p>
+                   <span class="font-['Arial'] up h-[18px]" >Project</span>
              
-                 <span class="inline-flex h-[18px]"> <p class="w-full bg-[var(--white)] font-['Arial'] font-semibold"id="printProject">
-                  
-                 </p></span>
+                 <span class="inline-flex bg-[var(--white)] h-[16px]"> 
+                  <span class="w-full  font-['Arial']   font-semibold up "id="printProject"></span>
+                </span>
                 
                </span>
-               <div class="flex gap-2 px-1  items-center">
-                 <span class=" w-[12px] h-[12px] border-[1px] border-[var(--dark)] flex justify-content-center items-center up siteDispatch" ></span>
-                 <p class="font-['Arial']">Site Dispatch Training application</p>
+               <div class="flex gap-2 px-1 mb-2 items-center h-[16px]">
+                 <span class=" w-[12px] h-[12px] border-[1px] border-black flex justify-content-center items-center  siteDispatch" ></span>
+                 <p class="font-['Arial'] up">Site Dispatch Training application</p>
                </div>
-               <small class=" font-['Arial'] p-1 flex leading-[1.25]">
+               <small class=" font-['Arial'] px-1 flex leading-[1.25]  up down">
                  *Remark: In case of site dispatch training (W/O:6104298) applied, actual Air ticket fee (KDT paid) shall be reimbursed by KHI as post-settlement.
         
                </small>
@@ -301,110 +347,124 @@
              </div>
            </div>
           </div>
-          <div class="pt-3">
-             <p class=" font-['Arial'] ">Division of Responsibilities for each "Place of Service"</p>
+          <div class="pt-3 down">
+             <p class=" font-['Arial']  text-black">Division of Responsibilities for each "Place of Service"</p>
           </div>
           
            
           
 
-           <table class="w-full pt-2">
+           <table class="w-full mt-2 ">
                  <thead>
                    <tr>
-                     <th>Place of Service</th>
-                     <th>Scope</th>
-                     <th class="sm">KHI</th>
-                     <th class="sm">KDT</th>
-                     <th>Remarks</th>
+                     <th > <p>Place of Service</p></th>
+                     <th class=""><p>Scope</p></th>
+                     <th class="sm"><p>KHI</p></th>
+                     <th class="sm"><p>KDT</p></th>
+                     <th class=""><p>Remarks</p></th>
                    </tr>
                  </thead>
                  <tbody>
                    <tr>
-                     <td rowspan="4">Japan</td>
-                     <td>Absence Fee</td>
+                     <td rowspan="4"><p>Japan</p></td>
+                     <td><p>Absence Fee</p></td>
                      <td class="sm"></td>
-                     <td class="sm"><i class='bx bx-x'></i></td>
-                     <td>Included in the Annual Service Fee</td>
+                     <td class="sm"><p><i class='bx bx-x'></i></p></td>
+                     <td><p>Included in the Annual Service Fee</p></td>
                    </tr>
                    <tr>
-                     <td>Daily Allowance with Meals</td>
-                     <td class="sm"><i class='bx bx-x'></i></td>
+                     <td><p>Daily Allowance with Meals</p></td>
+                     <td class="sm"><p><i class='bx bx-x'></i></p></td>
                      <td class="sm"></td>
-                     <td>
-                      <div class="flex"><p class="font-['Arial']">JP¥</p>
-                      <p class="font-['Arial']  font-bold" id="printSalary"></p>
+                     <td class="special">
+                      <div class="flex">
+                        <span class="bg-[var(--white)] h-[16px] top bottom">
+                          <p class="font-['Arial'] top">JP¥</p>
+                        </span>
+                        <span class="bg-[var(--white)] h-[16px] top bottom">
+                          <p class="font-['Arial'] top  font-bold" id="printSalary"></p>
+                        </span>
                       <p class="font-['Arial']">(*)/Calendar Day</p>
                       </div>
-                     <small class="font-['Arial'] text-[11px] leading-2 flex ">(*)AM/Mg class according to KDT Rule</small>
+                     <small class="font-['Arial'] up text-[11px] leading-2 flex ">(*)AM/Mg class according to KDT Rule</small>
                     </td>
                    </tr>
                    <tr>
-                     <td>Air Ticket</td>
+                     <td><p>Air Ticket</p></td>
                      <td class="sm"></td>
-                     <td class="sm"><i class='bx bx-x'></i></td>
-                     <td>Included in the Annual Service Fee</td>
+                     <td class="sm"><p><i class='bx bx-x'></i></p></td>
+                     <td><p>Included in the Annual Service Fee</p></td>
                    </tr>
                    <tr>
-                     <td>Accommodation</td>
-                     <td class="sm"><i class='bx bx-x'></i></td>
+                     <td><p>Accommodation</p></td>
+                     <td class="sm"><p><i class='bx bx-x'></i></p></td>
                      <td class="sm"></td>
-                     <td>To be provided by KHI</td>
+                     <td><p>To be provided by KHI</p></td>
                    </tr>
                    <tr>
-                     <td rowspan="4">Philippines</td>
-                     <td>Absence Fee</td>
+                     <td rowspan="4"><p>Philippines</p></td>
+                     <td><p>Absence Fee</p></td>
                      <td class="sm"></td>
-                     <td class="sm"><i class='bx bx-x'></i></td>
-                     <td>Included in the Annual Service Fee</td>
+                     <td class="sm"><p><i class='bx bx-x'></i></p></td>
+                     <td><p>Included in the Annual Service Fee</p></td>
                    </tr>
                    <tr>
-                     <td>Daily Allowance with Meals</td>
-                     <td class="sm"><i class='bx bx-x'></i></td>
+                     <td><p>Daily Allowance with Meals</p></td>
+                     <td class="sm"><p><i class='bx bx-x'></i></p></td>
                      <td class="sm"></td>
-                     <td>According to KDT Internal Rule</td>
+                     <td><p>According to KDT Internal Rule</p></td>
                    </tr>
                    <tr>
-                     <td>Air Ticket</td>
+                     <td><p>Air Ticket</p></td>
                      <td class="sm"></td>
-                     <td class="sm"><i class='bx bx-x'></i></td>
+                     <td class="sm"><p><i class='bx bx-x'></i></p></td>
                      <td></td>
                    </tr>
                    <tr>
-                     <td>Accommodation</td>
-                     <td class="sm"><i class='bx bx-x'></i></td>
+                     <td><p>Accommodation</p></td>
+                     <td class="sm"><p><i class='bx bx-x'></i></p></td>
                      <td class="sm"></td>
-                     <td>To be provided by KHI</td>
+                     <td><p>To be provided by KHI</p></td>
                    </tr>
                    <tr>
-                     <td rowspan="4">Other third Countries</td>
-                     <td>Absence Fee</td>
+                     <td rowspan="4"><p>Other third Countries</p></td>
+                     <td><p>Absence Fee</p></td>
                      <td class="sm"></td>
-                     <td class="sm"><i class='bx bx-x'></i></td>
+                     <td class="sm"><p><i class='bx bx-x'></i></p></i></td>
                      <td></td>
                    </tr>
                    <tr>
-                     <td>Daily Allowance with Meals</td>
-                     <td class="sm"><i class='bx bx-x'></i></td>
+                     <td><p>Daily Allowance with Meals</p></td>
+                     <td class="sm"><p><i class='bx bx-x'></i></p></td>
                      <td class="sm"></td>
-                     <td>
-                      <div class="flex"><p class="font-['Arial']">US$</p>
-                      <p class="font-['Arial'] " id="printSalary">40</p>
-                      <p class="font-['Arial']">(*)/Calendar Day</p>
+                     <td class="special">
+                      <div class="flex ">
+                       <span class=" bg-[var(--white)] h-[16px] top bottom">
+                         <p class="font-['Arial']  top">
+                           US$
+                         </p>
+                        </span>
+                         
+            
+                      <span class="bg-[var(--white)] h-[16px] top bottom">
+                        <p class="font-['Arial'] relative top z-1" id="printSalary">40</p>
+                      </span>
+                      <p class="font-['Arial'] ">(*)/Calendar Day</p>
                       </div>
-                     <small class="font-['Arial'] text-[11px] leading-2 flex ">(*)AM/Mg class according to KDT Rule</small>
+                     <small class="font-['Arial'] text-[11px] up leading-2 flex ">(*)AM/Mg class according to KDT Rule</small>
                     </td>
                    </tr>
                    <tr>
-                     <td>Air Ticket</td>
+                     <td><p>Air Ticket</p></td>
                      <td class="sm"></td>
-                     <td class="sm"><i class='bx bx-x'></i></td>
+                     <td class="sm"><p><i class='bx bx-x'></i></p></td>
                      <td></td>
                    </tr>
                    <tr>
-                     <td>Accommodation</td>
-                     <td class="sm"><i class='bx bx-x'></i></td>
+                     <td><p>Accommodation</p></td>
+                     <td class="sm"><p><i class='bx bx-x'></i></p></td>
                      <td class="sm"></td>
-                     <td>To be provided by KHI</td>
+                     <td><p>To be provided by KHI</p></td>
                    </tr>
                  </tbody>
            </table>

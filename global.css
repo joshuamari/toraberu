@@ -28,7 +28,7 @@ a {
   color: inherit !important;
 }
 p {
-  margin: 0 !important;
+  margin: 0 ;
 }
 
 ::-webkit-scrollbar {
@@ -44,11 +44,7 @@ p {
 ::-webkit-scrollbar-horizontal {
   height: 8px; /* Height of horizontal scrollbar */
 }
-#toPrint > *{
-  font-family: Arial, Helvetica, sans-serif !important;
-  font-size: 12px;
-  color: #000;
-}
+
 
 :root {
   --main: #dcfce7;
@@ -331,4 +327,17 @@ nav li.active {
   #closeNav {
     display: block;
   }
+}
+
+@media print {
+  #toPrint {
+    margin: 0;
+    padding: 0;
+    color: #000 !important;
+    background-color: #fff;
+  }
+  #toPrint table {
+    border: 0.5px solid #000;
+  }
+
 }

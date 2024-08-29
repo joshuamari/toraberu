@@ -191,13 +191,15 @@ tbody tr:hover td {
   color: var(--gray-text2) !important;
 }
 #attachmentModal p {
+  margin: 0 ;
   font-size: 14px;
   font-family: "Arial", sans-serif;
   line-height: normal;
+  color: #000;
 }
 #attachmentModal td,
 #attachmentModal th {
-  margin: 0 !important;
+  margin: 0 ;
   padding: 0 10px;
   background-color: #fff;
   font-family: "Arial", sans-serif;
@@ -208,14 +210,33 @@ tbody tr:hover td {
   border-left: 0;
   line-height: normal;
   vertical-align: middle;
+  height: 18px;
+}
+#attachmentModal td.special{
+  height: 32px;
+}
+#attachmentModal{
+  --white: #e3e3e3;
+}
+#attachmentModal td p,
+#attachmentModal th p{
+  color: #000;
+  
+}
+#attachmentModal th p{
+  font-size: 12px;
 }
 #attachmentModal th {
   height: 20px;
+  color: #000;
 }
-
+#attachmentModal span{
+  color: #000;
+}
 #attachmentModal td {
   border-top: 0;
   cursor: default;
+  color: #000;
 }
 #attachmentModal th.sm {
   max-width: 45px;
@@ -310,7 +331,10 @@ font-size: 12px;
 .btn-accept:hover {
   background-color: var(--tertiary);
 }
+
+
 /* END OF BUTTON CSS */
+
 
 @media (max-width: 946px) {
   .selection {
@@ -326,4 +350,17 @@ font-size: 12px;
   .form-floating {
     width: 50% !important;
   }
+}
+@media print {
+  #toPrint {
+    margin: 0;
+    padding: 0;
+    color: #000 !important;
+    background-color: #fff;
+  }
+  #toPrint table {
+    border: 0.5px solid #000;
+  }
+
+
 }
