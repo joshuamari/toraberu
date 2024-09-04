@@ -429,6 +429,7 @@ function getCompanyDetails($comp_id)
 {
     global $connpcs;
     $company_details = [
+        "company_name" => "",
         "company_jap" => "",
         "company_desc" => ""
     ];
