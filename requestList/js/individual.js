@@ -358,6 +358,7 @@ function saveToPDF() {
   $("#attachmentModal td p, #attachmentModal th p").css("margin-top", "-1rem");
   $("#attachmentModal td p.top").css("margin-top", "-0.5rem");
   $("#toPrint .alw").css("margin-top", "-0.2rem");
+  $("#toPrint .copy").css("margin-top", "0.5rem");
 
   var str = $("#attachment").text();
 
@@ -384,6 +385,7 @@ function saveToPDF() {
   $("#attachmentModal td p, #attachmentModal th p").css("margin-top", "0");
   $("#attachmentModal td p.top").css("margin-top", "0");
   $("#toPrint .alw").css("margin-top", "0");
+  $("#toPrint .copy").css("margin-top", "0");
 }
 function saveToPDF2() {
   $("#toPrint2 table td").css("padding", "0 10px 12px 10px");

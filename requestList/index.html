@@ -178,12 +178,12 @@
             </div>
             <div class="w-[40%] relative">
               <div class="  flex flex-col p-2" style="border: 1px solid #000;">
-                <div class="flex gap-2 h-[54px]  ">
+                <div class="grid h-[54px]" style=" grid-template-columns:40px 1fr;">
                  <span class="h-[18px] ">
                    <p  class=" font-['Arial'] min-w-[28px] top ">From:</p>
                  </span>
                   <div class="flex flex-col">
-                  <span class="border-b-[1px] border-gray-300    h-[18px]">
+                  <span class="border-b-[1px] border-gray-300   h-[18px]">
                       <p class="font-['Arial'] top whitespace-nowrap">
                         Kawasaki Heavy Industries, Ltd.
                       </p>
@@ -200,28 +200,28 @@
                     </span>
                   </div>
                 </div>
-                <div class="flex gap-2 ">
-                  <span class="h-[18px] min-w-[28px]">
+                <div class="grid " style=" grid-template-columns:40px 1fr;">
+                  <span class="h-[18px] min-w-[28px] ">
                     <p for="from" class="top h-[18px] font-['Arial'] ">
                       TEL:
                     </p>
                   </span>
                   
-                   <span class="w-[calc(100%-28px)] border-b-[1px] border-gray-300 h-[18px]">
-                     <p class="font-['Arial'] bg-[var(--white)] border-b-[1px] whitespace-nowrap top font-semibold"
+                   <span class="w-[calc(100%-28px)] bg-[var(--white)] border-b-[1px] border-gray-300 h-[18px]  w-full">
+                     <p class="font-['Arial'] whitespace-nowrap top font-semibold"
                      id="printTel">
                        +81-(0)78-682-5084
                      </p>
                    </span>
                 </div>
-                <div class="flex gap-2  ">
-                  <span class="h-[18px] min-w-[28px]">
+                <div class="grid " style=" grid-template-columns:40px 1fr;">
+                  <span class="h-[18px] ">
                     <p for="from" class="top  font-['Arial'] ">
                       FAX:
                     </p>
                   </span>
-                 <span class="w-[calc(100%-28px)]  border-b-[1px] border-gray-300 [18px]">
-                   <p class="font-['Arial'] bg-[var(--white)] border-b-[1px] whitespace-nowrap top font-semibold"
+                 <span class="w-[calc(100%-28px)] bg-[var(--white)] h-[18px] border-b-[1px] border-gray-300  w-full">
+                   <p class="font-['Arial'] whitespace-nowrap  font-semibold top"
                    id="printFax">
                      +81-(0)78-682-5433
                    </p>
@@ -322,7 +322,7 @@
                 <span class="font-['Arial'] h-[18px] up">W/O</span>
                
                 <span class="inline-flex bg-[var(--white)] h-[16px]"> 
-                  <span class="w-full font-['Arial'] font-semibold  up" id="printWO"></span>
+                  <span class="w-full font-['Arial'] font-semibold up" id="printWO"></span>
                 </span>
                 
                </span>
@@ -473,16 +473,17 @@
         
      
          
-          <div class="bottom-text mt-[0.5rem]">
+          <!-- <div class="bottom-text mt-[0.5rem]">
             <p class="font-['Arial']">Copy:</p>
             <div class="flex justify-content-between">
               <p class="font-['Arial']">
                 General Affairs and Personal Gr.:
                 <span
-                  class="w-full bg-[var(--white)] font-['Arial'] font-semibold"
-                  id="printGAPName"
+                  class="w-full bg-[var(--white)] font-['Arial'] font-semibold top bottom"
+                  
                 >
-                  Mr. T. Kurosumi
+                <p class="top" id="printGAPName">Mr. T. Kurosumi</p>
+                  
                 </span>
               </p>
               <p class="font-['Arial']">
@@ -514,8 +515,36 @@
               </p>
             </div>
             
-          </div>
+          </div> -->
 
+
+          <div>
+            Copy:
+
+
+            <div class="flex justify-content-between items-center">
+              <div class="flex gap-2">
+                <p class="font-['Arial']">General Affairs and Personal Gr.:</p>
+                <span class="bg-[var(--white)] h-[18px] copy">
+                  <p class="top font-['Arial']" id="printGAPName"></p>
+                </span>
+              </div>
+              <span class="bg-[var(--white)] h-[18px] copy">
+                <p class="top font-['Arial']" id="printGAPNumber"> (81-78-682-5202/Ext. 7-20-81101)</p>
+              </span>
+            </div>
+            <div class="flex justify-content-between items-center">
+              <div class="flex gap-2">
+                <p class="font-['Arial']">Control Dep't Corporate Planning Gr.:</p>
+                <span class="bg-[var(--white)] h-[18px] copy">
+                  <p class="top font-['Arial']" id="printCDCPName"> Mr. H. Kanari</p>
+                </span>
+              </div>
+              <span class="bg-[var(--white)] h-[18px] copy">
+                <p class="top font-['Arial']" id="printCDCPNumber"> (81-78-682-5072/Ext. 7-30-33217)</p>
+              </span>
+            </div>
+          </div>
 
         </div>
       </div>
