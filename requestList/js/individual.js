@@ -155,6 +155,10 @@ $(document).on("input", "#monthSel", function () {
 });
 $(document).on("click", "#removeMonth", function () {
   $("#monthSel").removeClass("active");
+  $(".monthCont").html(`<i class='bx bx-calendar'></i>
+    <span class="" id="monthLabel">Requested Month</span>
+    <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+    `);
   $("#monthSel").val("");
   searchFilter(reqList);
 });
