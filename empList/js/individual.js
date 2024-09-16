@@ -125,7 +125,6 @@ function getEmployees() {
       },
       dataType: "json",
       success: function (response) {
-        // console.log(response);
         const emps = response;
         resolve(emps);
       },

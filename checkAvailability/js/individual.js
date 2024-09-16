@@ -202,7 +202,6 @@ function getGroups() {
       url: "../global/get_groups.php",
       dataType: "json",
       success: function (response) {
-        console.log(response);
         const grps = response;
         resolve(grps);
       },
@@ -241,7 +240,6 @@ function getEmployees() {
       },
       dataType: "json",
       success: function (response) {
-        console.log(response);
         const emps = response;
         resolve(emps);
       },
@@ -555,7 +553,6 @@ function countTotal() {
     if (dd > 183) {
       $("#rangeCount").addClass("redText");
       countText = `${dd} days`;
-      console.log("lagpas");
     } else {
       $("#rangeCount").removeClass("redText");
       countText = `${dd} days`;
@@ -625,7 +622,6 @@ function insertDispatch() {
     <i class='bx bx-info-circle text-red-600'></i>
     <p class="text-red-600">Please complete all fields.</p>
     </div>`);
-    // console.log("complete required fields");
     toggleLoadingAnimation(false);
     return;
   }

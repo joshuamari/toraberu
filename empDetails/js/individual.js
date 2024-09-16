@@ -525,7 +525,6 @@ function getEmployeeDetails() {
   });
 }
 function fillDetails(empnum) {
-  console.log(empnum);
   $("#empId").text(`${empnum.id}`);
   $(".surname").text(`${empnum.lastname},`);
   $(".givenname").text(`${empnum.firstname}`);
@@ -905,7 +904,6 @@ function savePass() {
       processData: false,
       dataType: "json",
       success: function (response) {
-        // console.log(response);
         const res = response;
         resolve(res);
       },

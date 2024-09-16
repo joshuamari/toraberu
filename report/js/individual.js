@@ -17,7 +17,6 @@ checkAccess()
             fillGroups(groupList);
             getReport()
               .then((rep) => {
-                // console.log(rep);
                 createTable(rep);
               })
               .catch((error) => {
@@ -163,7 +162,6 @@ function getReport() {
       },
       dataType: "json",
       success: function (response) {
-        // console.log(response);
         const rep = response;
         resolve(rep);
       },
@@ -186,7 +184,6 @@ function getGroups() {
       url: "../global/get_groups.php",
       dataType: "json",
       success: function (response) {
-        console.log(response);
         const grps = response;
         resolve(grps);
       },
