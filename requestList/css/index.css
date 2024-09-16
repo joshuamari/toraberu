@@ -190,7 +190,7 @@ tbody tr:hover td {
 .passport:hover a i {
   color: var(--gray-text2) !important;
 }
-#attachmentModal p {
+#attachmentModal p, #attachmentModal2 span,#attachmentModal2 p {
   margin: 0 ;
   font-size: 14px;
   font-family: "Arial", sans-serif;
@@ -230,7 +230,7 @@ tbody tr:hover td {
   height: 20px;
   color: #000;
 }
-#attachmentModal span{
+#attachmentModal span, #attachmentModal2 span, #attachmentModal2 td,#attachmentModal2 th, #attachmentModal2 div{
   color: #000;
 }
 #attachmentModal td {
