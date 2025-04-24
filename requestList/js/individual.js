@@ -231,6 +231,9 @@ $(document).on("click", ".statusBtn", function () {
             searchFilter(reqList);
             $(".btn-reject").prop("disabled", false);
             $(".btn-accept").prop("disabled", false);
+            $(".btn-reject").html(`
+              Cancel`);
+            $(".btn-accept").html(`Accept`);
           })
           .catch((error) => {
             alert(`Error: ${error}`);
@@ -244,10 +247,24 @@ $(document).on("click", ".statusBtn", function () {
 });
 
 $(document).on("click", ".btn-reject", function () {
-  $(".btn-reject").prop("disabled", true);
+  $(".statusBtn").prop("disabled", true);
+  $(
+    this
+  ).html(`<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25 text-slate-200" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-100 text-white" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    Cancelling...`);
 });
 $(document).on("click", ".btn-accept", function () {
-  $(".btn-accept").prop("disabled", true);
+  $(".statusBtn").prop("disabled", true);
+  $(
+    this
+  ).html(`<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-[var(--dark)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+</svg>
+Accepting...`);
 });
 //#endregion
 
@@ -666,9 +683,9 @@ function formatButtons(status) {
     $("#openModal .modal-content")
       .append(`<div class="flex-nowrap modal-footer  flex gap-2 border-0 ">
         <button
-          class="statusBtn btn-reject transition w-50" stat-id="0">Cancel</button>
+          class="statusBtn btn-reject transition w-50 flex overflow-hidden items-center justify-center disabled:pointer-events-none" stat-id="0">Cancel</button>
         <button
-          class="statusBtn btn-accept w-50" stat-id="1">Accept</button>
+          class="statusBtn btn-accept w-50 flex overflow-hidden items-center justify-center disabled:pointer-events-none" stat-id="1">Accept</button>
       </div>`);
   } else {
     $("#openModal .modal-footer").remove();
