@@ -21,12 +21,13 @@ $sortKey = 1;
 $cipher = "AES-256-CBC";
 
 $userID = getID();
+$yearMonth = date("Y-m-01");
 #endregion
 
 #region Set Variable Values
 if (!empty($_POST['groupID'])) {
     $grpID = $_POST['groupID'];
-    
+
     $decrypt = openssl_decrypt($grpID, $cipher, "PCSGROUPENC", 0, "HAHTASDFSDFT6634");
     $groups = $decrypt;
 } else {
@@ -38,9 +39,9 @@ if (!empty($_POST['groupID'])) {
 try {
     $employeesQuery = "SELECT ed.id as empID, ed.surname as lastname, ed.firstname as firstname, gl.abbreviation as groupAbbr, pd.passport_expiry as passportExpiry, 
     vd.visa_expiry as visaExpiry FROM kdtphdb_new.employee_list as ed LEFT JOIN kdtphdb_new.group_list as gl ON ed.group_id = gl.id LEFT JOIN passport_details as pd 
-    ON ed.id = pd.emp_number LEFT JOIN visa_details as vd ON ed.id = vd.emp_number WHERE ed.emp_status = 1 AND ed.group_id IN ($groups) ORDER BY ed.id";
+    ON ed.id = pd.emp_number LEFT JOIN visa_details as vd ON ed.id = vd.emp_number WHERE (ed.`resignation_date` IS NULL OR ed.`resignation_date` = '0000-00-00' OR ed.`resignation_date` > :yearMonth) AND ed.group_id IN ($groups) ORDER BY ed.id";
     $empStmt = $connpcs->prepare($employeesQuery);
-    $empStmt->execute([]);
+    $empStmt->execute([":yearMonth" => $yearMonth]);
     if ($empStmt->rowCount() > 0) {
         $employeeDeets = $empStmt->fetchAll();
         foreach ($employeeDeets as &$val) {

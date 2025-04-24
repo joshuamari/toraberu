@@ -20,6 +20,9 @@ if (!empty($_POST["empID"])) {
 
 #region main function
 try {
+    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+    $host = $_SERVER['HTTP_HOST'];
+    $link = $protocol . "://" . $host;
     $empQuery = "SELECT `id`, `surname` as lastname, `firstname`, `emp_status` as dispatch FROM `employee_list` 
     WHERE `id` = :empID";
     $empStmt = $connnew->prepare($empQuery);
@@ -28,12 +31,12 @@ try {
 
     $version = date("YmdHis");
     $yearNow = date("Y");
-    
-    $empDeets["pictureLink"] = "http://kdt-ph/QMS/Profilev2/defaultqmsphoto.png";
-    for($x = $yearNow; $x >= 2021; $x--) {
+
+    $empDeets["pictureLink"] = "$link/QMS/Profilev2/defaultqmsphoto.png";
+    for ($x = $yearNow; $x >= 2021; $x--) {
         $picLink = "C:/xampp/htdocs/QMS/Profilev2/" . $x . "/pic_" . $empDeets["id"] . ".jpg";
-        if(file_exists($picLink)) {
-            $empDeets["pictureLink"] = "http://kdt-ph/QMS/Profilev2/" . $x . "/pic_" . $empDeets["id"] . ".jpg?version=" . $version;
+        if (file_exists($picLink)) {
+            $empDeets["pictureLink"] = "$link/QMS/Profilev2/" . $x . "/pic_" . $empDeets["id"] . ".jpg?version=" . $version;
             break;
         }
     }

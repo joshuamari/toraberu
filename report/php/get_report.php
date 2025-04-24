@@ -17,6 +17,7 @@ $finalReport = new ArrayObject();
 $cipher = "AES-256-CBC";
 
 $userID = getID();
+$yearMonth = date("Y-m-01");
 #endregion
 
 #region get data values
@@ -61,12 +62,12 @@ try {
 
         $reportQ = "SELECT ed.id, CONCAT(UPPER(ed.surname), ', ', ed.firstname) as empName, gl.abbreviation as groupName, vd.visa_issue as visaIssue,
         vd.visa_expiry as visaExpiry FROM kdtphdb_new.employee_list as ed LEFT JOIN kdtphdb_new.group_list as gl ON ed.group_id = gl.id LEFT JOIN visa_details 
-        as vd ON ed.id = vd.emp_number WHERE ed.emp_status = 1 AND ed.group_id = :oneGroupID ORDER BY ed.id";
+        as vd ON ed.id = vd.emp_number WHERE (ed.`resignation_date` IS NULL OR ed.`resignation_date` = '0000-00-00' OR ed.`resignation_date` > :yearMonth) AND ed.group_id = :oneGroupID ORDER BY ed.id";
 
         $reportStmt = $connpcs->prepare($reportQ);
 
         // $reportStmt->execute([":oneGroupID" => "$oneGroupID", ":startYear" => "$startYear", ":endYear" => "$endYear"]);
-        $reportStmt->execute([":oneGroupID" => "$oneGroupID"]);
+        $reportStmt->execute([":oneGroupID" => "$oneGroupID", ":yearMonth" => $yearMonth]);
         $report = $reportStmt->fetchAll();
         $reportCount = count($report);
 

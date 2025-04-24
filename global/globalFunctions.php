@@ -266,16 +266,19 @@ function getLocationName($id)
 }
 function emailStatusChange($status, $details)
 {
+    $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+    $host = $_SERVER['HTTP_HOST'];
+    $link = $protocol . "://" . $host;
     $headers = "MIME-Version: 1.0" . "\r\n";
     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
     $headers .= "From: kdt_toraberu@global.kawasaki.com" . "\r\n";
     $subject = 'Dispatch Request Status(TEST ONLY)';
     $khidetails = getKHIUserDetails($details['requester_id']);
-
+    $group = $details['dept_id'] == 15 ? 21 : $details['emp_group'];
     #region TESTING
 
     #region systesting
-    $CCarray = array('medrano_c-kdt@global.kawasaki.com', 'hernandez-kdt@global.kawasaki.com', 'reyes_d-kdt@global.kawasaki.com', 'cabiso-kdt@global.kawasaki.com', 'coquia-kdt@global.kawasaki.com');
+    // $CCarray = array('medrano_c-kdt@global.kawasaki.com', 'hernandez-kdt@global.kawasaki.com', 'reyes_d-kdt@global.kawasaki.com', 'cabiso-kdt@global.kawasaki.com', 'coquia-kdt@global.kawasaki.com');
     #endregion
 
     #region prekhitesting
@@ -289,13 +292,13 @@ function emailStatusChange($status, $details)
     #endregion
 
     #region PROD
-    // $admins = getAdminEmails();
-    // $khipic = getKHIPICEmail($details['emp_group'], $details['requester_id']);
-    // $khiAdmins = getKHIAdminEmails($details['requester_id']);
-    // $kdtManagers = getGroupManagersEmail($details['emp_group']);
-    // $CCarray = array_unique(array_merge($khipic, $khiAdmins, $kdtManagers, $admins));
-    // $CCarray[] = getPresEmail();
-    // $CCarray = array_reverse($CCarray);
+    $admins = getAdminEmails();
+    $khipic = getKHIPICEmail($group, $details['requester_id']);
+    $khiAdmins = getKHIAdminEmails($details['requester_id']);
+    $kdtManagers = getGroupManagersEmail($group);
+    $CCarray = array_unique(array_merge($khipic, $khiAdmins, $kdtManagers, $admins));
+    $CCarray[] = getPresEmail();
+    $CCarray = array_reverse($CCarray);
     #endregion
     $CC = implode(",", $CCarray);
     $statusString = $status ? "accepted" : "cancelled";
@@ -317,11 +320,11 @@ function emailStatusChange($status, $details)
         <br>
         <p>For <strong>KDT</strong>, review the request details:</p>
         <ul>
-            <li><a href='http://kdt-ph/PCS/requestList/'>Dispatch Request List</a></li>
+            <li><a href='$link/PCS/requestList/'>Dispatch Request List</a></li>
         </ul>
         <p>For <strong>KHI</strong>, track the request status:</p>
         <ul>
-            <li><a href='http://kdt-ph/PCSKHI/requestList/'>Track Request Status</a></li>
+            <li><a href='$link/PCSKHI/requestList/'>Track Request Status</a></li>
         </ul>
         <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
         <p>Best regards,</p>

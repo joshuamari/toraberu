@@ -16,11 +16,12 @@ $grpStmt = $userHash = "";
 $grpID = 0;
 $cipher = "AES-256-CBC";
 
+$yearMonth = date("Y-m-01");
 $userID = getID();
 
 if (!empty($_POST['grpID'])) {
     $grpID = $_POST['grpID'];
-    
+
     $decrypt = openssl_decrypt($grpID, $cipher, "PCSGROUPENC", 0, "HAHTASDFSDFT6634");
     $groups = $decrypt;
 } else {
@@ -31,10 +32,10 @@ if (!empty($_POST['grpID'])) {
 
 #region main query
 try {
-    $empQ = "SELECT CONCAT(`surname`,', ',`firstname`) AS ename, `id` FROM `employee_list` WHERE `emp_status` = 1 AND `group_id` IN ($groups) GROUP BY `id` ORDER BY `surname`";
+    $empQ = "SELECT CONCAT(`surname`,', ',`firstname`) AS ename, `id` FROM `employee_list` WHERE `group_id` IN ($groups) AND (`resignation_date` IS NULL OR `resignation_date` = '0000-00-00' OR `resignation_date` > :yearMonth) GROUP BY `id` ORDER BY `surname`";
     // die($empQ);
-    $empStmt = $connnew->query($empQ);
-
+    $empStmt = $connnew->prepare($empQ);
+    $empStmt->execute([":yearMonth" => $yearMonth]);
     if ($empStmt->rowCount() > 0) {
         $emparr = $empStmt->fetchAll();
         foreach ($emparr as $emp) {
