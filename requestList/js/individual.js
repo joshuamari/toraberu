@@ -484,6 +484,7 @@ function fillAttachment(data) {
   let cdcp = data.dispatch_request.cdcp_name;
   let gap_tel = data.dispatch_request.gap_tel;
   let cdcp_tel = data.dispatch_request.cdcp_tel;
+  const departmentSelected = data.dispatch_request.dept_id;
 
   if (country == 1) {
     insertIconCountry(1);
@@ -529,6 +530,33 @@ function fillAttachment(data) {
   $("#printCDCPName").text(cdcp);
   $("#printGAPNumber").text(gap_tel);
   $("#printCDCPNumber").text(cdcp_tel);
+
+  if (departmentSelected == 15) {
+    const newAddress = ": 1, Kawasaki cho, Sakaide city, Kagawa 762-8507 Japan";
+    $("#disAddress").html(
+      '<span id="location" class="font-semibold text-[10px]">SAKAIDE</span>' +
+        newAddress
+    );
+    $("#disPhone").text("Phone: 81-(0)877-46-0315");
+    $("#disFax").text("Facsimile: 81-(0)877-46-4397");
+    $("#printCopyInfoLabelOne")[0].firstChild.nodeValue =
+      "Sakaide Personnel and Labor Sec., Ship&Offshore:";
+    $("#printCopyInfoLabelTwo")[0].firstChild.nodeValue =
+      "General Affairs & Personal Gr.:";
+  } else {
+    const newAddress =
+      ": 1-1, Higashikawasaki 3-Chome, Chuo-ku, KOBE 650-8670 Japan";
+    $("#disAddress").html(
+      '<span id="location" class="font-semibold text-[10px]">KOBE</span>' +
+        newAddress
+    );
+    $("#disPhone").text("Phone: 81-(0)78-682-5202");
+    $("#disFax").text("Facsimile:81-(0)78-682-5574");
+    $("#printCopyInfoLabelOne")[0].firstChild.nodeValue =
+      "General Affairs & Personal Gr.:";
+    $("#printCopyInfoLabelTwo")[0].firstChild.nodeValue =
+      "Control Dept Corporate Planning Gr.:";
+  }
 }
 function fillAttachment2(data) {
   var dates = data.dispatch_request.date_request;
@@ -536,6 +564,10 @@ function fillAttachment2(data) {
   const departmentSelected = data.dispatch_request.dept_id;
   const company_desc =
     departmentSelected != 15 ? data.dispatch_request.company_desc : "坂出工場";
+  const company_loc =
+    departmentSelected != 15
+      ? data.dispatch_request.company_loc
+      : "高松入国管理局　様";
   const [day, monthName, year] = dates.split(" ");
   const month = monthNames2.indexOf(monthName);
   var str = "";
@@ -588,7 +620,7 @@ function fillAttachment2(data) {
   $("#dic_tel").text(data.dispatch_request.dic_tel);
   $("#comp_jap").text(data.dispatch_request.company_jap);
   $("#comp_desc").text(company_desc);
-  $("#comp_loc").text(data.dispatch_request.company_loc);
+  $("#comp_loc").text(company_loc);
   $("#company_n_desc").text(
     `${data.dispatch_request.company_jap} ${data.dispatch_request.company_desc}`
   );
