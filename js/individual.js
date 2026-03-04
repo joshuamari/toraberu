@@ -86,7 +86,7 @@ function getDispatchlist() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.");
+          reject("An unspecified error occurred.1");
         }
       },
     });
@@ -142,7 +142,7 @@ function getExpiringPassport() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.");
+          reject("An unspecified error occurred.2");
         }
       },
     });
@@ -153,7 +153,7 @@ function fillPassport(eplist) {
   tableBody.empty();
   if (eplist.length === 0) {
     var noDataRow = $(
-      "<tr><td colspan='2' class='text-center'>No expiring passports</td></tr>"
+      "<tr><td colspan='2' class='text-center'>No expiring passports</td></tr>",
     );
     tableBody.append(noDataRow);
   } else {
@@ -186,7 +186,7 @@ function getExpiringVisa() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.");
+          reject("An unspecified error occurred.3");
         }
       },
     });
@@ -197,7 +197,7 @@ function fillVisa(evlist) {
   tableBody.empty();
   if (evlist.length === 0) {
     var noDataRow = $(
-      "<tr><td colspan='2' class='text-center'>No expiring visa</td></tr>"
+      "<tr><td colspan='2' class='text-center'>No expiring visa</td></tr>",
     );
     tableBody.append(noDataRow);
   } else {
@@ -242,7 +242,7 @@ function checkAccess() {
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred.");
+          reject("An unspecified error occurred.4");
         }
       },
     });
