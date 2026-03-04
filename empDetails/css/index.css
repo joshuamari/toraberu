@@ -7,6 +7,9 @@ table thead tr {
 .back {
   padding-bottom: 20px !important;
 }
+p {
+  margin: 0;
+}
 
 .back a span,
 .back a i {

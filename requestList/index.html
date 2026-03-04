@@ -2,27 +2,29 @@
 <html lang="en">
 
 <head>
-  <title>Passport Control System</title>
+  <title>トラベる - KDT</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta charset="UTF-8" />
 
-  <script src="js/html2canvas.js"></script>
-  <script src="js/jquery.js"></script>
-  <script src="js/jquery.inview.min.js"></script>
-  <!-- <script src="js/jquery.table2excel.js"></script> -->
-  <script>
-    var busterCall = ["js/individual.js", "css/index.css"];
-    $.post(
-      "php/get_version.php",
-      {
-        busterCall: busterCall,
-        titleName: "トラベる - KDT",
-      },
-      function (data) {
-        $("head").html(data);
-      }
-    );
-  </script>
+  <!-- CSS FIRST (no delay) -->
+  <link rel="stylesheet" href="../global.css">
+  <link rel="stylesheet" href="../css/tailwind.css">
+  <link rel="stylesheet" href="../css/font-awesome.css">
+  <link rel="stylesheet" href="../css/boxicons.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/index.css">
+
+  <!-- JS libs -->
+  <script src="../js/jquery.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/html2canvas.js"></script>
+  <script src="../js/jquery.inview.min.js"></script>
+  <script src="../js/jspdf.js"></script>
+  <script src="../js/chart.min.js"></script>
+  <script src="../js/tableToExcel.js"></script>
+
+  <!-- Page JS -->
+  <script defer src="js/individual.js"></script>
 </head>
 
 <!-- #region modal -->
@@ -708,7 +710,7 @@
               <li>
                 <div class="d-flex align-items-center gap-2">
                   <i class="bx bxs-dashboard"></i>
-                  <p>Dashboard</p>
+                  <p class="m-0">Dashboard</p>
                 </div>
               </li>
             </a>
@@ -716,7 +718,7 @@
               <li class="active">
                 <div class="d-flex align-items-center gap-2">
                   <i class="bx bx-task text-[18px]"></i>
-                  <p>Request List</p>
+                  <p class="m-0">Request List</p>
                 </div>
               </li>
             </a>
@@ -724,7 +726,7 @@
               <li>
                 <div class="d-flex align-items-center gap-2">
                   <i class="bx bxs-briefcase"></i>
-                  <p>Dispatch Request</p>
+                  <p class="m-0">Dispatch Request</p>
                 </div>
               </li>
             </a>
@@ -732,7 +734,7 @@
               <li>
                 <div class="d-flex align-items-center gap-2">
                   <i class="bx bxs-group"></i>
-                  <p>Employee List</p>
+                  <p class="m-0">Employee List</p>
                 </div>
               </li>
             </a>
@@ -740,7 +742,7 @@
               <li>
                 <div class="d-flex align-items-center gap-2">
                   <i class="bx bxs-report"></i>
-                  <p>Report</p>
+                  <p class="m-0">Report</p>
                 </div>
               </li>
             </a>
@@ -756,9 +758,9 @@
               </div>
 
               <div class="w-full">
-                <div class="" id="empLabel">Boglin Kit</div>
+                <div class="" id="empLabel"></div>
                 <div class="text-uppercase text-[10px] text-gray-400" id="grpLabel">
-                  Systems group
+              
                 </div>
               </div>
             </div>
@@ -775,13 +777,13 @@
             <li>
               <div class="d-flex align-items-center gap-2">
                 <i class='bx bx-home-alt'></i>
-                <p>KDT Portal</p>
+                <p class="m-0">KDT Portal</p>
               </div>
             </li>
           </a>
           <div class="relative">
             <p
-              class="absolute bottom-[-10px] text-[var(--gray-text)] text-xs"
+              class="absolute bottom-[-10px] m-0 text-[var(--gray-text)] text-xs"
             >
               ©2024 KDT.トラベる v1.0.0
             </p>
@@ -792,7 +794,7 @@
     <div class="content h-screen">
       <div class="flex flex-col  overflow-auto p-[14px] md:p-8 h-full w-full">
         <div class="pageTitle w-100 gap-3 d-flex">
-          <div id="menu">
+          <div id="menu" class="aspect-square">
             <i class="bx bx-menu-alt-left fs-3"></i>
           </div>
           <h1 class="fw-semibold m-0">Requests from KHI</h1>
@@ -800,7 +802,7 @@
 
         <div class=" w-100 h-[calc(100%-35px)] lg:h-[calc(100%-30px)] pt-3 flex flex-col  gap-3 relative">
           <div class="lg:flex  gap-2 lg:gap-4 w-100 grid grid-cols-2">
-            <span class="card active">
+            <span class="card active flex justify-between">
               <div class="flex gap-2 items-center">
                 <span class="icon"> <i class='bx bxs-error-circle text-[16px] font-medium '></i></span>
 
@@ -808,47 +810,49 @@
 
               </div>
               <div class="pt-6 flex gap-3 items-center justify-content-between w-100">
-                <h2 class="text-[var(--white)] text-[32px] font-semibold" id="cardPending"></h2>
+                <h2 class="text-[var(--white)] m-0 text-[32px] font-semibold" id="cardPending"></h2>
 
 
               </div>
             </span>
-            <span class="card ">
+            <span class="card flex justify-between">
               <div class="flex gap-2 items-center">
-                <span class="icon"> <i class='bx bx-check text-[16px] font-medium '></i></span>
+                <span class="icon aspect-square">
+                  <i class='bx bx-check text-[16px] font-medium '></i>
+                </span>
 
                 <h6 class=" m-0 font-semibold">Total Accepted Requests</h6>
 
               </div>
               <div class="pt-6 flex gap-3 items-center justify-content-between w-100">
-                <h2 class=" text-[32px] font-bold" id="cardAccepted"></h2>
-                <span class="bg-[var(--secondary)] px-2 py-0 rounded-lg " id="cardTodayAccepted"></span>
+                <h2 class=" text-[32px] font-bold m-0" id="cardAccepted"></h2>
+                <span class="bg-[var(--secondary)] m-0 px-2 py-0 rounded-lg " id="cardTodayAccepted"></span>
               </div>
             </span>
-            <span class="card">
+            <span class="card flex justify-between">
               <div class="flex gap-2 items-center">
-                <span class="w-[25px] h-[25px] flex items-center justify-content-center rounded-md bg-[var(--dark)] ">
+                <span class="w-[25px] h-[25px] flex items-center justify-content-center rounded-md bg-[var(--dark)] aspect-square">
                   <i class='bx bx-x text-[16px] font-medium text-[var(--white)]'></i></span>
 
                 <h6 class=" m-0 font-semibold">Total Cancelled Requests</h6>
 
               </div>
               <div class="pt-6 flex gap-3 items-center justify-content-between w-100">
-                <h2 class=" text-[32px] font-bold" id="cardCancelled"></h2>
+                <h2 class=" text-[32px] font-bold m-0" id="cardCancelled"></h2>
 
               </div>
             </span>
-            <span class="card">
+            <span class="card flex justify-between">
               <div class="flex gap-2 items-center">
-                <span class="w-[25px] h-[25px] flex items-center justify-content-center rounded-md bg-[var(--dark)] ">
-                  <i class='bx bxs-file text-[16px] font-medium text-[var(--white)]'></i></span>
+                <span class="w-[25px] h-[25px] flex items-center justify-content-center rounded-md bg-[var(--dark)] aspect-square">
+                  <i class='bx bxs-file text-[12px] font-medium text-[var(--white)]'></i></span>
 
                 <h6 class=" m-0 font-semibold">Total Requests</h6>
 
               </div>
               <div class="pt-6 flex gap-3 items-center justify-content-between w-100">
-                <h2 class=" text-[32px] font-bold" id="cardTotal"></h2>
-                <span class="bg-[var(--secondary)] px-2 py-0 rounded-lg " id="cardTodayTotal"></span>
+                <h2 class=" text-[32px] font-bold m-0" id="cardTotal"></h2>
+                <span class="bg-[var(--secondary)] px-2 py-0 rounded-lg m-0" id="cardTodayTotal"></span>
 
               </div>
             </span>
@@ -867,21 +871,21 @@
                   </div>
                   <button role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" tabindex="0"
                     class="relative block  p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)]">All</p>
+                    <p class=" text-[var(--gray-text)] m-0 text-sm">All</p>
 
                   </button>
                   <button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" tabindex="-1"
                     class="relative block  p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)]">Pending</p>
+                    <p class=" text-[var(--gray-text)] m-0 text-sm">Pending</p>
                  
                   </button>
                   <button role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" tabindex="-2"
                     class="relative block p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)]">Accepted</p>
+                    <p class=" text-[var(--gray-text)] m-0 text-sm">Accepted</p>
                   </button>
                   <button role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4" tabindex="-3"
                     class="relative block p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)]">Cancelled</p>
+                    <p class=" text-[var(--gray-text)] m-0 text-sm">Cancelled</p>
                   </button>
 
                 </div>

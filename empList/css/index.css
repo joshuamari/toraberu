@@ -11,6 +11,9 @@
   z-index: 10;
   cursor: pointer;
 }
+p {
+  margin: 0;
+}
 .help i {
   font-size: 25px;
 }
