@@ -983,12 +983,13 @@ function updateStatus(status) {
         resolve(res);
       },
       error: function (xhr, status, error) {
+        console.log("XHR RESPONSE:", xhr.responseText);
         if (xhr.status === 404) {
           reject("Not Found Error: The requested resource was not found.");
         } else if (xhr.status === 500) {
           reject("Internal Server Error: There was a server error.");
         } else {
-          reject("An unspecified error occurred while updating status.");
+          reject(`An unspecified error occurred while updating status: ${error}`);
         }
       },
     });

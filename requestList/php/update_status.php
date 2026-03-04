@@ -23,7 +23,6 @@ $result = [
     "data" => array()
 ];
 $status = NULL;
-$dispatchID = NULL;
 $userID = getID();
 $devs = [464, 487, 510, 518, 521];
 $presID = getPresID();
@@ -31,7 +30,7 @@ $devs = array_merge($presID, $devs);
 $data = json_decode(file_get_contents("php://input"), true);
 $empty = [];
 $input = [];
-$required_fields = ['request_status', 'request_id', `dispatch_id`];
+$required_fields = ['request_status', 'request_id'];
 foreach ($required_fields as $field) {
     if (isset($data[$field])) {
         $input[$field] = html_entity_decode($data[$field], ENT_QUOTES, 'UTF-8');
@@ -40,7 +39,8 @@ foreach ($required_fields as $field) {
     }
 }
 $status = $input['request_status'];
-$dispatchID = $input['dispatch_id'];
+$request_id = $input['request_id'];
+$dispatchID = getDispatchID($request_id);
 $currentDatetime = date("Y-m-d H:i:s");
 #endregion
 
@@ -70,9 +70,9 @@ $connpcs->beginTransaction();
 try {
     $udpateQ = "UPDATE `request_list` SET `request_status`=:request_status,`date_modified`=:date_modified WHERE `request_id`=:request_id ";
     $updateStmt = $connpcs->prepare($udpateQ);
-    $updateStmt->execute([":request_status" => $status, ":request_id" => $input['request_id'], ":date_modified" => $currentDatetime]);
+    $updateStmt->execute([":request_status" => $status, ":request_id" => $request_id, ":date_modified" => $currentDatetime]);
     if ($updateStmt->rowCount() > 0) {
-        $details = getRequestDetails($input['request_id']);
+        $details = getRequestDetails($request_id);
         if ($status == 1 && $dispatchID == NULL) {
             $updateDQ = "INSERT INTO `dispatch_list`(`emp_number`,`location_id`,`dispatch_from`,`dispatch_to`,`request_id`)  VALUES(:emp_number, :location_id, :dispatch_from, :dispatch_to, :request_id)";
             $updateDQStmt = $connpcs->prepare($updateDQ);
@@ -81,7 +81,7 @@ try {
                 ":location_id" => $details['location_id'],
                 ":dispatch_from" => $details['dispatch_from'],
                 ":dispatch_to" => $details['dispatch_to'],
-                ":request_id" => $input['request_id']
+                ":request_id" => $request_id
             ]);
             if ($updateDQStmt->rowCount() < 1) {
                 $result['message'] = 'Failed to insert into dispatch list';
@@ -100,8 +100,8 @@ try {
                 die(json_encode($result));
             }
         }
-
-        if (true) {
+        if (emailStatusChange($status, $details)) {
+        // if (true) {
             $text = $status ? "approved" : "denied";
             $result['isSuccess'] = TRUE;
             $result['message'] = "Successfully $text";

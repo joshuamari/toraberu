@@ -444,4 +444,15 @@ function getCompanyDetails($comp_id)
     }
     return $company_details;
 }
+function getDispatchID($req_id){
+    global $connpcs;
+    $dispatch_id = NULL;
+    $dQ = "SELECT `dispatch_id` FROM `dispatch_list` WHERE `request_id`=:req_id";
+    $dStmt = $connpcs->prepare($dQ);
+    $dStmt -> execute([":req_id" => $req_id]);
+    if($dStmt->rowCount()>0){
+        $dispatch_id = $dStmt->fetchColumn();
+    }
+    return $dispatch_id;
+}
 #endregion
