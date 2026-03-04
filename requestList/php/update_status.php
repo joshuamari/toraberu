@@ -23,6 +23,7 @@ $result = [
     "data" => array()
 ];
 $status = NULL;
+$dispatchID = NULL;
 $userID = getID();
 $devs = [464, 487, 510, 518, 521];
 $presID = getPresID();
@@ -30,7 +31,7 @@ $devs = array_merge($presID, $devs);
 $data = json_decode(file_get_contents("php://input"), true);
 $empty = [];
 $input = [];
-$required_fields = ['request_status', 'request_id'];
+$required_fields = ['request_status', 'request_id', `dispatch_id`];
 foreach ($required_fields as $field) {
     if (isset($data[$field])) {
         $input[$field] = html_entity_decode($data[$field], ENT_QUOTES, 'UTF-8');
@@ -39,6 +40,7 @@ foreach ($required_fields as $field) {
     }
 }
 $status = $input['request_status'];
+$dispatchID = $input['dispatch_id'];
 $currentDatetime = date("Y-m-d H:i:s");
 #endregion
 
@@ -71,7 +73,7 @@ try {
     $updateStmt->execute([":request_status" => $status, ":request_id" => $input['request_id'], ":date_modified" => $currentDatetime]);
     if ($updateStmt->rowCount() > 0) {
         $details = getRequestDetails($input['request_id']);
-        if ($status == 1) {
+        if ($status == 1 && $dispatchID == NULL) {
             $updateDQ = "INSERT INTO `dispatch_list`(`emp_number`,`location_id`,`dispatch_from`,`dispatch_to`,`request_id`)  VALUES(:emp_number, :location_id, :dispatch_from, :dispatch_to, :request_id)";
             $updateDQStmt = $connpcs->prepare($updateDQ);
             $updateDQStmt->execute([
@@ -87,7 +89,19 @@ try {
                 die(json_encode($result));
             }
         }
-        if (emailStatusChange($status, $details)) {
+
+        if ($dispatchID != NULL) {
+            $deleteDQ = "DELETE FROM `dispatch_list` WHERE `dispatch_id`=:dispatch_id";
+            $deleteDQStmt = $connpcs->prepare($deleteDQ);
+            $deleteDQStmt->execute([":dispatch_id" => $dispatchID]);
+            if ($deleteDQStmt->rowCount() < 1) {
+                $result['message'] = 'Failed to delete from dispatch list';
+                $connpcs->rollBack();
+                die(json_encode($result));
+            }
+        }
+
+        if (true) {
             $text = $status ? "approved" : "denied";
             $result['isSuccess'] = TRUE;
             $result['message'] = "Successfully $text";
