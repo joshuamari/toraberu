@@ -674,7 +674,8 @@ function fillOpenModal(trID) {
   const [last, given] = name.split(",");
   const surname = last.toUpperCase();
   const first = given.replace(/\s+/g, "");
-
+  const modi = req.modified;
+console.log(req)
   formatStatus(status);
   formatVisaPassport(visaValidity, passValidity);
   $("#modalEmpName").text(name);
@@ -689,6 +690,13 @@ function fillOpenModal(trID) {
   $("#attachment").text(`${empnum}_${surname}${first}_DispatchRequest`);
   $("#attachment2").text(`${empnum}_${surname}${first}_WorkHistory`);
 
+  if (!modi) {
+    $("#modalModiDate").text("");
+  } else {
+    var [date, time] = modi.split(" ");
+    $("#modalModiDate").text(formatDate(date) + " " + time);
+  }
+
   if (duration > 1) {
     $("#modalDuration").html(
       `<span class="text-[16px] font-semibold" >${duration}</span>
@@ -699,6 +707,11 @@ function fillOpenModal(trID) {
       `<span class="text-[16px] font-semibold" >${duration}</span>
        <p>day in total</p>`,
     );
+  }
+  if (status === null || isNaN(status)) {
+    $("#modifyFooter").addClass("d-none");
+  } else {
+    $("#modifyFooter").removeClass("d-none");
   }
 
   formatButtons(status);
@@ -743,6 +756,9 @@ function formatStatus(status) {
   $("#titleModal").html(
     `  Dispatch Request<span class="status lg ${statusString} ms-3">${statusString}</span>`,
   );
+    if (!isNaN(status) || status === null) {
+    $("#modiLabel").text(`${statusString}`);
+  }
 }
 function formatVisaPassport(visa, passport) {
   function updateModal(id, isValid) {
