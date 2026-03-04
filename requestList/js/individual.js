@@ -110,7 +110,7 @@ $(document).on("change", "#grpSel", function () {
   $(".grpCont").html(
     `<i class='bx bx-group'></i>
       <span id="lblGrp">${sel}</span>
-      <i class='bx bx-x text-[18px] ml-3 z-[100]' id="removeGroup"></i>`
+      <i class='bx bx-x text-[18px] ml-3 z-[100]' id="removeGroup"></i>`,
   );
   toggleLoadingAnimation(true);
   searchFilter(reqList);
@@ -120,7 +120,7 @@ $(document).on("click", "#removeGroup", function () {
   $(".grpCont").html(
     `   <i class='bx bx-group'></i>
         <span id="lblGrp">All Groups</span>
-        <i class='bx bx-chevron-down text-[18px] ml-3'></i>`
+        <i class='bx bx-chevron-down text-[18px] ml-3'></i>`,
   );
   $("#grpSel").val($("#grpSel option:first").val());
   $("#grpSel").change();
@@ -248,9 +248,8 @@ $(document).on("click", ".statusBtn", function () {
 
 $(document).on("click", ".btn-reject", function () {
   $(".statusBtn").prop("disabled", true);
-  $(
-    this
-  ).html(`<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+  $(this)
+    .html(`<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
       <circle class="opacity-25 text-slate-200" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
       <path class="opacity-100 text-white" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
     </svg>
@@ -258,9 +257,8 @@ $(document).on("click", ".btn-reject", function () {
 });
 $(document).on("click", ".btn-accept", function () {
   $(".statusBtn").prop("disabled", true);
-  $(
-    this
-  ).html(`<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-[var(--dark)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+  $(this)
+    .html(`<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-[var(--dark)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 </svg>
@@ -444,13 +442,13 @@ function fillCards() {
   $("#cardAccepted").text(accepted);
   if (todayAccept != 0) {
     $("#cardTodayAccepted").html(
-      `<small class="font-semibold" >+${todayAccept} today</small>`
+      `<small class="font-semibold" >+${todayAccept} today</small>`,
     );
   }
   $("#cardCancelled").text(cancelled);
   if (todayTotal != 0) {
     $("#cardTodayTotal").html(
-      `<small class="font-semibold" >+${todayTotal} today</small>`
+      `<small class="font-semibold" >+${todayTotal} today</small>`,
     );
   }
   $("#cardTotal").text(total);
@@ -535,7 +533,7 @@ function fillAttachment(data) {
     const newAddress = ": 1, Kawasaki cho, Sakaide city, Kagawa 762-8507 Japan";
     $("#disAddress").html(
       '<span id="location" class="font-semibold text-[10px]">SAKAIDE</span>' +
-        newAddress
+        newAddress,
     );
     $("#disPhone").text("Phone: 81-(0)877-46-0315");
     $("#disFax").text("Facsimile: 81-(0)877-46-4397");
@@ -548,7 +546,7 @@ function fillAttachment(data) {
       ": 1-1, Higashikawasaki 3-Chome, Chuo-ku, KOBE 650-8670 Japan";
     $("#disAddress").html(
       '<span id="location" class="font-semibold text-[10px]">KOBE</span>' +
-        newAddress
+        newAddress,
     );
     $("#disPhone").text("Phone: 81-(0)78-682-5202");
     $("#disFax").text("Facsimile:81-(0)78-682-5574");
@@ -622,7 +620,7 @@ function fillAttachment2(data) {
   $("#comp_desc").text(company_desc);
   $("#comp_loc").text(company_loc);
   $("#company_n_desc").text(
-    `${data.dispatch_request.company_jap} ${data.dispatch_request.company_desc}`
+    `${data.dispatch_request.company_jap} ${data.dispatch_request.company_desc}`,
   );
 }
 function insertIconCountry(id) {
@@ -694,12 +692,12 @@ function fillOpenModal(trID) {
   if (duration > 1) {
     $("#modalDuration").html(
       `<span class="text-[16px] font-semibold" >${duration}</span>
-       <p>days in total</p>`
+       <p>days in total</p>`,
     );
   } else {
     $("#modalDuration").html(
       `<span class="text-[16px] font-semibold" >${duration}</span>
-       <p>day in total</p>`
+       <p>day in total</p>`,
     );
   }
 
@@ -719,6 +717,12 @@ function formatButtons(status) {
         <button
           class="statusBtn btn-accept w-50 flex overflow-hidden items-center justify-center disabled:pointer-events-none" stat-id="1">Accept</button>
       </div>`);
+  } else if (status === 1 && presID.includes(parseInt(empDetails["id"]))) {
+    $("#openModal .modal-content")
+      .append(`<div class="flex-nowrap modal-footer  flex gap-2 border-0 ">
+        <button
+          class="statusBtn btn-reject transition w-50 flex overflow-hidden items-center justify-center disabled:pointer-events-none" stat-id="0">Cancel</button>
+      </div>`);
   } else {
     $("#openModal .modal-footer").remove();
   }
@@ -734,10 +738,10 @@ function formatStatus(status) {
     isNaN(status) || status === null
       ? "pending"
       : status === 1
-      ? "accepted"
-      : "cancelled";
+        ? "accepted"
+        : "cancelled";
   $("#titleModal").html(
-    `  Dispatch Request<span class="status lg ${statusString} ms-3">${statusString}</span>`
+    `  Dispatch Request<span class="status lg ${statusString} ms-3">${statusString}</span>`,
   );
 }
 function formatVisaPassport(visa, passport) {
@@ -752,8 +756,8 @@ function formatVisaPassport(visa, passport) {
     $(id).html(`
       <i class='bx ${iconClass} text-[18px]'></i>
       <p class="text-[14px] ${className}">${statusText} ${
-      id === "#modalPassport" ? "Passport" : "Visa"
-    }</p>
+        id === "#modalPassport" ? "Passport" : "Visa"
+      }</p>
     `);
   }
 
@@ -779,10 +783,10 @@ function fillTable(sampleData) {
                         Pending
                       </span>`
           : item.status == 1
-          ? `  <span class=" status accepted ">
+            ? `  <span class=" status accepted ">
                         Accepted
                       </span>`
-          : `<span class=" status cancelled ">
+            : `<span class=" status cancelled ">
                         Cancelled
                       </span>`
       }</td>
