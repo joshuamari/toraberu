@@ -9,7 +9,9 @@ table tbody tr td {
   white-space: nowrap;
 }
 
-
+p {
+  margin: 0;
+}
 
 table thead tr th {
   background-color: var(--tableheader);
@@ -190,8 +192,10 @@ tbody tr:hover td {
 .passport:hover a i {
   color: var(--gray-text2) !important;
 }
-#attachmentModal p, #attachmentModal2 span,#attachmentModal2 p {
-  margin: 0 ;
+#attachmentModal p,
+#attachmentModal2 span,
+#attachmentModal2 p {
+  margin: 0;
   font-size: 14px;
   font-family: "Arial", sans-serif;
   line-height: normal;
@@ -199,7 +203,7 @@ tbody tr:hover td {
 }
 #attachmentModal td,
 #attachmentModal th {
-  margin: 0 ;
+  margin: 0;
   padding: 0 10px;
   background-color: #fff;
   font-family: "Arial", sans-serif;
@@ -212,25 +216,28 @@ tbody tr:hover td {
   vertical-align: middle;
   height: 18px;
 }
-#attachmentModal td.special{
+#attachmentModal td.special {
   height: 32px;
 }
-#attachmentModal{
+#attachmentModal {
   --white: #e3e3e3;
 }
 #attachmentModal td p,
-#attachmentModal th p{
+#attachmentModal th p {
   color: #000;
-  
 }
-#attachmentModal th p{
+#attachmentModal th p {
   font-size: 12px;
 }
 #attachmentModal th {
   height: 20px;
   color: #000;
 }
-#attachmentModal span, #attachmentModal2 span, #attachmentModal2 td,#attachmentModal2 th, #attachmentModal2 div{
+#attachmentModal span,
+#attachmentModal2 span,
+#attachmentModal2 td,
+#attachmentModal2 th,
+#attachmentModal2 div {
   color: #000;
 }
 #attachmentModal td {
@@ -270,7 +277,7 @@ tbody tr:hover td {
   text-align: center;
   white-space: normal;
   font-family: "Arial", sans-serif;
-font-size: 12px;
+  font-size: 12px;
   border: 0.5px solid #000;
   border-left: 0;
   border-top: 0;
@@ -279,7 +286,7 @@ font-size: 12px;
 #toPrint2 td:first-of-type {
   border-left: 1px solid #000;
 }
-#toPrint2 tbody tr:last-of-type td{
+#toPrint2 tbody tr:last-of-type td {
   border-bottom: 1px solid #000;
 }
 #toPrint2 tr:nth-of-type(2) th {
@@ -331,12 +338,11 @@ font-size: 12px;
 .btn-accept:hover {
   background-color: var(--tertiary);
 }
-p.active{
+p.active {
   color: var(--dark) !important;
 }
 
 /* END OF BUTTON CSS */
-
 
 @media (max-width: 946px) {
   .selection {
@@ -363,6 +369,4 @@ p.active{
   #toPrint table {
     border: 0.5px solid #000;
   }
-
-
 }

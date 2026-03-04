@@ -3,6 +3,9 @@ table {
   border-spacing: 0;
   width: 100%;
 }
+p {
+  margin: 0;
+}
 table thead tr th,
 table tbody tr td {
   text-align: center;
