@@ -9,3 +9,6 @@ mail.html
 
 #ignore email test
 php/check_recipients.php
+
+/vendor/
+/.env
