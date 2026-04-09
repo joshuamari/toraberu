@@ -922,10 +922,6 @@ video {
   height: calc(100% - 35px);
 }
 
-.h-\[calc\(100\%-42px\)\] {
-  height: calc(100% - 42px);
-}
-
 .h-\[calc\(100\%-45px\)\] {
   height: calc(100% - 45px);
 }
@@ -1050,6 +1046,10 @@ video {
   width: 100%;
 }
 
+.min-w-\[1100px\] {
+  min-width: 1100px;
+}
+
 .min-w-\[200px\] {
   min-width: 200px;
 }
@@ -1072,6 +1072,15 @@ video {
 
 .min-w-\[50px\] {
   min-width: 50px;
+}
+
+.min-w-0 {
+  min-width: 0px;
+}
+
+.min-w-max {
+  min-width: -moz-max-content;
+  min-width: max-content;
 }
 
 .border-collapse {
@@ -1178,6 +1187,14 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
 }
 
 .whitespace-nowrap {
@@ -1696,6 +1713,18 @@ video {
   opacity: 0.75;
 }
 
+.opacity-70 {
+  opacity: 0.7;
+}
+
+.opacity-60 {
+  opacity: 0.6;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
 .shadow {
   --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
@@ -1839,6 +1868,10 @@ video {
     width: auto;
   }
 
+  .lg\:min-w-full {
+    min-width: 100%;
+  }
+
   .lg\:flex-row {
     flex-direction: row;
   }
@@ -1883,6 +1916,10 @@ video {
 
   .xl\:row-start-2 {
     grid-row-start: 2;
+  }
+
+  .xl\:h-\[calc\(100\%-42px\)\] {
+    height: calc(100% - 42px);
   }
 
   .xl\:w-\[400px\] {
