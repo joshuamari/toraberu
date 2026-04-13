@@ -5,34 +5,34 @@ function initApp() {
 
   checkAccess()
     .then((emp) => {
-      if (emp.isSuccess) {
-        empDetails = emp.data;
-        fillEmployeeDetails();
+      empDetails = emp;
 
-        return Promise.all([
-          getDispatchlist(),
-          getExpiringPassport(),
-          getExpiringVisa(),
-          getGraph(),
-          getcurrentYear(),
-        ]).then(([dList, epList, evList, dData, crrntYear]) => {
-          fillDispatchList(dList);
-          fillPassport(epList);
-          fillVisa(evList);
-          dispatchGraph(dData);
-          $(".crrntYear").text(`(${crrntYear})`);
-          editAccess = emp.data.edit;
-          if (!editAccess) {
-            $("table tbody tr").css("cursor", "default");
-          }
-        });
-      } else {
-        alert(emp.message);
-        window.location.href = `${rootFolder}`;
-      }
+      fillEmployeeDetails();
+
+      return Promise.all([
+        getDispatchlist(),
+        getExpiringPassport(),
+        getExpiringVisa(),
+        getGraph(),
+        getcurrentYear(),
+      ]).then(([dList, epList, evList, dData, crrntYear]) => {
+        fillDispatchList(dList);
+        fillPassport(epList);
+        fillVisa(evList);
+        dispatchGraph(dData);
+        $(".crrntYear").text(`(${crrntYear})`);
+
+        // updated access logic
+        editAccess = emp.permissions.hasEdit;
+
+        if (!editAccess) {
+          $("table tbody tr").css("cursor", "default");
+        }
+      });
     })
     .catch((error) => {
       alert(`${error}`);
+      window.location.href = `${rootFolder}`;
     });
 }
 //#endregion

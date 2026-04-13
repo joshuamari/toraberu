@@ -6,7 +6,11 @@ function getJson(url, fallbackMessage) {
       url: url,
       dataType: "json",
       success: function (response) {
-        resolve(response);
+        if (!response.success) {
+          reject(response.message || fallbackMessage);
+          return;
+        }
+        resolve(response.data);
       },
       error: function (xhr) {
         reject(ajaxJsonErrorMessage(xhr, fallbackMessage));
@@ -23,7 +27,11 @@ function postJson(url, data, fallbackMessage) {
       data: data,
       dataType: "json",
       success: function (response) {
-        resolve(response);
+        if (!response.success) {
+          reject(response.message || fallbackMessage);
+          return;
+        }
+        resolve(response.data);
       },
       error: function (xhr) {
         reject(ajaxJsonErrorMessage(xhr, fallbackMessage));
@@ -35,48 +43,41 @@ function postJson(url, data, fallbackMessage) {
 
 //#region API
 function getcurrentYear() {
-  const yearNow = new Date().getFullYear();
-  return yearNow;
+  return new Date().getFullYear();
 }
 
 function getDispatchlist() {
-  return postJson(
-    "php/get_dispatch_list.php",
-    {
-      empnum: empDetails["id"],
-    },
-    "An unspecified error occurred.1",
+  return getJson(
+    "api/get_dispatch_list.php",
+    "Failed to load dispatch list.",
   );
 }
 
 function getExpiringPassport() {
-  return postJson(
-    "php/get_expiring_passport.php",
-    {
-      empnum: empDetails["id"],
-    },
-    "An unspecified error occurred.2",
+  return getJson(
+    "api/get_expiring_passport.php",
+    "Failed to load expiring passport list.",
   );
 }
 
 function getExpiringVisa() {
-  return postJson(
-    "php/get_expiring_visa.php",
-    {
-      empnum: empDetails["id"],
-    },
-    "An unspecified error occurred.3",
+  return getJson(
+    "api/get_expiring_visa.php",
+    "Failed to load expiring visa list.",
   );
 }
 
 function checkAccess() {
-  return getJson("global/check_login.php", "An unspecified error occurred.4");
+  return getJson(
+    "api/session.php",
+    "Failed to verify user session.",
+  );
 }
 
 function getGraph() {
   return getJson(
-    "php/get_summary.php",
-    "An unspecified error occurred while fetching graph data.",
+    "api/get_summary.php",
+    "Failed to load dashboard summary.",
   );
 }
 //#endregion

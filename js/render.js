@@ -1,10 +1,18 @@
 //#region RENDER
+let dispatchChartInstance = null;
+
 function dispatchGraph(dData) {
   const months = dData.map((data) => data.month);
   const rates = dData.map((data) => data.rate);
 
-  const ctx = document.getElementById("dispatchChart").getContext("2d");
-  const dispatchChart = new Chart(ctx, {
+  const canvas = document.getElementById("dispatchChart");
+  const ctx = canvas.getContext("2d");
+
+  if (dispatchChartInstance) {
+    dispatchChartInstance.destroy();
+  }
+
+  dispatchChartInstance = new Chart(ctx, {
     type: "line",
     data: {
       labels: months,
@@ -31,7 +39,7 @@ function dispatchGraph(dData) {
         tooltip: {
           callbacks: {
             label: function (tooltipItem) {
-              var value = tooltipItem.raw;
+              const value = tooltipItem.raw;
               return (
                 value +
                 " " +
