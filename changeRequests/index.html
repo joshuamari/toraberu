@@ -24,7 +24,7 @@
   <script src="../js/tableToExcel.js"></script>
 
   <!-- Page JS -->
-  <script defer src="js/individual.js"></script>
+  <!-- <script defer src="js/individual.js"></script> -->
 </head>
 
 <!-- #region modal -->
@@ -714,14 +714,36 @@
                 </div>
               </li>
             </a>
-            <a href="./">
-              <li class="active">
+            <a href="../requestList/">
+              <li >
                 <div class="d-flex align-items-center gap-2">
                   <i class="bx bx-task text-[18px]"></i>
                   <p class="m-0">Request List</p>
                 </div>
               </li>
             </a>
+               <a href="./changeRequests/"
+                ><li class="active">
+                  <div class="d-flex align-items-center gap-2">
+                    <span
+                      class="w-[18px] h-[18px] inline-flex items-center justify-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-full h-full"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                        <path
+                          d="M18.71 5.29a.996.996 0 0 0-1.41 0l-11 11a1 1 0 0 0-.29.71v3c0 .55.45 1 1 1h3c.27 0 .52-.11.71-.29l11-11a.996.996 0 0 0 0-1.41l-3-3ZM9.59 19H8v-1.59l7.5-7.5 1.59 1.59zm8.91-8.91L16.91 8.5 18 7.41 19.59 9zm-10.73.06C9.5 8.72 11 7.49 11 6c0-3.81-7.5-4-9-4v2c3.31 0 7 .83 7 2 0 .54-1.51 1.78-2.5 2.6-2.06 1.7-4.4 3.63-4.24 6.07.09 1.4 1 2.67 2.74 3.86V17c0-.3.07-.59.2-.85-.59-.56-.91-1.1-.94-1.61-.09-1.41 1.83-3 3.52-4.39Z"
+                        ></path>
+                      </svg>
+                    </span>
+                    <p class="m-0">Change Requests</p>
+                  </div>
+                </li></a
+              >
             <a href="../checkAvailability/">
               <li>
                 <div class="d-flex align-items-center gap-2">
@@ -797,69 +819,11 @@
           <div id="menu" class="aspect-square">
             <i class="bx bx-menu-alt-left fs-3"></i>
           </div>
-          <h1 class="fw-semibold m-0">Requests from KHI</h1>
+          <h1 class="fw-semibold m-0">Change Requests</h1>
         </div>
 
-        <div class=" w-100 h-[calc(100%-35px)] lg:h-[calc(100%-30px)] pt-3 flex flex-col  gap-3 relative">
-          <div class="lg:flex  gap-2 lg:gap-4 w-100 grid grid-cols-2">
-            <span class="card active flex justify-between">
-              <div class="flex gap-2 items-center">
-                <span class="icon"> <i class='bx bxs-error-circle text-[16px] font-medium '></i></span>
-
-                <h6 class="">Pending Requests</h6>
-
-              </div>
-              <div class="pt-6 flex gap-3 items-center justify-content-between w-100">
-                <h2 class="text-[var(--white)] m-0 text-[32px] font-semibold" id="cardPending"></h2>
-
-
-              </div>
-            </span>
-            <span class="card flex justify-between">
-              <div class="flex gap-2 items-center">
-                <span class="icon aspect-square">
-                  <i class='bx bx-check text-[16px] font-medium '></i>
-                </span>
-
-                <h6 class=" m-0 font-semibold">Total Accepted Requests</h6>
-
-              </div>
-              <div class="pt-6 flex gap-3 items-center justify-content-between w-100">
-                <h2 class=" text-[32px] font-bold m-0" id="cardAccepted"></h2>
-                <span class="bg-[var(--secondary)] m-0 px-2 py-0 rounded-lg " id="cardTodayAccepted"></span>
-              </div>
-            </span>
-            <span class="card flex justify-between">
-              <div class="flex gap-2 items-center">
-                <span class="w-[25px] h-[25px] flex items-center justify-content-center rounded-md bg-[var(--dark)] aspect-square">
-                  <i class='bx bx-x text-[16px] font-medium text-[var(--white)]'></i></span>
-
-                <h6 class=" m-0 font-semibold">Total Cancelled Requests</h6>
-
-              </div>
-              <div class="pt-6 flex gap-3 items-center justify-content-between w-100">
-                <h2 class=" text-[32px] font-bold m-0" id="cardCancelled"></h2>
-
-              </div>
-            </span>
-            <span class="card flex justify-between">
-              <div class="flex gap-2 items-center">
-                <span class="w-[25px] h-[25px] flex items-center justify-content-center rounded-md bg-[var(--dark)] aspect-square">
-                  <i class='bx bxs-file text-[12px] font-medium text-[var(--white)]'></i></span>
-
-                <h6 class=" m-0 font-semibold">Total Requests</h6>
-
-              </div>
-              <div class="pt-6 flex gap-3 items-center justify-content-between w-100">
-                <h2 class=" text-[32px] font-bold m-0" id="cardTotal"></h2>
-                <span class="bg-[var(--secondary)] px-2 py-0 rounded-lg m-0" id="cardTodayTotal"></span>
-
-              </div>
-            </span>
-
-
-
-          </div>
+        <div class=" w-full h-[calc(100%-35px)] lg:h-[calc(100%-30px)] pt-3 flex flex-col  gap-3 relative">
+          
           <div class="w-100 h-[calc(100%-275px)] lg:h-[calc(100%-130px)] bg-white rounded-lg border">
 
             <div class="flex lg:flex-row flex-col justify-content-between p-3 gap-2 lg:gap-0 border-b-[1px]">
