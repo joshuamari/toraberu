@@ -1,80 +1,118 @@
 //#region UI
 function fillDispatchList(dlist) {
-  var tableBody = $("#dlist");
+  const tableBody = $("#dlist");
   tableBody.empty();
 
   if (dlist.length === 0) {
-    var noDataRow = $("<tr><td colspan='4'>No data found</td></tr>");
+    const noDataRow = $("<tr>").append(
+      $("<td>").attr("colspan", "6").text("No data found"),
+    );
     tableBody.append(noDataRow);
-  } else {
-    $.each(dlist, function (index, item) {
-      var passClass = "bg-success";
-      var passVal = "Valid";
-      var visaClass = "bg-success";
-      var visaVal = "Valid";
-
-      if (!item.passValid) {
-        passClass = "bg-danger";
-        passVal = "Invalid";
-      }
-
-      if (!item.visaValid) {
-        visaClass = "bg-danger";
-        visaVal = "Invalid";
-      }
-
-      var row = $("<tr>");
-      row.append(`<td>${item.name}</td>`);
-      row.append(`<td>${item.location}</td>`);
-      row.append(`<td>${item.from}</td>`);
-      row.append(`<td>${item.to}</td>`);
-      row.append(`<td><span class="badge ${passClass}">${passVal}</span></td>`);
-      row.append(`<td><span class="badge ${visaClass}">${visaVal}</span></td>`);
-      tableBody.append(row);
-    });
+    return;
   }
+
+  $.each(dlist, function (index, item) {
+    let passClass = "bg-success";
+    let passVal = "Valid";
+    let visaClass = "bg-success";
+    let visaVal = "Valid";
+
+    if (!item.passValid) {
+      passClass = "bg-danger";
+      passVal = "Invalid";
+    }
+
+    if (!item.visaValid) {
+      visaClass = "bg-danger";
+      visaVal = "Invalid";
+    }
+
+    const row = $("<tr>");
+    row.append($("<td>").text(item.name));
+    row.append($("<td>").text(item.location));
+    row.append($("<td>").text(item.from));
+    row.append($("<td>").text(item.to));
+    row.append(
+      $("<td>").append(
+        $("<span>").addClass(`badge ${passClass}`).text(passVal),
+      ),
+    );
+    row.append(
+      $("<td>").append(
+        $("<span>").addClass(`badge ${visaClass}`).text(visaVal),
+      ),
+    );
+
+    tableBody.append(row);
+  });
 }
 
 function fillPassport(eplist) {
-  var tableBody = $("#eplist");
+  const tableBody = $("#eplist");
   tableBody.empty();
 
   if (eplist.length === 0) {
-    var noDataRow = $(
-      "<tr><td colspan='2' class='text-center'>No expiring passports</td></tr>"
+    const noDataRow = $("<tr>").append(
+      $("<td>")
+        .attr("colspan", "2")
+        .addClass("text-center")
+        .text("No expiring passports"),
     );
     tableBody.append(noDataRow);
-  } else {
-    $.each(eplist, function (index, item) {
-      var row = $(`<tr class="rowEmp" emp-id="${item.id}">`);
-      var untilText = formatDays(item.until);
-      var isShort = item.until < 300 ? "short" : "";
-      row.append(`<td>${item.name}</td>`);
-      row.append(`<td class="expire ${isShort}">${untilText}</td>`);
-      tableBody.append(row);
-    });
+    return;
   }
+
+  $.each(eplist, function (index, item) {
+    const untilText = formatDays(item.until);
+    const isShort = item.until < 300 ? "short" : "";
+
+    const row = $("<tr>")
+      .addClass("rowEmp")
+      .attr("data-emp-id", item.id);
+
+    row.append($("<td>").text(item.name));
+    row.append(
+      $("<td>")
+        .addClass(`expire ${isShort}`.trim())
+        .text(untilText),
+    );
+
+    tableBody.append(row);
+  });
 }
 
 function fillVisa(evlist) {
-  var tableBody = $("#evlist");
+  const tableBody = $("#evlist");
   tableBody.empty();
 
   if (evlist.length === 0) {
-    var noDataRow = $(
-      "<tr><td colspan='2' class='text-center'>No expiring visa</td></tr>"
+    const noDataRow = $("<tr>").append(
+      $("<td>")
+        .attr("colspan", "2")
+        .addClass("text-center")
+        .text("No expiring visas"),
     );
     tableBody.append(noDataRow);
-  } else {
-    $.each(evlist, function (index, item) {
-      var row = $(`<tr class="rowEmp" emp-id="${item.id}">`);
-      var untilText = formatDays(item.until);
-      var isShort = item.until < 210 ? "short" : "";
-      row.append(`<td>${item.name}</td>`);
-      row.append(`<td class="expire ${isShort}">${untilText}</td>`);
-      tableBody.append(row);
-    });
+    return;
   }
+
+  $.each(evlist, function (index, item) {
+    const untilText = formatDays(item.until);
+    const isShort = item.until < 210 ? "short" : "";
+
+    const row = $("<tr>")
+      .addClass("rowEmp")
+      .attr("data-emp-id", item.id);
+
+    row.append($("<td>").text(item.name));
+    row.append(
+      $("<td>")
+        .addClass(`expire ${isShort}`.trim())
+        .text(untilText),
+    );
+
+    tableBody.append(row);
+  });
 }
 
 function fillEmployeeDetails() {
@@ -83,8 +121,8 @@ function fillEmployeeDetails() {
   const initials = getInitials(fName, sName);
   const grpName = empDetails.group;
 
-  $("#empLabel").html(`${fName} ${sName}`);
-  $("#empInitials").html(`${initials}`);
-  $("#grpLabel").html(`${grpName}`);
+  $("#empLabel").text(`${fName} ${sName}`);
+  $("#empInitials").text(initials);
+  $("#grpLabel").text(grpName);
 }
 //#endregion
