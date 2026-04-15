@@ -1,39 +1,42 @@
-//#region APP
 function initApp() {
   initSidebar();
   bindEvents();
 
   checkAccess()
     .then((emp) => {
-      if (emp.isSuccess) {
-        empDetails = emp.data;
-        fillEmployeeDetails();
-        getYears();
-
-        return getGroups()
-          .then((grps) => {
-            fillGroups(grps);
-            return Promise.all([
-              getEmployees(),
-              getLocations(),
-              checkEditAccess(),
-            ]);
-          })
-          .then(([emps, locs, eAccess]) => {
-            editAccess = eAccess;
-            fillEmployees(emps);
-            fillLocations(locs);
-            if (eAccess === false) {
-              $("#updateEmp").remove();
-            }
-          });
-      } else {
+      if (!emp.success) {
         alert(emp.message);
         window.location.href = `${rootFolder}`;
+        throw new Error("Access denied");
+      }
+
+      empDetails = emp.data;
+      fillEmployeeDetails();
+      getYears();
+
+      return getGroups();
+    })
+    .then((grps) => {
+      fillGroups(grps.data);
+
+      return Promise.all([
+        getEmployees(),
+        getLocations(),
+      ]);
+    })
+    .then(([emps, locs]) => {
+      editAccess = empDetails.permissions.hasEdit;
+
+      fillEmployees(emps);
+      fillLocations(locs);
+
+      if (editAccess === false) {
+        $("#updateEmp").remove();
       }
     })
     .catch((error) => {
-      alert(`${error}`);
+      if (error.message !== "Access denied") {
+        alert(`${error}`);
+      }
     });
 }
-//#endregion

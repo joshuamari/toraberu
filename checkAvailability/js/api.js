@@ -35,7 +35,7 @@ function postJson(url, data, fallbackMessage) {
 
 //#region API
 function getGroups() {
-  return getJson("../global/get_groups.php", "An unspecified error occurred.7");
+  return getJson("../api/groups.php", "Failed to load groups.");
 }
 
 function getEmployees() {
@@ -181,14 +181,7 @@ function getLocations() {
 }
 
 function checkAccess() {
-  return getJson("../global/check_login.php", "An unspecified error occurred.");
-}
-
-function checkEditAccess() {
-  return getJson(
-    "php/check_edit_permission.php",
-    "An unspecified error occurred.1",
-  );
+  return getJson("../api/session.php", "Failed to verify user session.");
 }
 
 function getYearly() {
