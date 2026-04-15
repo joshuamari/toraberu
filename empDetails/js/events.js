@@ -68,69 +68,71 @@ function bindEvents() {
     resetVisaInput();
   });
 
-  $(document).on("click", ".btn-delete", function () {
-    var num = $(this).closest("tr").find("td:first-of-type").html();
+$(document).on("click", ".btn-delete", function () {
+  const row = $(this).closest("tr");
+  const num = row.find("td:first-of-type").html();
+  const dispatchID = row.data("dispatch-id");
 
-    var trID = $(this).closest("tr").attr("d-id");
-    $("#storeId").html(num);
-    $("#storeId").attr("del-id", trID);
-    let sn = $(".surname").text();
-    let fn = $(".givenname").text();
-    const fullname = sn.concat(fn);
-    $("#selectedEmp").text(fullname);
-  });
+  $("#storeId").html(num);
+  $("#storeId").attr("del-id", dispatchID);
 
-  $(document).on("click", "#btn-deleteEntry", function () {
-    deleteDispatch()
-      .then((res) => {
-        if (res.isSuccess) {
-          showToast("success", `${res.message}`);
-          Promise.all([getDispatchHistory(), getDispatchDays(), getYearly()])
-            .then(([dlst, dd, yrl]) => {
-              dHistory = dlst;
-              fillHistory(dHistory);
-              displayDays(dd);
-              fillYearly(yrl);
-              $("#deleteEntry .btn-close").click();
-            })
-            .catch((error) => {
-              alert(`${error}`);
-            });
-        } else {
-          showToast("error", `${res.message}`);
-        }
-      })
-      .catch((error) => {
-        showToast("error", `${error}`);
-      });
-  });
+  const sn = $(".surname").text();
+  const fn = $(".givenname").text();
+  const fullname = sn.concat(fn);
+
+  $("#selectedEmp").text(fullname);
+});
+
+$(document).on("click", "#btn-deleteEntry", function () {
+  const dispatchID = $("#storeId").attr("del-id");
+
+  if (!dispatchID) {
+    showToast("error", "Invalid dispatch ID.");
+    return;
+  }
+
+  deleteDispatch(parseInt(dispatchID, 10))
+    .then(() => {
+      showToast("success", "Deleted successfully.");
+
+      return Promise.all([getDispatchHistory(), getDispatchDays(), getYearly()]);
+    })
+    .then(([dlst, dd, yrl]) => {
+      dHistory = dlst.data;
+      fillHistory(dHistory);
+      displayDays(dd);
+      fillYearly(yrl);
+      // $("#deleteEntry .btn-close").click();
+      const modal = bootstrap.Modal.getInstance(document.getElementById("deleteEntry"));
+      modal.hide();
+    })
+    .catch((error) => {
+      showToast("error", `${error}`);
+    });
+});
 
   $(document).on("click", "#btn-savePass", function () {
     savePass()
       .then((res) => {
-        if (res.isSuccess) {
-          showToast("success", res.message);
-          getPassport(true)
-            .then((pport) => {
-              userPassD = pport;
-              passportDisplay(userPassD);
-              resetPassInput();
-            })
-            .catch((error) => {
-              alert(`${error}`);
-            });
-          getPassport(false)
-            .then((pport) => {
-              userPassI = pport;
-              passportInput(userPassI);
-              resetPassInput();
-            })
-            .catch((error) => {
-              alert(`${error}`);
-            });
-        } else {
-          showToast("error", res.message);
+        if (!res.success) {
+          throw res.message;
         }
+
+        showToast("success", res.message);
+
+        return Promise.all([
+          getPassport(true),
+          getPassport(false),
+        ]);
+      })
+      .then(([pportD, pportI]) => {
+        userPassD = pportD.data;
+        userPassI = pportI.data;
+
+        passportDisplay(userPassD);
+        passportInput(userPassI);
+
+        resetPassInput();
       })
       .catch((error) => {
         showToast("error", `${error}`);
@@ -140,29 +142,25 @@ function bindEvents() {
   $(document).on("click", "#btn-saveVisa", function () {
     saveVisa()
       .then((res) => {
-        if (res.isSuccess) {
-          showToast("success", res.message);
-          getVisa(true)
-            .then((vsa) => {
-              userVisaD = vsa;
-              visaDisplay(userVisaD);
-              resetVisaInput();
-            })
-            .catch((error) => {
-              alert(`${error}`);
-            });
-          getVisa(false)
-            .then((vsa) => {
-              userVisaI = vsa;
-              visaInput(userVisaI);
-              resetVisaInput();
-            })
-            .catch((error) => {
-              alert(`${error}`);
-            });
-        } else {
-          showToast("error", res.message);
+        if (!res.success) {
+          throw res.message;
         }
+
+        showToast("success", res.message);
+
+        return Promise.all([
+          getVisa(true),
+          getVisa(false),
+        ]);
+      })
+      .then(([vsaD, vsaI]) => {
+        userVisaD = vsaD.data;
+        userVisaI = vsaI.data;
+
+        visaDisplay(userVisaD);
+        visaInput(userVisaI);
+
+        resetVisaInput();
       })
       .catch((error) => {
         showToast("error", `${error}`);
@@ -202,30 +200,38 @@ function bindEvents() {
     $(this).removeClass("border border-danger");
   });
 
-  $(document).on("click", "#btn-saveEntry", function () {
-    saveEditEntry()
-      .then((res) => {
-        if (res.isSuccess) {
-          showToast("success", res.error);
-          Promise.all([getDispatchHistory(), getDispatchDays(), getYearly()])
-            .then(([dlst, dd, yrl]) => {
-              dHistory = dlst;
-              fillHistory(dHistory);
-              displayDays(dd);
-              fillYearly(yrl);
-              $("#btn-saveEntry").closest(".modal").find(".btn-close").click();
-            })
-            .catch((error) => {
-              alert(`${error}`);
-            });
-        } else {
-          showToast("error", `${res.error}`);
-        }
-      })
-      .catch((error) => {
-        showToast("error", `${error}`);
-      });
-  });
+$(document).on("click", "#btn-saveEntry", function () {
+  saveEditEntry()
+    .then((res) => {
+      if (!res.success) {
+        throw res.message;
+      }
+
+      showToast("success", res.message);
+
+      return Promise.all([
+        getDispatchHistory(),
+        getDispatchDays(),
+        getYearly(),
+      ]);
+    })
+    .then(([dlst, dd, yrl]) => {
+      dHistory = dlst.data;
+      fillHistory(dHistory);
+
+      displayDays(dd);
+
+      fillYearly(yrl);
+
+      const modal = bootstrap.Modal.getInstance(
+        document.getElementById("editEntry")
+      );
+      modal.hide();
+    })
+    .catch((error) => {
+      showToast("error", `${error}`);
+    });
+});
 
   $(document).on("change", ".edit-date", function () {
     computeTotalDays();
@@ -240,10 +246,20 @@ function bindEvents() {
   });
 
   $(document).on("click", ".btn-edit", function () {
-    var trID = parseInt($(this).closest("tr").attr("d-id"));
+    const trID = $(this).closest("tr").data("dispatch-id");
+
+    if (!trID) {
+      showToast("error", "Invalid dispatch ID.");
+      return;
+    }
+
     getEditDetails(trID);
+
     $("#editentryDateP, #editentryDateJ").prop("disabled", false);
-    $("#editEntry").modal("show");
+
+    const modal = new bootstrap.Modal(document.getElementById("editEntry"));
+    modal.show();
+
     $("#btn-saveEntry").attr("e-id", trID);
   });
 
@@ -277,32 +293,31 @@ function bindEvents() {
     $(this).closest(".modal").find(".btn-wh-close").click();
   });
 
-  $(document).on("click", "#btn-addWorkEntry", function () {
-    addWorkHistory()
-      .then((res) => {
-        if (!res.isSuccess) {
-          showToast("error", `${res.error}`);
-        } else {
-          getWorkHistory()
-            .then((wlst) => {
-              wHistory = wlst;
-              fillWorkHistory(wHistory);
-              clearAddWorkInputs();
-              $("#btn-addWorkEntry")
-                .closest(".modal")
-                .find(".btn-wh-close")
-                .click();
-            })
-            .catch((error) => {
-              showToast("error", error);
-            });
-          showToast("success", "Successfully Added Work History");
-        }
-      })
-      .catch((error) => {
-        showToast("error", error);
-      });
-  });
+$(document).on("click", "#btn-addWorkEntry", function () {
+  addWorkHistory()
+    .then((res) => {
+      if (!res.success) {
+        throw res.message;
+      }
+
+      showToast("success", res.message);
+
+      return getWorkHistory();
+    })
+    .then((wlst) => {
+      wHistory = wlst;
+      fillWorkHistory(wHistory);
+      clearAddWorkInputs();
+
+      const modal = bootstrap.Modal.getInstance(
+        document.getElementById("addNewWork")
+      );
+      modal.hide();
+    })
+    .catch((error) => {
+      showToast("error", `${error}`);
+    });
+});
 
   $(document).on(
     "click",
@@ -341,25 +356,30 @@ function bindEvents() {
   });
 
   $(document).on("click", "#btn-deleteWorkHistory", function () {
-    deleteWork().then((res) => {
-      if (res.isSuccess) {
-        showToast("success", res.error);
-        getWorkHistory()
-          .then((wlst) => {
-            wHistory = wlst;
-            fillWorkHistory(wHistory);
-            $("#btn-deleteWorkHistory")
-              .closest(".modal")
-              .find(".btn-wh-close")
-              .click();
-          })
-          .catch((error) => {
-            showToast("error", error);
-          });
-      } else {
-        showToast("error", res.error);
-      }
-    });
+    deleteWork()
+      .then((res) => {
+        if (!res.success) {
+          throw res.message;
+        }
+
+        showToast("success", res.message);
+
+        return getWorkHistory();
+      })
+      .then((wlst) => {
+        wHistory = wlst;
+        fillWorkHistory(wHistory);
+
+        const modalEl = document.getElementById("deleteWorkHistory");
+        const modal =
+          bootstrap.Modal.getInstance(modalEl) ||
+          bootstrap.Modal.getOrCreateInstance(modalEl);
+
+        modal.hide();
+      })
+      .catch((error) => {
+        showToast("error", `${error}`);
+      });
   });
 
   $(document).on("click", ".btn-edit-work", function () {
@@ -405,26 +425,25 @@ function bindEvents() {
   $(document).on("click", "#btn-updateWorkEntry", function () {
     saveEditWorkHistEntry()
       .then((res) => {
-        if (res.isSuccess) {
-          showToast("success", res.error);
-          getWorkHistory()
-            .then((wlst) => {
-              wHistory = wlst;
-              fillWorkHistory(wHistory);
-              $("#btn-updateWorkEntry")
-                .closest(".modal")
-                .find(".btn-wh-close")
-                .click();
-            })
-            .catch((error) => {
-              showToast("error", error);
-            });
-        } else {
-          showToast("error", res.error);
+        if (!res.success) {
+          throw res.message;
         }
+
+        showToast("success", res.message);
+
+        return getWorkHistory();
+      })
+      .then((wlst) => {
+        wHistory = wlst;
+        fillWorkHistory(wHistory);
+
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("editWorkHistory")
+        );
+        modal.hide();
       })
       .catch((error) => {
-        showToast("error", error);
+        showToast("error", `${error}`);
       });
   });
 }

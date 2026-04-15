@@ -35,4 +35,6 @@ require_once __DIR__ . '/services/AppSettingsService.php';
 
 require_once __DIR__ . '/services/EmployeeListService.php';
 
+require_once __DIR__ . '/services/EmployeeDetailsService.php';
+
 header('Content-Type: application/json; charset=UTF-8');

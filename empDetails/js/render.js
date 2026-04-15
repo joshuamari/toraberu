@@ -4,36 +4,30 @@ function fillHistory(dlist) {
   tableBody.empty();
   if (dlist.length === 0) {
     var noDataRow = $(
-      `<tr><td colspan='7' class="text-center">No data found</td></tr>`,
+      `<tr><td colspan='6' class="text-center">No data found</td></tr>`,
     );
     tableBody.append(noDataRow);
   } else {
     $.each(dlist, function (index, item) {
-      var row = $(`<tr d-id=${item.id}>`);
+      var row = $(`<tr data-dispatch-id="${item.id}">`);
       row.append(`<td data-exclude="true">${index + 1}</td>`);
       row.append(
-        `<td data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.locationName}</td>`,
+        `<td data-f-name="Arial" data-f-sz="9" data-a-h="center" data-a-v="middle" data-b-a-s="thin" data-b-a-c="000000">${item.locationName}</td>`,
       );
       row.append(
-        `<td data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.fromDate}</td>`,
+        `<td data-f-name="Arial" data-f-sz="9" data-a-h="center" data-a-v="middle" data-b-a-s="thin" data-b-a-c="000000">${item.fromDate}</td>`,
       );
       row.append(
-        `<td data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.toDate}</td>`,
+        `<td data-f-name="Arial" data-f-sz="9" data-a-h="center" data-a-v="middle" data-b-a-s="thin" data-b-a-c="000000">${item.toDate}</td>`,
       );
       row.append(
-        `<td data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.duration}</td>`,
-      );
-      row.append(
-        `<td data-f-name="Arial" data-f-sz="9"  data-a-h="center" data-a-v="middle" 	data-b-a-s="thin" data-b-a-c="000000">${item.pastOne}</td>`,
+        `<td data-f-name="Arial" data-f-sz="9" data-a-h="center" data-a-v="middle" data-b-a-s="thin" data-b-a-c="000000">${item.duration}</td>`,
       );
 
-      row.append(`<td data-exclude="true">                            <div class="d-flex gap-3">
-          <button
-            class="btn-edit"
-            title="Edit Entry"
-            
-          >
-          <i class='bx bxs-edit fs-5' ></i>
+      row.append(`<td data-exclude="true">
+        <div class="d-flex gap-3">
+          <button class="btn-edit" title="Edit Entry">
+            <i class='bx bxs-edit fs-5'></i>
           </button>
           <button
             class="btn-delete"
@@ -43,7 +37,8 @@ function fillHistory(dlist) {
           >
             <i class="bx bx-trash fs-5"></i>
           </button>
-        </div></td>`);
+        </div>
+      </td>`);
 
       tableBody.append(row);
     });
