@@ -3,7 +3,7 @@ function checkAccess() {
   return new Promise((resolve, reject) => {
     $.ajax({
       type: "GET",
-      url: "../global/check_login.php",
+      url: "../api/session.php",
       dataType: "json",
       success: function (data) {
         resolve(data);
@@ -25,7 +25,7 @@ function getGroups() {
   return new Promise((resolve, reject) => {
     $.ajax({
       type: "GET",
-      url: "../global/get_groups.php",
+      url: "../api/groups.php",
       dataType: "json",
       success: function (response) {
         resolve(response);
@@ -44,7 +44,7 @@ function getEmployees() {
   return new Promise((resolve, reject) => {
     $.ajax({
       type: "POST",
-      url: "php/get_employee_list.php",
+      url: "api/get_employee_list.php",
       data: {
         groupID: grpID,
         searchkey: keyword,
