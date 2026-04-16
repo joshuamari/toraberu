@@ -63,58 +63,70 @@ function putJson(url, data, fallbackMessage) {
 //#region API
 function getRequests() {
   return getJson(
-    "php/get_requests.php",
+    "api/get_requests.php",
     {},
-    "An unspecified error occurred while fetching requests.",
+    "Failed to load request list.",
   );
 }
 
 function getCount() {
   return getJson(
-    "php/get_count_requests.php",
+    "api/get_count_requests.php",
     {},
-    "An unspecified error occurred while fetching counts.",
+    "Failed to load request counts.",
   );
 }
 
 function getRequestData(req_id) {
   return getJson(
-    "php/get_request_data.php",
+    "api/get_request_data.php",
     {
       request_id: req_id,
     },
-    "An unspecified error occurred while fetching request data.",
+    "Failed to load request data.",
   );
 }
 
 function getPresID() {
   return getJson(
-    "php/get_pres_id.php",
+    "api/get_pres_id.php",
     {},
-    "An unspecified error occurred while fetching pres id.",
+    "Failed to load president IDs.",
   );
 }
 
 function getGroups() {
-  return getJson("php/get_groups.php", {}, "An unspecified error occurred.");
+  return getJson(
+    "api/get_groups.php",
+    {},
+    "Failed to load groups.",
+  );
 }
 
 function checkAccess() {
   return getJson(
-    "../global/check_login.php",
+    "../api/session.php",
     {},
-    "An unspecified error occurred.1",
+    "Failed to verify user session.",
   );
 }
 
 function updateStatus(status) {
   return putJson(
-    "php/update_status.php",
+    "api/update_status.php",
     {
       request_status: status,
       request_id: printData["dispatch_request"]["request_id"],
     },
-    "An unspecified error occurred while updating status.",
+    "Failed to update request status.",
+  );
+}
+
+function getHeader() {
+  return getJson(
+    "api/get_header.php",
+    {},
+    "Failed to load header data.",
   );
 }
 //#endregion

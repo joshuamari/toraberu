@@ -26,6 +26,7 @@ function postJson(url, data, fallbackMessage) {
         resolve(response);
       },
       error: function (xhr) {
+        console.log("RESPONSE:", xhr.responseText);
         reject(ajaxJsonErrorMessage(xhr, fallbackMessage));
       },
     });
@@ -56,83 +57,70 @@ function postFormData(url, formData, fallbackMessage) {
 //#region API
 function getEmployeeDetails() {
   return postJson(
-    "php/get_emp_details.php",
+    "api/get_emp_details.php",
     { empID: empID },
-    "An unspecified error occurred.1",
+    "Failed to load employee details.",
   );
 }
 
 function getPassport(isDetails) {
   return postJson(
-    "php/get_passport.php",
+    "api/get_passport.php",
     {
       empID: empID,
       isDetails: isDetails,
     },
-    "An unspecified error occurred.2",
+    "Failed to load passport details.",
   );
 }
 
 function getVisa(isDetails) {
   return postJson(
-    "php/get_visa.php",
+    "api/get_visa.php",
     {
       empID: empID,
       isDetails: isDetails,
     },
-    "An unspecified error occurred.3",
+    "Failed to load visa details.",
   );
 }
 
 function getDispatchHistory() {
   return postJson(
-    "php/get_dispatch_history.php",
-    { empID: empID },
-    "An unspecified error occurred.haha",
+    "api/get_dispatch_history.php",
+    {
+      empID: empID,
+    },
+    "Failed to load dispatch history.",
   );
 }
 
 function getDispatchDays() {
-  return new Promise((resolve, reject) => {
-    $.ajax({
-      type: "POST",
-      url: "php/check_duration.php",
-      data: {
-        empID: empID,
-      },
-      success: function (response) {
-        const dDays = response;
-        resolve(dDays);
-      },
-      error: function (xhr) {
-        reject(ajaxJsonErrorMessage(xhr, "An unspecified error occurreds."));
-      },
-    });
+  return postJson(
+    "api/check_duration.php",
+    { empID: empID },
+    "Failed to load dispatch days."
+  ).then((res) => {
+    if (!res.success) throw res.message;
+    return res.data;
   });
 }
 
-function deleteDispatch() {
-  const delID = $("#storeId").attr("del-id");
+function deleteDispatch(dispatchID) {
   return postJson(
-    "php/delete_dispatch_history.php",
-    {
-      dispatchID: delID,
-    },
-    "An unspecified error occurred while deleting entry.",
-  );
+    "api/delete_dispatch.php",
+    { dispatchID: dispatchID },
+    "Failed to delete dispatch."
+  ).then((res) => {
+    if (!res.success) throw res.message;
+    return true;
+  });
 }
 
 function checkAccess() {
   return getJson(
-    "../global/check_login.php",
+    "../api/session.php",
     "An unspecified error occurred.1",
-  );
-}
-
-function checkEditAccess() {
-  return getJson(
-    "php/check_edit_permission.php",
-    "An unspecified error occurred.",
   );
 }
 
@@ -143,66 +131,70 @@ function saveEditEntry() {
   const editID = $("#btn-saveEntry").attr("e-id");
 
   return postJson(
-    "php/update_dispatch_history.php",
+    "api/update_dispatch_history.php",
     {
       dispatchID: editID,
       locID: loc,
       dateFrom: dateJapan,
       dateTo: datePh,
     },
-    "An unspecified error occurred while updating entry.",
+    "Failed to update dispatch entry.",
   );
 }
 
 function getYearly() {
   return postJson(
-    "php/get_yearly.php",
+    "api/get_yearly.php",
     { empID: empID },
-    "An unspecified error occurred.3",
-  );
+    "Failed to load yearly dispatch totals.",
+  ).then((res) => {
+    if (!res.success) {
+      throw res.message;
+    }
+    return res.data;
+  });
 }
 
 function getLocations() {
-  return getJson("php/get_location.php", "An unspecified error occurred.2");
+  return getJson(
+    "api/get_location.php",
+    "Failed to load locations.",
+  ).then((res) => {
+    if (!res.success) {
+      throw res.message;
+    }
+    return res.data;
+  });
 }
 
 function getWorkHistory() {
-  return new Promise((resolve, reject) => {
-    if (empID === undefined) {
-      resolve([]);
-      return;
+  if (empID === undefined) {
+    return Promise.resolve([]);
+  }
+
+  return postJson(
+    "api/get_work_history.php",
+    {
+      empID: empID,
+    },
+    "Failed to load work history.",
+  ).then((res) => {
+    if (!res.success) {
+      throw res.message;
     }
-    $.ajax({
-      type: "POST",
-      url: "php/get_work_history.php",
-      data: {
-        empID: empID,
-      },
-      dataType: "json",
-      success: function (response) {
-        const wList = response.result;
-        resolve(wList);
-      },
-      error: function (xhr) {
-        reject(
-          ajaxJsonErrorMessage(
-            xhr,
-            "An unspecified error occurred while fetching work history.",
-          ),
-        );
-      },
-    });
+    return res.data;
   });
 }
 
 function deleteWork() {
   const delWorkID = $("#storeWorkId").attr("del-work-id");
+
   return postJson(
-    "php/delete_work_history.php",
+    "api/delete_work_history.php",
     {
       work_histID: delWorkID,
     },
-    "An unspecified error occurred while deleting dispatch history.",
+    "Failed to delete work history.",
   );
 }
 //#endregion
@@ -243,17 +235,17 @@ function savePass() {
       $("#upPassExp").val("");
       return reject("Expiry must not be earlier than date of issue.");
     }
-    if (fPath) {
-      if (extension.toLowerCase() !== "pdf") {
-        $("#upPassAttach").val("");
-        return reject("Please attach PDF files only.");
-      }
+
+    if (fPath && extension.toLowerCase() !== "pdf") {
+      $("#upPassAttach").val("");
+      return reject("Please attach PDF files only.");
     }
+
     if (ctr > 0) {
       return reject("Complete all fields");
     }
 
-    var fd = new FormData();
+    const fd = new FormData();
     fd.append("fileValue", fPath);
     fd.append("empID", empID);
     fd.append("number", passNo);
@@ -262,11 +254,17 @@ function savePass() {
     fd.append("expiry", passExp);
 
     postFormData(
-      "php/update_passport.php",
+      "api/update_passport.php",
       fd,
-      "An unspecified error occurred while updating passport.",
+      "Failed to update passport."
     )
-      .then(resolve)
+      .then((res) => {
+        if (!res.success) {
+          reject(res.message);
+          return;
+        }
+        resolve(res);
+      })
       .catch(reject);
   });
 }
@@ -297,21 +295,21 @@ function saveVisa() {
   const endDate = new Date(visaExp);
 
   return new Promise((resolve, reject) => {
-    if (fPath) {
-      if (extension.toLowerCase() !== "pdf") {
-        $("#upVisaAttach").val("");
-        return reject("Please attach PDF files only.");
-      }
+    if (fPath && extension.toLowerCase() !== "pdf") {
+      $("#upVisaAttach").val("");
+      return reject("Please attach PDF files only.");
     }
+
     if (ctr > 0) {
       return reject("Complete all fields.");
     }
+
     if (endDate < startDate) {
       $("#upVisaExp").val("");
       return reject("End date must not be earlier than start date.");
     }
 
-    var fd = new FormData();
+    const fd = new FormData();
     fd.append("fileValue", fPath);
     fd.append("empID", empID);
     fd.append("number", visaNo);
@@ -319,11 +317,17 @@ function saveVisa() {
     fd.append("expiry", visaExp);
 
     postFormData(
-      "php/update_visa.php",
+      "api/update_visa.php",
       fd,
-      "An unspecified error occurred while updating visa.",
+      "Failed to update visa.",
     )
-      .then(resolve)
+      .then((res) => {
+        if (!res.success) {
+          reject(res.message);
+          return;
+        }
+        resolve(res);
+      })
       .catch(reject);
   });
 }
@@ -338,31 +342,31 @@ function addWorkHistory() {
   let errcount = 0;
 
   if (!comp_name) {
-    $("#addcompanyName").addClass("bg-red-100  border-red-400");
+    $("#addcompanyName").addClass("bg-red-100 border-red-400");
     $(".compNameError").removeClass("hidden");
     $(".compNameError").addClass("block flex items-center gap-1 text-red-600");
     errcount++;
   }
   if (!startMonthYear) {
-    $("#addStartMonthYear").addClass("bg-red-100  border-red-400");
+    $("#addStartMonthYear").addClass("bg-red-100 border-red-400");
     $(".dateError").removeClass("hidden");
     $(".dateError").addClass("block flex items-center gap-1 text-red-600");
     errcount++;
   }
   if (!comp_business) {
-    $("#addcompanyBusiness").addClass("bg-red-100  border-red-400");
+    $("#addcompanyBusiness").addClass("bg-red-100 border-red-400");
     $(".BusiError").removeClass("hidden");
     $(".BusiError").addClass("block flex items-center gap-1 text-red-600");
     errcount++;
   }
   if (!business_cont) {
-    $("#addbusinessContent").addClass("bg-red-100  border-red-400");
+    $("#addbusinessContent").addClass("bg-red-100 border-red-400");
     $(".ContentError").removeClass("hidden");
     $(".ContentError").addClass("block flex items-center gap-1 text-red-600");
     errcount++;
   }
   if (!work_loc) {
-    $("#addworkLocation").addClass("bg-red-100  border-red-400");
+    $("#addworkLocation").addClass("bg-red-100 border-red-400");
     $(".LocError").removeClass("hidden");
     $(".LocError").addClass("block flex items-center gap-1 text-red-600");
     errcount++;
@@ -374,8 +378,8 @@ function addWorkHistory() {
     if (endMonthYear && endMonthYear < startMonthYear) {
       $("#addEndMonthYear").val("");
       $("#addStartMonthYear").val("");
-      $("#addEndMonthYear").addClass("bg-red-100  border-red-400");
-      $("#addStartMonthYear").addClass("bg-red-100  border-red-400");
+      $("#addEndMonthYear").addClass("bg-red-100 border-red-400");
+      $("#addStartMonthYear").addClass("bg-red-100 border-red-400");
       $(".dateError").removeClass("hidden");
       $(".dateError").addClass("block flex items-center gap-1 text-red-600");
       $(".dateError").text(
@@ -384,13 +388,14 @@ function addWorkHistory() {
       reject("Invalid Date. End date must not be earlier than Start date.");
       return;
     }
+
     if (errcount > 0) {
       reject("Complete all fields.");
       return;
     }
 
     postJson(
-      "php/insert_work_history.php",
+      "api/insert_work_history.php",
       {
         empID: empID,
         comp_name: comp_name,
@@ -400,9 +405,15 @@ function addWorkHistory() {
         business_cont: business_cont,
         work_loc: work_loc,
       },
-      "An unspecified error occurred while inserting work history.",
+      "Failed to add work history.",
     )
-      .then(resolve)
+      .then((res) => {
+        if (!res.success) {
+          reject(res.message || "Failed to add work history.");
+          return;
+        }
+        resolve(res);
+      })
       .catch(reject);
   });
 }
@@ -418,33 +429,28 @@ function saveEditWorkHistEntry() {
   let errcount = 0;
 
   if (!compName) {
-    $("#edit-companyName").addClass("bg-red-100  border-red-400");
-    $(".compNameError").removeClass("hidden");
-    $(".compNameError").addClass("block flex items-center gap-1 text-red-600");
+    $("#edit-companyName").addClass("bg-red-100 border-red-400");
+    $(".compNameError").removeClass("hidden").addClass("block flex items-center gap-1 text-red-600");
     errcount++;
   }
   if (!startMonthYear) {
-    $("#edit-StartMonthYear").addClass("bg-red-100  border-red-400");
-    $(".dateError").removeClass("hidden");
-    $(".dateError").addClass("block flex items-center gap-1 text-red-600");
+    $("#edit-StartMonthYear").addClass("bg-red-100 border-red-400");
+    $(".dateError").removeClass("hidden").addClass("block flex items-center gap-1 text-red-600");
     errcount++;
   }
   if (!compBusiness) {
-    $("#edit-companyBusiness").addClass("bg-red-100  border-red-400");
-    $(".BusiError").removeClass("hidden");
-    $(".BusiError").addClass("block flex items-center gap-1 text-red-600");
+    $("#edit-companyBusiness").addClass("bg-red-100 border-red-400");
+    $(".BusiError").removeClass("hidden").addClass("block flex items-center gap-1 text-red-600");
     errcount++;
   }
   if (!businesscont) {
-    $("#edit-businessContent").addClass("bg-red-100  border-red-400");
-    $(".ContentError").removeClass("hidden");
-    $(".ContentError").addClass("block flex items-center gap-1 text-red-600");
+    $("#edit-businessContent").addClass("bg-red-100 border-red-400");
+    $(".ContentError").removeClass("hidden").addClass("block flex items-center gap-1 text-red-600");
     errcount++;
   }
   if (!workloc) {
-    $("#edit-workLocation").addClass("bg-red-100  border-red-400");
-    $(".LocError").removeClass("hidden");
-    $(".LocError").addClass("block flex items-center gap-1 text-red-600");
+    $("#edit-workLocation").addClass("bg-red-100 border-red-400");
+    $(".LocError").removeClass("hidden").addClass("block flex items-center gap-1 text-red-600");
     errcount++;
   }
 
@@ -452,37 +458,44 @@ function saveEditWorkHistEntry() {
 
   return new Promise((resolve, reject) => {
     if (endMonthYear && endMonthYear < startMonthYear) {
-      $("#edit-EndMonthYear").val("");
-      $("#edit-StartMonthYear").val("");
-      $("#edit-EndMonthYear").addClass("bg-red-100  border-red-400");
-      $("#edit-StartMonthYear").addClass("bg-red-100  border-red-400");
-      $(".dateError").removeClass("hidden");
-      $(".dateError").addClass("block flex items-center gap-1 text-red-600");
-      $(".dateError").text(
-        "Invalid Date. End date must not be earlier than Start date.",
-      );
+      $("#edit-EndMonthYear, #edit-StartMonthYear")
+        .val("")
+        .addClass("bg-red-100 border-red-400");
+
+      $(".dateError")
+        .removeClass("hidden")
+        .addClass("block flex items-center gap-1 text-red-600")
+        .text("Invalid Date. End date must not be earlier than Start date.");
+
       reject("Invalid Date. End date must not be earlier than Start date.");
       return;
     }
+
     if (errcount > 0) {
       reject("Complete all fields");
       return;
     }
 
     postJson(
-      "php/update_work_history.php",
+      "api/update_work_history.php",
       {
+        work_histID: editID,
         date_monthYearStart: startMonthYear,
         date_monthYearEnd: endMonthYear,
         comp_name: compName,
         comp_business: compBusiness,
         business_cont: businesscont,
         work_loc: workloc,
-        work_histID: editID,
       },
-      "An unspecified error occurred while updating dispatch data.",
+      "Failed to update work history."
     )
-      .then(resolve)
+      .then((res) => {
+        if (!res.success) {
+          reject(res.message);
+          return;
+        }
+        resolve(res);
+      })
       .catch(reject);
   });
 }

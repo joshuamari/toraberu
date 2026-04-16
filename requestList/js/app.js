@@ -5,9 +5,9 @@ function initApp() {
 
   checkAccess()
     .then((emp) => {
-      if (emp.isSuccess) {
+      if (emp.success) {
         empDetails = emp.data;
-        reqAccess = empDetails["request"];
+        reqAccess = empDetails.permissions.hasRequestListAccess;
 
         if (!reqAccess) {
           alert("Access Denied");
@@ -22,6 +22,7 @@ function initApp() {
           getRequests(),
           getCount(),
           getPresID(),
+          getHeader(),
         ]);
       } else {
         alert(emp.message);
@@ -29,15 +30,17 @@ function initApp() {
         return Promise.reject(emp.message);
       }
     })
-    .then(([grps, reqs, counts, pres]) => {
-      groupList = grps;
-      fillGroups(groupList);
-      reqList = reqs["data"];
-      cardData = counts;
-      presID = pres["data"];
-      fillCards();
-      $(".tab")[0].click();
-    })
+.then(([grps, reqs, counts, pres, header]) => {
+  groupList = grps["data"];
+  fillGroups(groupList);
+  reqList = reqs["data"];
+  cardData = counts["data"];
+  presID = pres["data"];
+  fillCards();
+  renderHeader(header["data"]);
+  renderSalutation(header["data"]);
+  $(".tab")[0].click();
+})
     .catch((error) => {
       if (error !== "Access Denied") {
         alert(`${error}`);

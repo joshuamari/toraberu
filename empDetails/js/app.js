@@ -15,7 +15,7 @@ function initApp() {
 
   checkAccess()
     .then((emp) => {
-      if (emp.isSuccess) {
+      if (emp.success) {
         empDetails = emp.data;
 
         fillEmployeeDetails();
@@ -30,7 +30,6 @@ function initApp() {
           getDispatchDays(),
           getYearly(),
           getLocations(),
-          checkEditAccess(),
           getWorkHistory(),
         ]);
       } else {
@@ -50,22 +49,21 @@ function initApp() {
         dd,
         yrl,
         locs,
-        eAccess,
         wHist,
       ]) => {
-        editAccess = eAccess;
-        userPassD = pportD;
-        userPassI = pportI;
-        userVisaD = vsaD;
-        userVisaI = vsaI;
+        editAccess = empDetails.permissions.hasEdit;
+        userPassD = pportD.data;
+        userPassI = pportI.data;
+        userVisaD = vsaD.data;
+        userVisaI = vsaI.data;
 
-        fillDetails(emps);
+        fillDetails(emps.data);
         passportDisplay(userPassD);
         passportInput(userPassI);
         visaDisplay(userVisaD);
         visaInput(userVisaI);
 
-        dHistory = dlst;
+        dHistory = dlst.data;
         fillHistory(dHistory);
         displayDays(dd);
         fillYearly(yrl);

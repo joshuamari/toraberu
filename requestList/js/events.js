@@ -92,8 +92,9 @@ function bindEvents() {
     fillOpenModal(rowID);
     getRequestData(rowID)
       .then((res) => {
-        if (res.isSuccess) {
+        if (res.success) {
           printData = res.data;
+          console.log(res)
         }
       })
       .catch((error) => {
@@ -149,7 +150,7 @@ function bindEvents() {
 
     updateStatus(stat)
       .then((res) => {
-        if (res.isSuccess) {
+        if (res.success) {
           Promise.all([getRequests(), getCount()])
             .then(([reqs, counts]) => {
               reqList = reqs["data"];

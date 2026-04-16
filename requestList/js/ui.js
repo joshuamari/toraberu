@@ -1,36 +1,41 @@
 //#region UI
 function fillCards() {
-  var pending = cardData.data.pending;
-  var accepted = cardData.data.accepted;
-  var cancelled = cardData.data.cancelled;
-  var todayTotal = cardData.data.todaytotal;
-  var todayAccept = cardData.data.todayaccept;
-  var total = cardData.data.total;
+  const pending = cardData.pending;
+  const accepted = cardData.accepted;
+  const cancelled = cardData.cancelled;
+  const todayTotal = cardData.todaytotal;
+  const todayAccept = cardData.todayaccept;
+  const total = cardData.total;
 
   $("#tab-2 p").nextAll().remove();
 
-  if (pending != 0) {
+  if (pending !== 0) {
     $("#tab-2").append(`
-         <small
-                      class="rounded-full w-[14px] h-[14px] bg-[var(--dark)] text-white text-[8px] flex items-center justify-content-center font-semibold" >${pending}</small>
-      `);
+      <small
+        class="rounded-full w-[14px] h-[14px] bg-[var(--dark)] text-white text-[8px] flex items-center justify-content-center font-semibold"
+      >${pending}</small>
+    `);
   }
 
   $("#cardPending").text(pending);
   $("#cardAccepted").text(accepted);
 
-  if (todayAccept != 0) {
+  if (todayAccept !== 0) {
     $("#cardTodayAccepted").html(
-      `<small class="font-semibold" >+${todayAccept} today</small>`,
+      `<small class="font-semibold">+${todayAccept} today</small>`,
     );
+  } else {
+    $("#cardTodayAccepted").empty();
   }
 
   $("#cardCancelled").text(cancelled);
 
-  if (todayTotal != 0) {
+  if (todayTotal !== 0) {
     $("#cardTodayTotal").html(
-      `<small class="font-semibold" >+${todayTotal} today</small>`,
+      `<small class="font-semibold">+${todayTotal} today</small>`,
     );
+  } else {
+    $("#cardTodayTotal").empty();
   }
 
   $("#cardTotal").text(total);
@@ -39,7 +44,7 @@ function fillCards() {
 function fillAttachment(data) {
   $(".siteDispatch").empty();
   $("#printJap, #printPh, #printThird").text("");
-
+console.log(data)
   let date = data.dispatch_request.dh_date;
   let company = data.dispatch_request.company_name;
   let khi = data.dispatch_request.req_name;

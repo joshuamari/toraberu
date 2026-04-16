@@ -12,19 +12,31 @@ function fillDispatchList(dlist) {
   }
 
   $.each(dlist, function (index, item) {
-    let passClass = "bg-success";
-    let passVal = "Valid";
-    let visaClass = "bg-success";
-    let visaVal = "Valid";
+    let passClass = "bg-danger";
+    let passVal = "Invalid";
+    let visaClass = "bg-danger";
+    let visaVal = "Invalid";
 
-    if (!item.passValid) {
-      passClass = "bg-danger";
-      passVal = "Invalid";
+    if (item.passportStatus === "on_process") {
+      passClass = "bg-warning";
+      passVal = "On Process";
+    } else if (item.passportStatus === "valid") {
+      passClass = "bg-success";
+      passVal = "Valid";
+    } else if (item.passportStatus === "valid_expiring") {
+      passClass = "bg-info"; //change color dito soon
+      passVal = "Valid";
     }
 
-    if (!item.visaValid) {
-      visaClass = "bg-danger";
-      visaVal = "Invalid";
+    if (item.visaStatus === "on_process") {
+      visaClass = "bg-warning";
+      visaVal = "On Process";
+    } else if (item.visaStatus === "valid") {
+      visaClass = "bg-success";
+      visaVal = "Valid";
+    } else if (item.visaStatus === "valid_expiring") {
+      visaClass = "bg-info"; // change color dito soon
+      visaVal = "Valid";
     }
 
     const row = $("<tr>");

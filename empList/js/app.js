@@ -5,7 +5,7 @@ function initApp() {
 
   checkAccess()
     .then((emp) => {
-      if (!emp.isSuccess) {
+      if (!emp.success) {
         alert(emp.message);
         window.location.href = `${rootFolder}`;
         return;
@@ -16,11 +16,11 @@ function initApp() {
 
       getGroups()
         .then((grps) => {
-          fillGroups(grps);
+          fillGroups(grps.data);
 
           getEmployees()
             .then((emps) => {
-              empList = emps;
+              empList = emps.data;
               fillEmployees(empList);
             })
             .catch((error) => {

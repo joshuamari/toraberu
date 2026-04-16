@@ -20,7 +20,6 @@ function fillOpenModal(trID) {
   const first = given.replace(/\s+/g, "");
   const modi = req.modified;
 
-  console.log(req);
 
   formatStatus(status);
   formatVisaPassport(visaValidity, passValidity);
@@ -212,20 +211,55 @@ function searchFilter(req_list) {
       ? new Date(a.req_date) - new Date(b.req_date)
       : new Date(b.req_date) - new Date(a.req_date);
   });
-
   fillTable(results);
 }
 
 function fillGroups(grps) {
-  const groupIDS = grps.map((obj) => obj.newID);
-  var grpSelect = $("#grpSel");
-  grpSelect.html(`<option value=${groupIDS}>All Groups</option>`);
+  const groupIDs = grps.map((obj) => obj.id);
+  const grpSelect = $("#grpSel");
+
+  grpSelect.html(`<option value="${groupIDs.join(",")}">All Groups</option>`);
+
   $.each(grps, function (index, item) {
-    var option = $("<option>")
-      .attr("value", item.newID)
+    const option = $("<option>")
+      .attr("value", item.id)
       .text(item.abbreviation)
-      .attr("grp-id", item.newID);
+      .attr("grp-id", item.id);
+
     grpSelect.append(option);
   });
+}
+
+function renderHeader(data) {
+  const pres = data?.president;
+  const co = data?.care_of;
+
+  if (!pres?.name) {
+    $("#requestHeader").empty();
+    return;
+  }
+
+  $("#requestHeader").html(`
+    <p class="font-semibold font-['Arial']">
+      ${pres.prefix} ${pres.name} (President)
+    </p>
+    ${
+      co?.name
+        ? `<p class="font-semibold font-['Arial']">(c/o ${co.prefix} ${co.name})</p>`
+        : ""
+    }
+  `);
+}
+
+function renderSalutation(data) {
+  const pres = data?.president;
+
+  let salutation = "Dear Sir,";
+
+  if (pres?.prefix === "Ms.") {
+    salutation = "Dear Madam,";
+  }
+
+  $("#requestSalutation").text(salutation);
 }
 //#endregion

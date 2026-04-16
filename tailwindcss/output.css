@@ -1084,10 +1084,13 @@ video {
   width: 100%;
 }
 
+<<<<<<< HEAD
 .min-w-0 {
   min-width: 0px;
 }
 
+=======
+>>>>>>> 0e3211b00d516ea7e26455ca718f147147bb777a
 .min-w-\[1100px\] {
   min-width: 1100px;
 }
@@ -1934,6 +1937,7 @@ video {
   transition-duration: 150ms;
 }
 
+<<<<<<< HEAD
 .hover\:bg-\[var\(--darkest\)\]:hover {
   background-color: var(--darkest);
 }
@@ -1944,6 +1948,10 @@ video {
 
 .hover\:bg-\[var\(--red-100\)\]:hover {
   background-color: var(--red-100);
+=======
+.\[hostname\:port\] {
+  hostname: port;
+>>>>>>> 0e3211b00d516ea7e26455ca718f147147bb777a
 }
 
 .hover\:bg-\[var\(--white\)\]:hover {

@@ -28,4 +28,13 @@ require_once __DIR__ . '/services/PermissionService.php';
 require_once __DIR__ . '/services/SessionService.php';
 require_once __DIR__ . '/services/GroupService.php';
 
+require_once __DIR__ . '/services/RequestListService.php';
+require_once __DIR__ . '/services/EmailService.php';
+
+require_once __DIR__ . '/services/AppSettingsService.php';
+
+require_once __DIR__ . '/services/EmployeeListService.php';
+
+require_once __DIR__ . '/services/EmployeeDetailsService.php';
+
 header('Content-Type: application/json; charset=UTF-8');

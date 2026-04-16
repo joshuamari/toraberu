@@ -75,6 +75,20 @@ function getDashboardDispatchList(PDO $connpcs, PDO $connnew, PDO $connkdt, stri
         return [];
     }
 
+    $passportWarningMonths = envInt('PASSPORT_EXPIRY_WARNING_MONTHS', 9);
+    $visaWarningMonths = envInt('VISA_EXPIRY_WARNING_MONTHS', 6);
+
+    if ($passportWarningMonths < 1) {
+        $passportWarningMonths = 9;
+    }
+
+    if ($visaWarningMonths < 1) {
+        $visaWarningMonths = 6;
+    }
+
+    $passportWarningCutoff = strtotime('+' . $passportWarningMonths . ' months');
+    $visaWarningCutoff = strtotime('+' . $visaWarningMonths . ' months');
+
     $placeholders = implode(',', array_fill(0, count($memberIds), '?'));
 
     $sql = "
@@ -84,7 +98,9 @@ function getDashboardDispatchList(PDO $connpcs, PDO $connnew, PDO $connkdt, stri
             dl.dispatch_from,
             dl.dispatch_to,
             pd.passport_expiry,
-            vd.visa_expiry
+            pd.on_process AS passport_on_process,
+            vd.visa_expiry,
+            vd.on_process AS visa_on_process
         FROM dispatch_list AS dl
         JOIN kdtphdb_new.employee_list AS ed
             ON dl.emp_number = ed.id
@@ -115,15 +131,21 @@ function getDashboardDispatchList(PDO $connpcs, PDO $connnew, PDO $connkdt, stri
     foreach ($rows as $row) {
         $dispatchTo = $row['dispatch_to'];
 
-        $passportValid = false;
-        $visaValid = false;
+        $passportStatus = 'invalid';
+        $visaStatus = 'invalid';
 
-        if (!empty($row['passport_expiry']) && strtotime($row['passport_expiry']) >= strtotime($dispatchTo)) {
-            $passportValid = true;
+        if ((int)($row['passport_on_process'] ?? 0) === 1) {
+            $passportStatus = 'on_process';
+        } elseif (!empty($row['passport_expiry']) && strtotime($row['passport_expiry']) >= strtotime($dispatchTo)) {
+            $passportExpiryTs = strtotime($row['passport_expiry']);
+            $passportStatus = ($passportExpiryTs <= $passportWarningCutoff) ? 'valid_expiring' : 'valid';
         }
 
-        if (!empty($row['visa_expiry']) && strtotime($row['visa_expiry']) >= strtotime($dispatchTo)) {
-            $visaValid = true;
+        if ((int)($row['visa_on_process'] ?? 0) === 1) {
+            $visaStatus = 'on_process';
+        } elseif (!empty($row['visa_expiry']) && strtotime($row['visa_expiry']) >= strtotime($dispatchTo)) {
+            $visaExpiryTs = strtotime($row['visa_expiry']);
+            $visaStatus = ($visaExpiryTs <= $visaWarningCutoff) ? 'valid_expiring' : 'valid';
         }
 
         $dispatchList[] = [
@@ -131,8 +153,8 @@ function getDashboardDispatchList(PDO $connpcs, PDO $connnew, PDO $connkdt, stri
             'location' => $row['location_name'],
             'from' => date('d M Y', strtotime($row['dispatch_from'])),
             'to' => date('d M Y', strtotime($dispatchTo)),
-            'passValid' => $passportValid,
-            'visaValid' => $visaValid,
+            'passportStatus' => $passportStatus,
+            'visaStatus' => $visaStatus,
         ];
     }
 
