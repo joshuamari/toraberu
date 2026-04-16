@@ -14,6 +14,7 @@ try {
     $birthdate = isset($_POST['birthdate']) ? trim((string)$_POST['birthdate']) : '';
     $issued = isset($_POST['issued']) ? trim((string)$_POST['issued']) : '';
     $expiry = isset($_POST['expiry']) ? trim((string)$_POST['expiry']) : '';
+    $onProcess = isset($_POST['on_process']) ? (int)$_POST['on_process'] : 0;
 
     updateEmployeePassport(
         $connpcs,
@@ -25,6 +26,7 @@ try {
         $birthdate,
         $issued,
         $expiry,
+        $onProcess,
         $_FILES
     );
 

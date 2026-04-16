@@ -22,20 +22,30 @@ function passportDisplay(pport) {
     const pbday = pport.bday;
     const pissue = pport.issue;
     const pexpiry = pport.expiry;
-    const pvalid = pport.valid;
-    $("#passNo").text(pnum);
-    $("#passBday").text(pbday);
-    $("#passIssue").text(pissue);
-    $("#passExp").text(pexpiry);
-    if (pvalid) {
-      $("#passStatus").removeClass("bg-danger");
-      $("#passStatus").addClass("bg-success");
+    const pstatus = pport.status;
+
+    $("#passNo").text(pnum || "");
+    $("#passBday").text(pbday || "");
+    $("#passIssue").text(pissue || "");
+    $("#passExp").text(pexpiry || "");
+
+    $("#passStatus")
+      .removeClass("bg-success bg-danger bg-warning bg-orange text-dark text-white");
+
+    if (pstatus === "on_process") {
+      $("#passStatus").addClass("bg-warning text-dark");
+      $("#passStatus").text("On Process");
+    } else if (pstatus === "valid") {
+      $("#passStatus").addClass("bg-success text-white");
+      $("#passStatus").text("Valid");
+    } else if (pstatus === "valid_expiring") {
+      $("#passStatus").addClass("bg-info text-white");
       $("#passStatus").text("Valid");
     } else {
-      $("#passStatus").removeClass("bg-success");
-      $("#passStatus").addClass("bg-danger");
+      $("#passStatus").addClass("bg-danger text-white");
       $("#passStatus").text("Expired");
     }
+
     $("#passDeets").removeClass("d-none");
     $("#passEmpty").addClass("d-none");
   } else {
@@ -49,11 +59,13 @@ function passportInput(pport) {
   const pbday = pport.bday;
   const pissue = pport.issue;
   const pexpiry = pport.expiry;
+  const status = pport.status;
   const attach = pport.passportLink;
   $("#upPassNo").val(pnum);
   $("#upPassBday").val(pbday);
   $("#upPassIssue").val(pissue);
   $("#upPassExp").val(pexpiry);
+  $("#upPassOnProcess").prop("checked", status === "on_process");
   if (attach) {
     $("#wAttachPass").removeClass("d-none");
     $("#noAttachPass").addClass("d-none");
@@ -78,19 +90,29 @@ function visaDisplay(vsa) {
     const vnum = vsa.number;
     const vissue = vsa.issue;
     const vexpiry = vsa.expiry;
-    const vvalid = vsa.valid;
-    $("#visaNo").text(vnum);
-    $("#visaIssue").text(vissue);
-    $("#visaExp").text(vexpiry);
-    if (vvalid) {
-      $("#visaStatus").removeClass("bg-danger");
-      $("#visaStatus").addClass("bg-success");
+    const vstatus = vsa.status;
+
+    $("#visaNo").text(vnum || "");
+    $("#visaIssue").text(vissue || "");
+    $("#visaExp").text(vexpiry || "");
+
+    $("#visaStatus")
+      .removeClass("bg-success bg-danger bg-warning bg-orange text-dark text-white");
+
+    if (vstatus === "on_process") {
+      $("#visaStatus").addClass("bg-warning text-dark");
+      $("#visaStatus").text("On Process");
+    } else if (vstatus === "valid") {
+      $("#visaStatus").addClass("bg-success text-white");
+      $("#visaStatus").text("Valid");
+    } else if (vstatus === "valid_expiring") {
+      $("#visaStatus").addClass("bg-info text-white"); // same for now
       $("#visaStatus").text("Valid");
     } else {
-      $("#visaStatus").removeClass("bg-success");
-      $("#visaStatus").addClass("bg-danger");
+      $("#visaStatus").addClass("bg-danger text-white");
       $("#visaStatus").text("Expired");
     }
+
     $("#visaDeets").removeClass("d-none");
     $("#visaEmpty").addClass("d-none");
   } else {
@@ -104,9 +126,15 @@ function visaInput(vsa) {
   const vissue = vsa.issue;
   const vexpiry = vsa.expiry;
   const attach = vsa.visaLink;
-  $("#upVisaNo").val(vnum);
-  $("#upVisaIssue").val(vissue);
-  $("#upVisaExp").val(vexpiry);
+  const status = vsa.status;
+
+  $("#upVisaNo").val(vnum || "");
+  $("#upVisaIssue").val(vissue || "");
+  $("#upVisaExp").val(vexpiry || "");
+
+  // NEW: sync On Process checkbox
+  $("#upVisaOnProcess").prop("checked", status === "on_process");
+
   if (attach) {
     $("#wAttachVisa").removeClass("d-none");
     $("#noAttachVisa").addClass("d-none");
@@ -151,6 +179,7 @@ function resetPassInput() {
   $("#upPassIssue").attr("disabled", true);
   $("#upPassExp").attr("disabled", true);
   $("#upPassAttach").attr("disabled", true);
+  $("#upPassOnProcess").attr("disabled", true);
   $(".attach").addClass("d-none");
   $("#upPassExp, #upPassIssue, #upPassBday, #upPassNo ").removeClass(
     "border border-danger"
@@ -172,6 +201,7 @@ function resetVisaInput() {
   $("#upVisaIssue").attr("disabled", true);
   $("#upVisaExp").attr("disabled", true);
   $("#upVisaAttach").attr("disabled", true);
+  $("#upVisaOnProcess").attr("disabled", true);
   $(".attach").addClass("d-none");
   $("#upVisaNo, #upVisaIssue, #upVisaExp").removeClass("border border-danger");
   $("#updateVisa .btn-close").closest(".modal").find(".modal-footer").html(`

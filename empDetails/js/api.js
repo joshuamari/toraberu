@@ -205,33 +205,38 @@ function savePass() {
   const passBday = $("#upPassBday").val();
   const passIssue = $("#upPassIssue").val();
   const passExp = $("#upPassExp").val();
+  const isOnProcess = $("#upPassOnProcess").is(":checked");
+
   const fPath = $("#upPassAttach")[0].files[0];
   const upload = $("#upPassAttach").val();
   const extension = upload.slice(((upload.lastIndexOf(".") - 1) >>> 0) + 2);
+
   let ctr = 0;
 
-  if (!passNo) {
-    $("#upPassNo").addClass("border border-danger");
-    ctr++;
-  }
-  if (!passBday) {
-    $("#upPassBday").addClass("border border-danger");
-    ctr++;
-  }
-  if (!passIssue) {
-    $("#upPassIssue").addClass("border border-danger");
-    ctr++;
-  }
-  if (!passExp) {
-    $("#upPassExp").addClass("border border-danger");
-    ctr++;
+  if (!isOnProcess) {
+    if (!passNo) {
+      $("#upPassNo").addClass("border border-danger");
+      ctr++;
+    }
+    if (!passBday) {
+      $("#upPassBday").addClass("border border-danger");
+      ctr++;
+    }
+    if (!passIssue) {
+      $("#upPassIssue").addClass("border border-danger");
+      ctr++;
+    }
+    if (!passExp) {
+      $("#upPassExp").addClass("border border-danger");
+      ctr++;
+    }
   }
 
   const startDate = new Date(passIssue);
   const endDate = new Date(passExp);
 
   return new Promise((resolve, reject) => {
-    if (endDate < startDate) {
+    if (!isOnProcess && passIssue && passExp && endDate < startDate) {
       $("#upPassExp").val("");
       return reject("Expiry must not be earlier than date of issue.");
     }
@@ -241,7 +246,7 @@ function savePass() {
       return reject("Please attach PDF files only.");
     }
 
-    if (ctr > 0) {
+    if (!isOnProcess && ctr > 0) {
       return reject("Complete all fields");
     }
 
@@ -252,6 +257,7 @@ function savePass() {
     fd.append("birthdate", passBday);
     fd.append("issued", passIssue);
     fd.append("expiry", passExp);
+    fd.append("on_process", isOnProcess ? 1 : 0);
 
     postFormData(
       "api/update_passport.php",
@@ -273,22 +279,27 @@ function saveVisa() {
   const visaNo = $("#upVisaNo").val();
   const visaIssue = $("#upVisaIssue").val();
   const visaExp = $("#upVisaExp").val();
+  const isOnProcess = $("#upVisaOnProcess").is(":checked");
+
   const fPath = $("#upVisaAttach")[0].files[0];
   const upload = $("#upVisaAttach").val();
   const extension = upload.slice(((upload.lastIndexOf(".") - 1) >>> 0) + 2);
+
   let ctr = 0;
 
-  if (!visaNo) {
-    $("#upVisaNo").addClass("border border-danger");
-    ctr++;
-  }
-  if (!visaIssue) {
-    $("#upVisaIssue").addClass("border border-danger");
-    ctr++;
-  }
-  if (!visaExp) {
-    $("#upVisaExp").addClass("border border-danger");
-    ctr++;
+  if (!isOnProcess) {
+    if (!visaNo) {
+      $("#upVisaNo").addClass("border border-danger");
+      ctr++;
+    }
+    if (!visaIssue) {
+      $("#upVisaIssue").addClass("border border-danger");
+      ctr++;
+    }
+    if (!visaExp) {
+      $("#upVisaExp").addClass("border border-danger");
+      ctr++;
+    }
   }
 
   const startDate = new Date(visaIssue);
@@ -300,11 +311,11 @@ function saveVisa() {
       return reject("Please attach PDF files only.");
     }
 
-    if (ctr > 0) {
+    if (!isOnProcess && ctr > 0) {
       return reject("Complete all fields.");
     }
 
-    if (endDate < startDate) {
+    if (!isOnProcess && visaIssue && visaExp && endDate < startDate) {
       $("#upVisaExp").val("");
       return reject("End date must not be earlier than start date.");
     }
@@ -315,6 +326,7 @@ function saveVisa() {
     fd.append("number", visaNo);
     fd.append("issued", visaIssue);
     fd.append("expiry", visaExp);
+    fd.append("on_process", isOnProcess ? 1 : 0);
 
     postFormData(
       "api/update_visa.php",

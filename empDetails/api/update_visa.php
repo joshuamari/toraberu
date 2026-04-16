@@ -13,6 +13,7 @@ try {
     $number = isset($_POST['number']) ? trim((string)$_POST['number']) : '';
     $issued = isset($_POST['issued']) ? trim((string)$_POST['issued']) : '';
     $expiry = isset($_POST['expiry']) ? trim((string)$_POST['expiry']) : '';
+    $onProcess = isset($_POST['on_process']) ? (int)$_POST['on_process'] : 0;
 
     updateEmployeeVisa(
         $connpcs,
@@ -23,6 +24,7 @@ try {
         $number,
         $issued,
         $expiry,
+        $onProcess,
         $_FILES
     );
 
