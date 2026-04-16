@@ -64,7 +64,8 @@ function getFilteredEmployees(
             ed.firstname AS firstname,
             gl.abbreviation AS groupAbbr,
             pd.passport_expiry AS passportExpiry,
-            vd.visa_expiry AS visaExpiry
+            vd.visa_expiry AS visaExpiry,
+            rd.permit_expiry AS reentryExpiry
         FROM kdtphdb_new.employee_list ed
         LEFT JOIN kdtphdb_new.group_list gl
             ON ed.group_id = gl.id
@@ -72,6 +73,8 @@ function getFilteredEmployees(
             ON ed.id = pd.emp_number
         LEFT JOIN visa_details vd
             ON ed.id = vd.emp_number
+        LEFT JOIN reentry_permit_details rd
+            ON ed.id = rd.emp_number
         WHERE (
                 ed.resignation_date IS NULL
                 OR ed.resignation_date = '0000-00-00'
@@ -91,11 +94,17 @@ function getFilteredEmployees(
         $row['empID'] = (int)$row['empID'];
         $row['firstname'] = ucwords(strtolower((string)$row['firstname']));
         $row['lastname'] = ucwords(strtolower((string)$row['lastname']));
+
         $row['passportExpiry'] = $row['passportExpiry']
             ? date('d M Y', strtotime($row['passportExpiry']))
             : 'None';
+
         $row['visaExpiry'] = $row['visaExpiry']
             ? date('d M Y', strtotime($row['visaExpiry']))
+            : 'None';
+
+        $row['reentryExpiry'] = $row['reentryExpiry']
+            ? date('d M Y', strtotime($row['reentryExpiry']))
             : 'None';
     }
 

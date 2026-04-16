@@ -27,6 +27,7 @@ function fillEmployees(emps) {
     row.append(`<td>${item.groupAbbr}</td>`);
     row.append(`<td>${item.passportExpiry}</td>`);
     row.append(`<td>${item.visaExpiry}</td>`);
+    row.append(`<td>${item.reentryExpiry}</td>`);
     row.append(
       `<td><i class="bx bxs-user-detail fs-5 seeMore" id="${item.empID}"></i></td>`,
     );
