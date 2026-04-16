@@ -44,6 +44,7 @@ Format is based on a simplified version of Keep a Changelog.
   - `/api/get_dispatch_list.php`
   - `/api/get_expiring_passport.php`
   - `/api/get_expiring_visa.php`
+- Added new folder Change Request for monitoring cancellations and date change requests from khi
 
 ### Changed
 
