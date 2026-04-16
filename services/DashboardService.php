@@ -77,17 +77,15 @@ function getDashboardDispatchList(PDO $connpcs, PDO $connnew, PDO $connkdt, stri
 
     $passportWarningMonths = envInt('PASSPORT_EXPIRY_WARNING_MONTHS', 9);
     $visaWarningMonths = envInt('VISA_EXPIRY_WARNING_MONTHS', 6);
+    $reentryWarningMonths = envInt('REENTRY_PERMIT_EXPIRY_WARNING_MONTHS', 6);
 
-    if ($passportWarningMonths < 1) {
-        $passportWarningMonths = 9;
-    }
-
-    if ($visaWarningMonths < 1) {
-        $visaWarningMonths = 6;
-    }
+    if ($passportWarningMonths < 1) $passportWarningMonths = 9;
+    if ($visaWarningMonths < 1) $visaWarningMonths = 6;
+    if ($reentryWarningMonths < 1) $reentryWarningMonths = 6;
 
     $passportWarningCutoff = strtotime('+' . $passportWarningMonths . ' months');
     $visaWarningCutoff = strtotime('+' . $visaWarningMonths . ' months');
+    $reentryWarningCutoff = strtotime('+' . $reentryWarningMonths . ' months');
 
     $placeholders = implode(',', array_fill(0, count($memberIds), '?'));
 
@@ -97,22 +95,35 @@ function getDashboardDispatchList(PDO $connpcs, PDO $connnew, PDO $connkdt, stri
             ll.location_name,
             dl.dispatch_from,
             dl.dispatch_to,
+
             pd.passport_expiry,
             pd.on_process AS passport_on_process,
+
             vd.visa_expiry,
-            vd.on_process AS visa_on_process
+            vd.on_process AS visa_on_process,
+
+            rd.permit_expiry,
+            rd.on_process AS reentry_on_process
+
         FROM dispatch_list AS dl
         JOIN kdtphdb_new.employee_list AS ed
             ON dl.emp_number = ed.id
         JOIN location_list AS ll
             ON dl.location_id = ll.location_id
+
         LEFT JOIN passport_details AS pd
             ON pd.emp_number = ed.id
+
         LEFT JOIN visa_details AS vd
             ON vd.emp_number = ed.id
+
+        LEFT JOIN reentry_permit_details AS rd
+            ON rd.emp_number = ed.id
+
         WHERE dl.dispatch_to >= ?
           AND ed.emp_status = 1
           AND ed.id IN ($placeholders)
+
         ORDER BY dl.dispatch_id DESC
     ";
 
@@ -133,19 +144,30 @@ function getDashboardDispatchList(PDO $connpcs, PDO $connnew, PDO $connkdt, stri
 
         $passportStatus = 'invalid';
         $visaStatus = 'invalid';
+        $reentryStatus = 'invalid';
 
+        //PASSPORT
         if ((int)($row['passport_on_process'] ?? 0) === 1) {
             $passportStatus = 'on_process';
         } elseif (!empty($row['passport_expiry']) && strtotime($row['passport_expiry']) >= strtotime($dispatchTo)) {
-            $passportExpiryTs = strtotime($row['passport_expiry']);
-            $passportStatus = ($passportExpiryTs <= $passportWarningCutoff) ? 'valid_expiring' : 'valid';
+            $ts = strtotime($row['passport_expiry']);
+            $passportStatus = ($ts <= $passportWarningCutoff) ? 'valid_expiring' : 'valid';
         }
 
+        //VISA
         if ((int)($row['visa_on_process'] ?? 0) === 1) {
             $visaStatus = 'on_process';
         } elseif (!empty($row['visa_expiry']) && strtotime($row['visa_expiry']) >= strtotime($dispatchTo)) {
-            $visaExpiryTs = strtotime($row['visa_expiry']);
-            $visaStatus = ($visaExpiryTs <= $visaWarningCutoff) ? 'valid_expiring' : 'valid';
+            $ts = strtotime($row['visa_expiry']);
+            $visaStatus = ($ts <= $visaWarningCutoff) ? 'valid_expiring' : 'valid';
+        }
+
+        //RE-ENTRY PERMIT
+        if ((int)($row['reentry_on_process'] ?? 0) === 1) {
+            $reentryStatus = 'on_process';
+        } elseif (!empty($row['permit_expiry']) && strtotime($row['permit_expiry']) >= strtotime($dispatchTo)) {
+            $ts = strtotime($row['permit_expiry']);
+            $reentryStatus = ($ts <= $reentryWarningCutoff) ? 'valid_expiring' : 'valid';
         }
 
         $dispatchList[] = [
@@ -155,6 +177,7 @@ function getDashboardDispatchList(PDO $connpcs, PDO $connnew, PDO $connkdt, stri
             'to' => date('d M Y', strtotime($dispatchTo)),
             'passportStatus' => $passportStatus,
             'visaStatus' => $visaStatus,
+            'reentryStatus' => $reentryStatus,
         ];
     }
 

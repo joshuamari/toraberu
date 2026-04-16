@@ -5,7 +5,7 @@ function fillDispatchList(dlist) {
 
   if (dlist.length === 0) {
     const noDataRow = $("<tr>").append(
-      $("<td>").attr("colspan", "6").text("No data found"),
+      $("<td>").attr("colspan", "7").text("No data found"),
     );
     tableBody.append(noDataRow);
     return;
@@ -14,29 +14,44 @@ function fillDispatchList(dlist) {
   $.each(dlist, function (index, item) {
     let passClass = "bg-danger";
     let passVal = "Invalid";
+
     let visaClass = "bg-danger";
     let visaVal = "Invalid";
 
+    let reentryClass = "bg-danger";
+    let reentryVal = "Invalid";
+
     if (item.passportStatus === "on_process") {
-      passClass = "bg-warning";
+      passClass = "bg-warning text-dark";
       passVal = "On Process";
     } else if (item.passportStatus === "valid") {
       passClass = "bg-success";
       passVal = "Valid";
     } else if (item.passportStatus === "valid_expiring") {
-      passClass = "bg-info"; //change color dito soon
+      passClass = "bg-info"; // change color later if needed
       passVal = "Valid";
     }
 
     if (item.visaStatus === "on_process") {
-      visaClass = "bg-warning";
+      visaClass = "bg-warning text-dark";
       visaVal = "On Process";
     } else if (item.visaStatus === "valid") {
       visaClass = "bg-success";
       visaVal = "Valid";
     } else if (item.visaStatus === "valid_expiring") {
-      visaClass = "bg-info"; // change color dito soon
+      visaClass = "bg-info"; // change color later if needed
       visaVal = "Valid";
+    }
+
+    if (item.reentryStatus === "on_process") {
+      reentryClass = "bg-warning text-dark";
+      reentryVal = "On Process";
+    } else if (item.reentryStatus === "valid") {
+      reentryClass = "bg-success";
+      reentryVal = "Valid";
+    } else if (item.reentryStatus === "valid_expiring") {
+      reentryClass = "bg-info"; // change color later if needed
+      reentryVal = "Valid";
     }
 
     const row = $("<tr>");
@@ -52,6 +67,11 @@ function fillDispatchList(dlist) {
     row.append(
       $("<td>").append(
         $("<span>").addClass(`badge ${visaClass}`).text(visaVal),
+      ),
+    );
+    row.append(
+      $("<td>").append(
+        $("<span>").addClass(`badge ${reentryClass}`).text(reentryVal),
       ),
     );
 
