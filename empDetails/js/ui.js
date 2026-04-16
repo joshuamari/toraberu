@@ -80,11 +80,6 @@ function passportInput(pport) {
   }
 }
 
-function fillVisa(vsa) {
-  visaDisplay(vsa);
-  visaInput(vsa);
-}
-
 function visaDisplay(vsa) {
   if (Object.keys(vsa).length > 0) {
     const vnum = vsa.number;
@@ -146,6 +141,60 @@ function visaInput(vsa) {
     $("#noAttachVisa").removeClass("d-none");
     $("#wAttachVisa").addClass("d-none");
     $("#vAttach").html(`Attachment`);
+  }
+}
+
+function reentryPermitDisplay(rp) {
+  if (Object.keys(rp).length > 0) {
+    const rexpiry = rp.expiry;
+    const rstatus = rp.status;
+
+    $("#reentryExp").text(rexpiry || "");
+
+    $("#reentryStatus")
+      .removeClass("bg-success bg-danger bg-warning bg-info bg-orange text-dark text-white");
+
+    if (rstatus === "on_process") {
+      $("#reentryStatus").addClass("bg-warning text-dark");
+      $("#reentryStatus").text("On Process");
+    } else if (rstatus === "valid") {
+      $("#reentryStatus").addClass("bg-success text-white");
+      $("#reentryStatus").text("Valid");
+    } else if (rstatus === "valid_expiring") {
+      $("#reentryStatus").addClass("bg-info text-white");
+      $("#reentryStatus").text("Valid");
+    } else {
+      $("#reentryStatus").addClass("bg-danger text-white");
+      $("#reentryStatus").text("Expired");
+    }
+
+    $("#reentryDeets").removeClass("d-none");
+    $("#reentryEmpty").addClass("d-none");
+  } else {
+    $("#reentryDeets").addClass("d-none");
+    $("#reentryEmpty").removeClass("d-none");
+  }
+}
+
+function reentryPermitInput(rp) {
+  const rexpiry = rp.expiry;
+  const attach = rp.reentryPermitLink;
+  const status = rp.status;
+
+  $("#upReentryExp").val(rexpiry || "");
+  $("#upReentryOnProcess").prop("checked", status === "on_process");
+
+  if (attach) {
+    $("#wAttachReentry").removeClass("d-none");
+    $("#noAttachReentry").addClass("d-none");
+    $("#reentryAttachLabel").html(
+      `Click <a href="${attach}" target="_blank" style="color:var(--tertiary) !important;" class="fw-semibold">here</a> to view`
+    );
+    $("#reentryAttachView").attr("src", attach);
+  } else {
+    $("#noAttachReentry").removeClass("d-none");
+    $("#wAttachReentry").addClass("d-none");
+    $("#reentryAttachLabel").html(`Attachment`);
   }
 }
 
@@ -212,6 +261,31 @@ function resetVisaInput() {
   Update Visa
 </button>
   `);
+}
+
+function resetReentryPermitInput() {
+  reentryPermitDisplay(userRPD);
+  reentryPermitInput(userRPI);
+
+  $("#upReentryExp").attr("disabled", true);
+  $("#upReentryAttach").attr("disabled", true);
+  $("#upReentryOnProcess").prop("disabled", true);
+
+  // scope to this modal only (avoid affecting passport/visa)
+  $("#updateReentryPermit .attach").addClass("d-none");
+
+  $("#upReentryExp").removeClass("border border-danger");
+
+  $("#updateReentryPermit")
+    .find(".modal-footer")
+    .html(`
+      <button type="button" class="btn btn-cancel btn-secondary">
+        Cancel
+      </button>
+      <button type="button" class="btn btn-update" id="btn-updateReentryPermit">
+        Update Re-entry Permit
+      </button>
+    `);
 }
 
 function removeOutline() {

@@ -64,25 +64,66 @@ function getEmployeeDetails() {
 }
 
 function getPassport(isDetails) {
-  return postJson(
-    "api/get_passport.php",
-    {
-      empID: empID,
-      isDetails: isDetails,
-    },
-    "Failed to load passport details.",
-  );
+  return new Promise((resolve, reject) => {
+    postJson(
+      "api/get_passport.php",
+      {
+        empID: empID,
+        isDetails: isDetails,
+      },
+      "Failed to load passport details.",
+    )
+      .then((res) => {
+        if (!res.success) {
+          reject(res.message);
+          return;
+        }
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
 }
 
 function getVisa(isDetails) {
-  return postJson(
-    "api/get_visa.php",
-    {
-      empID: empID,
-      isDetails: isDetails,
-    },
-    "Failed to load visa details.",
-  );
+  return new Promise((resolve, reject) => {
+    postJson(
+      "api/get_visa.php",
+      {
+        empID: empID,
+        isDetails: isDetails,
+      },
+      "Failed to load visa details.",
+    )
+      .then((res) => {
+        if (!res.success) {
+          reject(res.message);
+          return;
+        }
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+}
+
+function getReentryPermit(isDetails) {
+  return new Promise((resolve, reject) => {
+    postJson(
+      "api/get_reentry_permit.php",
+      {
+        empID: empID,
+        isDetails: isDetails,
+      },
+      "Failed to load reentry permit details.",
+    )
+      .then((res) => {
+        if (!res.success) {
+          reject(res.message);
+          return;
+        }
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
 }
 
 function getDispatchHistory() {
@@ -332,6 +373,55 @@ function saveVisa() {
       "api/update_visa.php",
       fd,
       "Failed to update visa.",
+    )
+      .then((res) => {
+        if (!res.success) {
+          reject(res.message);
+          return;
+        }
+        resolve(res);
+      })
+      .catch(reject);
+  });
+}
+
+function saveReentryPermit() {
+  const reentryExp = $("#upReentryExp").val();
+  const isOnProcess = $("#upReentryOnProcess").is(":checked");
+
+  const fPath = $("#upReentryAttach")[0].files[0];
+  const upload = $("#upReentryAttach").val();
+  const extension = upload.slice(((upload.lastIndexOf(".") - 1) >>> 0) + 2);
+
+  let ctr = 0;
+
+  if (!isOnProcess) {
+    if (!reentryExp) {
+      $("#upReentryExp").addClass("border border-danger");
+      ctr++;
+    }
+  }
+
+  return new Promise((resolve, reject) => {
+    if (fPath && extension.toLowerCase() !== "pdf") {
+      $("#upReentryAttach").val("");
+      return reject("Please attach PDF files only.");
+    }
+
+    if (!isOnProcess && ctr > 0) {
+      return reject("Expiry date is required.");
+    }
+
+    const fd = new FormData();
+    fd.append("fileValue", fPath);
+    fd.append("empID", empID);
+    fd.append("expiry", reentryExp);
+    fd.append("on_process", isOnProcess ? 1 : 0);
+
+    postFormData(
+      "api/update_reentry_permit.php",
+      fd,
+      "Failed to update re-entry permit.",
     )
       .then((res) => {
         if (!res.success) {

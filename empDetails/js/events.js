@@ -49,6 +49,22 @@ function bindEvents() {
   `);
   });
 
+  $(document).on("click", "#btn-updateReentryPermit", function () {
+  const modal = $("#updateReentryPermit");
+
+  modal.find("input").removeAttr("disabled");
+  modal.find(".attach").removeClass("d-none");
+
+  $(this).closest(".modal-footer").html(`
+    <button type="button" class="btn btn-secondary" id="cancelEditReentryPermit">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-success" id="btn-saveReentryPermit">
+      Save Changes
+    </button>
+  `);
+});
+
   $(document).on("click", ".btn-close", function () {
     $(this).closest(".modal").find(".attach").addClass("d-none");
     $(this).closest(".modal").find("input").attr("disabled", true);
@@ -126,8 +142,8 @@ $(document).on("click", "#btn-deleteEntry", function () {
         ]);
       })
       .then(([pportD, pportI]) => {
-        userPassD = pportD.data;
-        userPassI = pportI.data;
+        userPassD = pportD;
+        userPassI = pportI;
 
         passportDisplay(userPassD);
         passportInput(userPassI);
@@ -154,13 +170,41 @@ $(document).on("click", "#btn-deleteEntry", function () {
         ]);
       })
       .then(([vsaD, vsaI]) => {
-        userVisaD = vsaD.data;
-        userVisaI = vsaI.data;
+        userVisaD = vsaD;
+        userVisaI = vsaI;
 
         visaDisplay(userVisaD);
         visaInput(userVisaI);
 
         resetVisaInput();
+      })
+      .catch((error) => {
+        showToast("error", `${error}`);
+      });
+  });
+
+  $(document).on("click", "#btn-saveReentryPermit", function () {
+    saveReentryPermit()
+      .then((res) => {
+        if (!res.success) {
+          throw res.message;
+        }
+
+        showToast("success", res.message);
+
+        return Promise.all([
+          getReentryPermit(true),
+          getReentryPermit(false),
+        ]);
+      })
+      .then(([rpD, rpI]) => {
+        userRPD = rpD;
+        userRPI = rpI;
+
+        reentryPermitDisplay(userRPD);
+        reentryPermitInput(userRPI);
+
+        resetReentryPermitInput();
       })
       .catch((error) => {
         showToast("error", `${error}`);
@@ -173,6 +217,10 @@ $(document).on("click", "#btn-deleteEntry", function () {
 
   $(document).on("click", "#cancelEditVisa", function () {
     resetVisaInput();
+  });
+
+  $(document).on("click", "#cancelEditReentryPermit", function () {
+    resetReentryPermitInput();
   });
 
   $(document).on("click", "#upPassNo", function () {
