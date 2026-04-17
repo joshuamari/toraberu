@@ -44,7 +44,7 @@ function checkEmpty(tbodyID) {
   const tbodySelector = "#" + tbodyID;
 
   if ($(tbodySelector + " tr").length === 0) {
-    const newRow = `<tr><td colspan="6" class="text-center">No data found</td></tr>`;
+    const newRow = `<tr><td colspan="7" class="text-center">No data found</td></tr>`;
     $(tbodySelector).append(newRow);
   }
 }
