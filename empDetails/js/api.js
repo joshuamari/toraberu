@@ -64,25 +64,66 @@ function getEmployeeDetails() {
 }
 
 function getPassport(isDetails) {
-  return postJson(
-    "api/get_passport.php",
-    {
-      empID: empID,
-      isDetails: isDetails,
-    },
-    "Failed to load passport details.",
-  );
+  return new Promise((resolve, reject) => {
+    postJson(
+      "api/get_passport.php",
+      {
+        empID: empID,
+        isDetails: isDetails,
+      },
+      "Failed to load passport details.",
+    )
+      .then((res) => {
+        if (!res.success) {
+          reject(res.message);
+          return;
+        }
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
 }
 
 function getVisa(isDetails) {
-  return postJson(
-    "api/get_visa.php",
-    {
-      empID: empID,
-      isDetails: isDetails,
-    },
-    "Failed to load visa details.",
-  );
+  return new Promise((resolve, reject) => {
+    postJson(
+      "api/get_visa.php",
+      {
+        empID: empID,
+        isDetails: isDetails,
+      },
+      "Failed to load visa details.",
+    )
+      .then((res) => {
+        if (!res.success) {
+          reject(res.message);
+          return;
+        }
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
+}
+
+function getReentryPermit(isDetails) {
+  return new Promise((resolve, reject) => {
+    postJson(
+      "api/get_reentry_permit.php",
+      {
+        empID: empID,
+        isDetails: isDetails,
+      },
+      "Failed to load reentry permit details.",
+    )
+      .then((res) => {
+        if (!res.success) {
+          reject(res.message);
+          return;
+        }
+        resolve(res.data);
+      })
+      .catch(reject);
+  });
 }
 
 function getDispatchHistory() {
@@ -205,33 +246,38 @@ function savePass() {
   const passBday = $("#upPassBday").val();
   const passIssue = $("#upPassIssue").val();
   const passExp = $("#upPassExp").val();
+  const isOnProcess = $("#upPassOnProcess").is(":checked");
+
   const fPath = $("#upPassAttach")[0].files[0];
   const upload = $("#upPassAttach").val();
   const extension = upload.slice(((upload.lastIndexOf(".") - 1) >>> 0) + 2);
+
   let ctr = 0;
 
-  if (!passNo) {
-    $("#upPassNo").addClass("border border-danger");
-    ctr++;
-  }
-  if (!passBday) {
-    $("#upPassBday").addClass("border border-danger");
-    ctr++;
-  }
-  if (!passIssue) {
-    $("#upPassIssue").addClass("border border-danger");
-    ctr++;
-  }
-  if (!passExp) {
-    $("#upPassExp").addClass("border border-danger");
-    ctr++;
+  if (!isOnProcess) {
+    if (!passNo) {
+      $("#upPassNo").addClass("border border-danger");
+      ctr++;
+    }
+    if (!passBday) {
+      $("#upPassBday").addClass("border border-danger");
+      ctr++;
+    }
+    if (!passIssue) {
+      $("#upPassIssue").addClass("border border-danger");
+      ctr++;
+    }
+    if (!passExp) {
+      $("#upPassExp").addClass("border border-danger");
+      ctr++;
+    }
   }
 
   const startDate = new Date(passIssue);
   const endDate = new Date(passExp);
 
   return new Promise((resolve, reject) => {
-    if (endDate < startDate) {
+    if (!isOnProcess && passIssue && passExp && endDate < startDate) {
       $("#upPassExp").val("");
       return reject("Expiry must not be earlier than date of issue.");
     }
@@ -241,7 +287,7 @@ function savePass() {
       return reject("Please attach PDF files only.");
     }
 
-    if (ctr > 0) {
+    if (!isOnProcess && ctr > 0) {
       return reject("Complete all fields");
     }
 
@@ -252,6 +298,7 @@ function savePass() {
     fd.append("birthdate", passBday);
     fd.append("issued", passIssue);
     fd.append("expiry", passExp);
+    fd.append("on_process", isOnProcess ? 1 : 0);
 
     postFormData(
       "api/update_passport.php",
@@ -273,22 +320,27 @@ function saveVisa() {
   const visaNo = $("#upVisaNo").val();
   const visaIssue = $("#upVisaIssue").val();
   const visaExp = $("#upVisaExp").val();
+  const isOnProcess = $("#upVisaOnProcess").is(":checked");
+
   const fPath = $("#upVisaAttach")[0].files[0];
   const upload = $("#upVisaAttach").val();
   const extension = upload.slice(((upload.lastIndexOf(".") - 1) >>> 0) + 2);
+
   let ctr = 0;
 
-  if (!visaNo) {
-    $("#upVisaNo").addClass("border border-danger");
-    ctr++;
-  }
-  if (!visaIssue) {
-    $("#upVisaIssue").addClass("border border-danger");
-    ctr++;
-  }
-  if (!visaExp) {
-    $("#upVisaExp").addClass("border border-danger");
-    ctr++;
+  if (!isOnProcess) {
+    if (!visaNo) {
+      $("#upVisaNo").addClass("border border-danger");
+      ctr++;
+    }
+    if (!visaIssue) {
+      $("#upVisaIssue").addClass("border border-danger");
+      ctr++;
+    }
+    if (!visaExp) {
+      $("#upVisaExp").addClass("border border-danger");
+      ctr++;
+    }
   }
 
   const startDate = new Date(visaIssue);
@@ -300,11 +352,11 @@ function saveVisa() {
       return reject("Please attach PDF files only.");
     }
 
-    if (ctr > 0) {
+    if (!isOnProcess && ctr > 0) {
       return reject("Complete all fields.");
     }
 
-    if (endDate < startDate) {
+    if (!isOnProcess && visaIssue && visaExp && endDate < startDate) {
       $("#upVisaExp").val("");
       return reject("End date must not be earlier than start date.");
     }
@@ -315,11 +367,61 @@ function saveVisa() {
     fd.append("number", visaNo);
     fd.append("issued", visaIssue);
     fd.append("expiry", visaExp);
+    fd.append("on_process", isOnProcess ? 1 : 0);
 
     postFormData(
       "api/update_visa.php",
       fd,
       "Failed to update visa.",
+    )
+      .then((res) => {
+        if (!res.success) {
+          reject(res.message);
+          return;
+        }
+        resolve(res);
+      })
+      .catch(reject);
+  });
+}
+
+function saveReentryPermit() {
+  const reentryExp = $("#upReentryExp").val();
+  const isOnProcess = $("#upReentryOnProcess").is(":checked");
+
+  const fPath = $("#upReentryAttach")[0].files[0];
+  const upload = $("#upReentryAttach").val();
+  const extension = upload.slice(((upload.lastIndexOf(".") - 1) >>> 0) + 2);
+
+  let ctr = 0;
+
+  if (!isOnProcess) {
+    if (!reentryExp) {
+      $("#upReentryExp").addClass("border border-danger");
+      ctr++;
+    }
+  }
+
+  return new Promise((resolve, reject) => {
+    if (fPath && extension.toLowerCase() !== "pdf") {
+      $("#upReentryAttach").val("");
+      return reject("Please attach PDF files only.");
+    }
+
+    if (!isOnProcess && ctr > 0) {
+      return reject("Expiry date is required.");
+    }
+
+    const fd = new FormData();
+    fd.append("fileValue", fPath);
+    fd.append("empID", empID);
+    fd.append("expiry", reentryExp);
+    fd.append("on_process", isOnProcess ? 1 : 0);
+
+    postFormData(
+      "api/update_reentry_permit.php",
+      fd,
+      "Failed to update re-entry permit.",
     )
       .then((res) => {
         if (!res.success) {

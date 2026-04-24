@@ -10,27 +10,21 @@ try {
     $viewerEmployeeNumber = getCurrentEmployeeNumber($connkdt);
 
     $employeeId = isset($_POST['empID']) ? (int)$_POST['empID'] : 0;
-    $number = isset($_POST['number']) ? trim((string)$_POST['number']) : '';
-    $birthdate = isset($_POST['birthdate']) ? trim((string)$_POST['birthdate']) : '';
-    $issued = isset($_POST['issued']) ? trim((string)$_POST['issued']) : '';
     $expiry = isset($_POST['expiry']) ? trim((string)$_POST['expiry']) : '';
     $onProcess = isset($_POST['on_process']) ? (int)$_POST['on_process'] : 0;
 
-    updateEmployeePassport(
+    updateEmployeeReentryPermit(
         $connpcs,
         $connnew,
         $connkdt,
         $viewerEmployeeNumber,
         $employeeId,
-        $number,
-        $birthdate,
-        $issued,
         $expiry,
         $onProcess,
         $_FILES
     );
 
-    jsonSuccess(null, 'Passport updated successfully.');
+    jsonSuccess(null, 'Re-entry permit updated successfully.');
 } catch (RuntimeException $e) {
     $message = $e->getMessage();
 
@@ -44,6 +38,6 @@ try {
 
     jsonError($message, 400);
 } catch (Throwable $e) {
-    error_log('update_passport failed: ' . $e->getMessage());
-    jsonError('Failed to update passport.', 500);
+    error_log('update_reentry_permit failed: ' . $e->getMessage());
+    jsonError('Failed to update re-entry permit.', 500);
 }

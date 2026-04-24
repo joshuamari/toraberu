@@ -112,7 +112,8 @@ function getEmployeePassport(
             passport_number AS number,
             passport_birthdate AS bday,
             passport_issue AS issue,
-            passport_expiry AS expiry
+            passport_expiry AS expiry,
+            on_process
         FROM passport_details
         WHERE emp_number = :employeeId
         LIMIT 1
@@ -129,14 +130,24 @@ function getEmployeePassport(
         return [];
     }
 
-    $isValid = true;
+    $status = 'invalid';
 
-    if (!empty($passport['expiry'])) {
-        $expiry = new DateTime($passport['expiry']);
-        $today = new DateTime();
+    if ((int)($passport['on_process'] ?? 0) === 1) {
+        $status = 'on_process';
+    } elseif (!empty($passport['expiry'])) {
+        $expiryTs = strtotime($passport['expiry']);
+        $todayTs = strtotime(date('Y-m-d'));
 
-        if ($expiry < $today) {
-            $isValid = false;
+        if ($expiryTs >= $todayTs) {
+            $warningMonths = envInt('PASSPORT_EXPIRY_WARNING_MONTHS', 9);
+
+            if ($warningMonths < 1) {
+                $warningMonths = 9;
+            }
+
+            $warningCutoff = strtotime('+' . $warningMonths . ' months');
+
+            $status = ($expiryTs <= $warningCutoff) ? 'valid_expiring' : 'valid';
         }
     }
 
@@ -153,7 +164,8 @@ function getEmployeePassport(
     }
 
     $passport['passportLink'] = getPassportFileLink($employeeId);
-    $passport['valid'] = $isValid;
+    $passport['status'] = $status;
+    $passport['on_process'] = (int)($passport['on_process'] ?? 0);
 
     return $passport;
 }
@@ -197,7 +209,8 @@ function getEmployeeVisa(
         SELECT
             visa_number AS number,
             visa_issue AS issue,
-            visa_expiry AS expiry
+            visa_expiry AS expiry,
+            on_process
         FROM visa_details
         WHERE emp_number = :employeeId
         LIMIT 1
@@ -214,14 +227,24 @@ function getEmployeeVisa(
         return [];
     }
 
-    $isValid = true;
+    $status = 'invalid';
 
-    if (!empty($visa['expiry'])) {
-        $expiry = new DateTime($visa['expiry']);
-        $today = new DateTime();
+    if ((int)($visa['on_process'] ?? 0) === 1) {
+        $status = 'on_process';
+    } elseif (!empty($visa['expiry'])) {
+        $expiryTs = strtotime($visa['expiry']);
+        $todayTs = strtotime(date('Y-m-d'));
 
-        if ($expiry < $today) {
-            $isValid = false;
+        if ($expiryTs >= $todayTs) {
+            $warningMonths = envInt('VISA_EXPIRY_WARNING_MONTHS', 6);
+
+            if ($warningMonths < 1) {
+                $warningMonths = 6;
+            }
+
+            $warningCutoff = strtotime('+' . $warningMonths . ' months');
+
+            $status = ($expiryTs <= $warningCutoff) ? 'valid_expiring' : 'valid';
         }
     }
 
@@ -235,7 +258,8 @@ function getEmployeeVisa(
     }
 
     $visa['visaLink'] = getVisaFileLink($employeeId);
-    $visa['valid'] = $isValid;
+    $visa['status'] = $status;
+    $visa['on_process'] = (int)($visa['on_process'] ?? 0);
 
     return $visa;
 }
@@ -959,6 +983,7 @@ function updateEmployeePassport(
     string $birthdate,
     string $issued,
     string $expiry,
+    int $onProcess,
     array $files
 ): void {
 
@@ -970,15 +995,25 @@ function updateEmployeePassport(
         throw new RuntimeException('Invalid employee ID.');
     }
 
-    if ($number === '' || $birthdate === '' || $issued === '' || $expiry === '') {
-        throw new RuntimeException('Complete all fields.');
+    $onProcess = $onProcess === 1 ? 1 : 0;
+
+    // only require full fields when NOT on process
+    if ($onProcess !== 1) {
+        if ($number === '' || $birthdate === '' || $issued === '' || $expiry === '') {
+            throw new RuntimeException('Complete all fields.');
+        }
+
+        if ($expiry < $issued) {
+            throw new RuntimeException('Expiry must not be earlier than issue date.');
+        }
     }
 
-    if ($expiry < $issued) {
-        throw new RuntimeException('Expiry must not be earlier than issue date.');
-    }
+    // convert empty strings to null for DB
+    $numberDb = ($number !== '') ? $number : null;
+    $birthdateDb = ($birthdate !== '') ? $birthdate : null;
+    $issuedDb = ($issued !== '') ? $issued : null;
+    $expiryDb = ($expiry !== '') ? $expiry : null;
 
-    // insert or update
     $checkSql = "SELECT COUNT(*) FROM passport_details WHERE emp_number = :empID";
     $checkStmt = $connpcs->prepare($checkSql);
     $checkStmt->execute([':empID' => $employeeId]);
@@ -987,8 +1022,23 @@ function updateEmployeePassport(
     if ($exists === 0) {
         $sql = "
             INSERT INTO passport_details
-            (emp_number, passport_birthdate, passport_number, passport_issue, passport_expiry)
-            VALUES (:empID, :birthdate, :number, :issued, :expiry)
+            (
+                emp_number,
+                passport_birthdate,
+                passport_number,
+                passport_issue,
+                passport_expiry,
+                on_process
+            )
+            VALUES
+            (
+                :empID,
+                :birthdate,
+                :number,
+                :issued,
+                :expiry,
+                :onProcess
+            )
         ";
     } else {
         $sql = "
@@ -996,7 +1046,8 @@ function updateEmployeePassport(
             SET passport_birthdate = :birthdate,
                 passport_number = :number,
                 passport_issue = :issued,
-                passport_expiry = :expiry
+                passport_expiry = :expiry,
+                on_process = :onProcess
             WHERE emp_number = :empID
         ";
     }
@@ -1004,13 +1055,13 @@ function updateEmployeePassport(
     $stmt = $connpcs->prepare($sql);
     $stmt->execute([
         ':empID' => $employeeId,
-        ':birthdate' => $birthdate,
-        ':number' => $number,
-        ':issued' => $issued,
-        ':expiry' => $expiry,
+        ':birthdate' => $birthdateDb,
+        ':number' => $numberDb,
+        ':issued' => $issuedDb,
+        ':expiry' => $expiryDb,
+        ':onProcess' => $onProcess,
     ]);
 
-    // file upload
     if (!empty($files['fileValue']['tmp_name'])) {
         $tmp = $files['fileValue']['tmp_name'];
 
@@ -1041,6 +1092,7 @@ function updateEmployeeVisa(
     string $number,
     string $issued,
     string $expiry,
+    int $onProcess,
     array $files
 ): void {
 
@@ -1052,13 +1104,21 @@ function updateEmployeeVisa(
         throw new RuntimeException('Invalid employee ID.');
     }
 
-    if ($number === '' || $issued === '' || $expiry === '') {
-        throw new RuntimeException('Complete all fields.');
+    $onProcess = $onProcess === 1 ? 1 : 0;
+
+    if ($onProcess !== 1) {
+        if ($number === '' || $issued === '' || $expiry === '') {
+            throw new RuntimeException('Complete all fields.');
+        }
+
+        if ($expiry < $issued) {
+            throw new RuntimeException('End date must not be earlier than start date.');
+        }
     }
 
-    if ($expiry < $issued) {
-        throw new RuntimeException('End date must not be earlier than start date.');
-    }
+    $numberDb = ($number !== '') ? $number : null;
+    $issuedDb = ($issued !== '') ? $issued : null;
+    $expiryDb = ($expiry !== '') ? $expiry : null;
 
     $checkSql = "SELECT COUNT(*) FROM visa_details WHERE emp_number = :empID";
     $checkStmt = $connpcs->prepare($checkSql);
@@ -1068,15 +1128,29 @@ function updateEmployeeVisa(
     if ($exists === 0) {
         $sql = "
             INSERT INTO visa_details
-            (emp_number, visa_number, visa_issue, visa_expiry)
-            VALUES (:empID, :number, :issued, :expiry)
+            (
+                emp_number,
+                visa_number,
+                visa_issue,
+                visa_expiry,
+                on_process
+            )
+            VALUES
+            (
+                :empID,
+                :number,
+                :issued,
+                :expiry,
+                :onProcess
+            )
         ";
     } else {
         $sql = "
             UPDATE visa_details
             SET visa_number = :number,
                 visa_issue = :issued,
-                visa_expiry = :expiry
+                visa_expiry = :expiry,
+                on_process = :onProcess
             WHERE emp_number = :empID
         ";
     }
@@ -1084,9 +1158,10 @@ function updateEmployeeVisa(
     $stmt = $connpcs->prepare($sql);
     $stmt->execute([
         ':empID' => $employeeId,
-        ':number' => $number,
-        ':issued' => $issued,
-        ':expiry' => $expiry,
+        ':number' => $numberDb,
+        ':issued' => $issuedDb,
+        ':expiry' => $expiryDb,
+        ':onProcess' => $onProcess,
     ]);
 
     if (!empty($files['fileValue']['tmp_name'])) {
@@ -1106,6 +1181,170 @@ function updateEmployeeVisa(
 
         if (!move_uploaded_file($tmp, $target)) {
             throw new RuntimeException('Failed to upload visa file.');
+        }
+    }
+}
+
+function getEmployeeReentryPermit(
+    PDO $connpcs,
+    PDO $connnew,
+    PDO $connkdt,
+    string $viewerEmployeeNumber,
+    int $employeeId,
+    bool $isDetails
+): array {
+
+    if ($employeeId <= 0) {
+        throw new RuntimeException('Invalid employee ID.');
+    }
+
+    if (!hasPermission($connkdt, $viewerEmployeeNumber, PCS_ACCESS_PERMISSION)) {
+        throw new RuntimeException('Access denied.');
+    }
+
+    $accessibleMemberIds = getMemberIdsForEmployee($connnew, $connkdt, $viewerEmployeeNumber);
+
+    if (!in_array((string)$employeeId, $accessibleMemberIds, true)) {
+        throw new RuntimeException('Access denied.');
+    }
+
+    $sql = "
+        SELECT
+            permit_expiry AS expiry,
+            on_process
+        FROM reentry_permit_details
+        WHERE emp_number = :employeeId
+        LIMIT 1
+    ";
+
+    $stmt = $connpcs->prepare($sql);
+    $stmt->execute([
+        ':employeeId' => $employeeId,
+    ]);
+
+    $permit = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$permit) {
+        return [];
+    }
+
+    $status = 'invalid';
+
+    if ((int)$permit['on_process'] === 1) {
+        $status = 'on_process';
+    } elseif (!empty($permit['expiry'])) {
+        $expiryTs = strtotime($permit['expiry']);
+        $todayTs = strtotime(date('Y-m-d'));
+
+        if ($expiryTs >= $todayTs) {
+            $warningMonths = envInt('REENTRY_PERMIT_EXPIRY_WARNING_MONTHS', 6);
+            if ($warningMonths < 1) $warningMonths = 6;
+
+            $warningCutoff = strtotime('+' . $warningMonths . ' months');
+
+            $status = ($expiryTs <= $warningCutoff)
+                ? 'valid_expiring'
+                : 'valid';
+        }
+    }
+
+    if ($isDetails && !empty($permit['expiry'])) {
+        $permit['expiry'] = date('d M Y', strtotime($permit['expiry']));
+    }
+
+    $permit['reentryPermitLink'] = getReentryPermitFileLink($employeeId);
+    $permit['status'] = $status;
+    $permit['on_process'] = (int)$permit['on_process'];
+
+    return $permit;
+}
+
+function getReentryPermitFileLink(int $employeeId): string
+{
+    $relativePath = "./EmployeesFolder/" . $employeeId . "/reentry_permit.pdf";
+    $absolutePath = "C:/xampp/htdocs/PCS/empDetails/EmployeesFolder/" . $employeeId . "/reentry_permit.pdf";
+
+    if (!file_exists($absolutePath)) {
+        return '';
+    }
+
+    return $relativePath . '?version=' . date('YmdHis');
+}
+
+function updateEmployeeReentryPermit(
+    PDO $connpcs,
+    PDO $connnew,
+    PDO $connkdt,
+    string $viewerEmployeeNumber,
+    int $employeeId,
+    string $expiry,
+    int $onProcess,
+    array $files
+): void {
+
+    if (!hasPermission($connkdt, $viewerEmployeeNumber, PCS_ACCESS_PERMISSION)) {
+        throw new RuntimeException('Access denied.');
+    }
+
+    if ($employeeId <= 0) {
+        throw new RuntimeException('Invalid employee ID.');
+    }
+
+    $onProcess = $onProcess === 1 ? 1 : 0;
+
+    // validation
+    if ($onProcess !== 1 && $expiry === '') {
+        throw new RuntimeException('Expiry date is required.');
+    }
+
+    $expiryDb = ($expiry !== '') ? $expiry : null;
+
+    // check if record exists
+    $checkSql = "SELECT COUNT(*) FROM reentry_permit_details WHERE emp_number = :empID";
+    $checkStmt = $connpcs->prepare($checkSql);
+    $checkStmt->execute([':empID' => $employeeId]);
+    $exists = (int)$checkStmt->fetchColumn();
+
+    if ($exists === 0) {
+        $sql = "
+            INSERT INTO reentry_permit_details
+            (emp_number, permit_expiry, on_process)
+            VALUES (:empID, :expiry, :onProcess)
+        ";
+    } else {
+        $sql = "
+            UPDATE reentry_permit_details
+            SET permit_expiry = :expiry,
+                on_process = :onProcess
+            WHERE emp_number = :empID
+        ";
+    }
+
+    $stmt = $connpcs->prepare($sql);
+    $stmt->execute([
+        ':empID' => $employeeId,
+        ':expiry' => $expiryDb,
+        ':onProcess' => $onProcess,
+    ]);
+
+    // file upload
+    if (!empty($files['fileValue']['tmp_name'])) {
+        $tmp = $files['fileValue']['tmp_name'];
+
+        $folder = "C:/xampp/htdocs/PCS/empDetails/EmployeesFolder/" . $employeeId;
+
+        if (!file_exists($folder)) {
+            mkdir($folder, 0755, true);
+        }
+
+        $target = $folder . "/reentry_permit.pdf";
+
+        if (file_exists($target)) {
+            unlink($target);
+        }
+
+        if (!move_uploaded_file($tmp, $target)) {
+            throw new RuntimeException('Failed to upload re-entry permit file.');
         }
     }
 }

@@ -719,6 +719,13 @@ video {
   margin-bottom: 1.25rem;
 }
 
+<<<<<<< HEAD
+=======
+.me-2 {
+  margin-inline-end: 0.5rem;
+}
+
+>>>>>>> 4dbd9372fd66c62b9dbe5129f328afa5565e6790
 .ml-2 {
   margin-left: 0.5rem;
 }
@@ -1409,6 +1416,7 @@ video {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
 
+<<<<<<< HEAD
 .bg-rose-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(244 63 94 / var(--tw-bg-opacity, 1));
@@ -1429,6 +1437,8 @@ video {
   background-color: rgb(74 222 128 / var(--tw-bg-opacity, 1));
 }
 
+=======
+>>>>>>> 4dbd9372fd66c62b9dbe5129f328afa5565e6790
 .p-1 {
   padding: 0.25rem;
 }
@@ -1957,6 +1967,13 @@ video {
   transition-duration: 150ms;
 }
 
+<<<<<<< HEAD
+=======
+.\[hostname\:port\] {
+  hostname: port;
+}
+
+>>>>>>> 4dbd9372fd66c62b9dbe5129f328afa5565e6790
 .hover\:bg-\[var\(--darkest\)\]:hover {
   background-color: var(--darkest);
 }
@@ -1982,6 +1999,7 @@ video {
   background-color: rgb(220 252 231 / var(--tw-bg-opacity, 1));
 }
 
+<<<<<<< HEAD
 .hover\:bg-rose-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(225 29 72 / var(--tw-bg-opacity, 1));
@@ -1992,6 +2010,8 @@ video {
   background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
 }
 
+=======
+>>>>>>> 4dbd9372fd66c62b9dbe5129f328afa5565e6790
 .hover\:text-\[var\(--tertiary\)\]:hover {
   color: var(--tertiary);
 }

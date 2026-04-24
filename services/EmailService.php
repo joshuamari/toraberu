@@ -46,6 +46,7 @@ function getKhiPicEmails(PDO $connpcs, int $groupId, int $excludeId = 0): array
         FROM khi_details
         WHERE group_id = :group_id
           AND number != :exclude_id
+          AND is_active = 1
     ";
 
     $stmt = $connpcs->prepare($sql);
@@ -64,6 +65,7 @@ function getKhiAdminEmails(PDO $connpcs): array
         FROM khi_details
         WHERE group_id = 2
           AND number != 905007
+          AND is_active = 1
     ";
 
     $stmt = $connpcs->prepare($sql);

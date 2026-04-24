@@ -27,6 +27,7 @@ function fillEmployees(emps) {
     row.append(`<td>${item.groupAbbr}</td>`);
     row.append(`<td>${item.passportExpiry}</td>`);
     row.append(`<td>${item.visaExpiry}</td>`);
+    row.append(`<td>${item.reentryExpiry}</td>`);
     row.append(
       `<td><i class="bx bxs-user-detail fs-5 seeMore" id="${item.empID}"></i></td>`,
     );
@@ -43,7 +44,7 @@ function checkEmpty(tbodyID) {
   const tbodySelector = "#" + tbodyID;
 
   if ($(tbodySelector + " tr").length === 0) {
-    const newRow = `<tr><td colspan="6" class="text-center">No data found</td></tr>`;
+    const newRow = `<tr><td colspan="7" class="text-center">No data found</td></tr>`;
     $(tbodySelector).append(newRow);
   }
 }

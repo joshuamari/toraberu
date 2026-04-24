@@ -111,6 +111,24 @@
                 />
               </div>
             </div>
+
+            <div class="row mb-2">
+              <label for="upPassOnProcess" class="col-4 col-form-label"
+                >Status</label
+              >
+              <div class="col-8 d-flex align-items-center">
+                <input
+                  type="checkbox"
+                  class="form-check-input me-2"
+                  id="upPassOnProcess"
+                  disabled
+                />
+                <label for="upPassOnProcess" class="form-check-label mb-0">
+                  On Process
+                </label>
+              </div>
+            </div>
+
             <div class="row attach d-none">
               <label for="upPassAttach" class="col-4 col-form-label"
                 >Attachment</label
@@ -144,7 +162,6 @@
                 <span>No attachment found.</span>
               </div>
               <div id="wAttachPass" class="w-100 h-100">
-                <!-- Example of embedding a PDF using an iframe -->
                 <iframe
                   src=""
                   width="100%"
@@ -217,6 +234,7 @@
                 />
               </div>
             </div>
+
             <div class="row mb-2">
               <label for="upVisaExp" class="col-4 col-form-label"
                 >Valid Until</label
@@ -230,6 +248,24 @@
                 />
               </div>
             </div>
+
+            <div class="row mb-2">
+              <label for="upVisaOnProcess" class="col-4 col-form-label"
+                >Status</label
+              >
+              <div class="col-8 d-flex align-items-center">
+                <input
+                  type="checkbox"
+                  class="form-check-input me-2"
+                  id="upVisaOnProcess"
+                  disabled
+                />
+                <label for="upVisaOnProcess" class="form-check-label mb-0">
+                  On Process
+                </label>
+              </div>
+            </div>
+
             <div class="row attach d-none">
               <label for="upVisaAttach" class="col-4 col-form-label"
                 >Change Attachment</label
@@ -244,6 +280,7 @@
               </div>
             </div>
           </div>
+
           <div
             class="kanan"
             style="
@@ -263,7 +300,6 @@
                 <span>No attachment found.</span>
               </div>
               <div id="wAttachVisa" class="w-100 h-100">
-                <!-- Example of embedding a PDF using an iframe -->
                 <iframe
                   src=""
                   width="100%"
@@ -281,6 +317,124 @@
           </button>
           <button type="button" class="btn btn-update" id="btn-updateVisa">
             Update Visa
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="updateReentryPermit"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="updateReentryPermitLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="updateReentryPermitLabel">
+            Update Re-entry Permit
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+
+        <div class="modal-body d-flex gap-3 flex-lg-row flex-column">
+          <div style="width: 350px" class="kaliwa">
+            <div class="row mb-2">
+              <label for="upReentryExp" class="col-4 col-form-label">
+                Valid Until
+              </label>
+              <div class="col-8">
+                <input
+                  type="date"
+                  class="form-control form-control-sm ddates reentry"
+                  id="upReentryExp"
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <label for="upReentryOnProcess" class="col-4 col-form-label">
+                Status
+              </label>
+              <div class="col-8 d-flex align-items-center">
+                <input
+                  type="checkbox"
+                  class="form-check-input me-2"
+                  id="upReentryOnProcess"
+                  disabled
+                />
+                <label for="upReentryOnProcess" class="form-check-label mb-0">
+                  On Process
+                </label>
+              </div>
+            </div>
+
+            <div class="row attach d-none">
+              <label for="upReentryAttach" class="col-4 col-form-label">
+                Attachment
+              </label>
+              <div class="col-8">
+                <input
+                  type="file"
+                  class="form-control form-control-sm"
+                  id="upReentryAttach"
+                  disabled
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="kanan"
+            style="
+              width: calc(100% - 350px);
+              background-color: whitesmoke;
+              border-radius: 6px;
+            "
+          >
+            <label id="reentryAttachLabel" class="p-2">Attachment</label>
+            <div style="height: 300px; width: 100%">
+              <div
+                class="d-flex w-100 h-100 flex-column gap-3 justify-content-center align-items-center d-none"
+                style="opacity: 0.75"
+                id="noAttachReentry"
+              >
+                <i class="bx bxs-inbox" style="font-size: 80px"></i>
+                <span>No attachment found.</span>
+              </div>
+
+              <div id="wAttachReentry" class="w-100 h-100">
+                <iframe
+                  src=""
+                  width="100%"
+                  height="100%"
+                  id="reentryAttachView"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-cancel btn-secondary">
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-update"
+            id="btn-updateReentryPermit"
+          >
+            Update Re-entry Permit
           </button>
         </div>
       </div>
@@ -1408,8 +1562,48 @@
                     <h1>Update Visa</h1>
                   </div>
                 </div>
-              </div>
-            </div>
+                <div class="w-full xl:w-[400px] card">
+                  <div class="card-body">
+                    <h5 class="card-title">Latest Re-entry Permit</h5>
+
+                    <div class="card-content">
+                      <div id="reentryDeets" class="reentry">
+                        <div class="row">
+                          <label for="reentryStatus" class="col-4 col-form-label">Validity</label>
+                          <div class="col-8 d-flex align-items-center justify-end">
+                            <span class="badge bg-success text-white" id="reentryStatus">Valid</span>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <label for="reentryExp" class="col-4 col-form-label">Valid until</label>
+                          <div class="col-8 d-flex align-items-center justify-end">
+                            <span class="" id="reentryExp">08 Oct 2026</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        id="reentryEmpty"
+                        class="emptyState-reentry w-100 p-3 d-flex justify-content-center align-items-center flex-column d-none"
+                      >
+                        <img src="../images/permit.png" alt="" style="width: 100px" />
+                        <span class="fw-semibold p-3">No Re-entry Permit found.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="editThis"
+                    data-bs-target="#updateReentryPermit"
+                    data-bs-toggle="modal"
+                  >
+                    <i class="bx bx-refresh"></i>
+                    <h1>Update Re-entry</h1>
+                  </div>
+                </div>
+                              </div>
+                            </div>
           </div>
         </div>
       </div>
