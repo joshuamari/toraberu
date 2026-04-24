@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="../global.css">
   <link rel="stylesheet" href="../css/font-awesome.css">
   <link rel="stylesheet" href="../css/boxicons.css">
-  <link rel="stylesheet" href="../css/bootstrap.min.css">  
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="css/index.css">
   <link rel="stylesheet" href="../tailwindcss/output.css">
 
@@ -83,7 +83,7 @@
                 <p id="modalDateTo"></p>
               </div>
               <div class="flex gap-1 items-center" id="modalDuration">
-                <span class="text-[16px] font-semibold" ></span>
+                <span class="text-[16px] font-semibold"></span>
                 <p>days in total</p>
               </div>
             </div>
@@ -108,10 +108,12 @@
           <div class="rounded-lg border-1  flex items-center">
             <i class='bx bxs-pin text-[16px] text-[var(--gray-text)] p-1 '></i>
           </div>
-          <div class="attachments" >
+          <div class="attachments">
             <p class="text-[var(--gray-text)] text-[12px] uppercase">Attachments</p>
-           <p class=" underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition" id="attachment" role="button"></p>
-           <p class=" underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition" id="attachment2" role="button"></p>
+            <p class=" underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition"
+              id="attachment" role="button"></p>
+            <p class=" underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition"
+              id="attachment2" role="button"></p>
           </div>
         </div>
         <div class="mt-4 p-3 rounded-md border-[1px] bg-[var(--white)]">
@@ -129,27 +131,19 @@
           </div>
         </div>
         <div id="modifyFooter" class="flex gap-1 mt-2 justify-content-end">
-            <label
-              for=""
-              class="text-[12px] text-[var(--gray-text)] capitalize"
-              id="modiLabel"
-              >Modified:</label
-            >
-            <p class="text-[var(--gray-text)] text-[12px]">on</p>
-            <p
-              class="text-[var(--gray-text)] text-[12px]"
-              id="modalModiDate"
-            ></p>
+          <label for="" class="text-[12px] text-[var(--gray-text)] capitalize" id="modiLabel">Modified:</label>
+          <p class="text-[var(--gray-text)] text-[12px]">on</p>
+          <p class="text-[var(--gray-text)] text-[12px]" id="modalModiDate"></p>
         </div>
       </div>
-      
+
     </div>
   </div>
 </div>
 
 <div class="modal fade" id="dateChangeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-xl">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content rounded-xl">
 
       <!-- HEADER -->
@@ -159,10 +153,7 @@
           <span class="status lg pending" id="modalChangeStatus">Pending</span>
         </div>
 
-        <button
-          type="button"
-          class="btn-close text-[14px] m-1 w-auto h-auto"
-          data-bs-dismiss="modal"
+        <button type="button" class="btn-close text-[14px] m-1 w-auto h-auto" data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>
 
@@ -177,7 +168,7 @@
             <div class="flex items-center  gap-1 flex-wrap">
               <span class="text-[14px] text-[var(--gray-text)] uppercase">REQ#</span>
               <p class="font-semibold text-[14px] text-[var(--gray-text)]" id="modalOriginalRequestId"> 0012</p>
-          
+
             </div>
 
             <div class="flex w-full  justify-content-between gap-4">
@@ -186,32 +177,32 @@
                 <p class="font-semibold text-[20px] leading-[1.1] text-[var(--dark)] m-0" id="modalDCEmpName">
                   Medrano, Collene Keith
                 </p>
-              
+
                 <div class="flex items-center gap-2 mt-2 flex-wrap">
                   <span class="text-[14px] uppercase text-[var(--gray-text)]" id="modalEmpNumber">
                     EMP-475
                   </span>
-              
+
                   <span class="text-[var(--gray-text)] text-[12px]">•</span>
-              
+
                   <span class="text-[14px] text-[var(--gray-text)]" id="modalGroup">
                     Systems Group
                   </span>
                 </div>
               </div>
-               <!-- RIGHT -->
-          <div class="flex justify-center md:items-end text-left md:text-end">
-         <i class="bx bxs-map text-[15px] text-[var(--gray-text)] p-1 "></i>
-            <p class="text-[14px] text-[var(--gray-text)] font-medium leading-tight m-0" id="modalLocCountry">
-              Kobe City, Japan
-            </p>
-          </div>
+              <!-- RIGHT -->
+              <div class="flex justify-center md:items-end text-left md:text-end">
+                <i class="bx bxs-map text-[15px] text-[var(--gray-text)] p-1 "></i>
+                <p class="text-[14px] text-[var(--gray-text)] font-medium leading-tight m-0" id="modalLocCountry">
+                  Kobe City, Japan
+                </p>
+              </div>
             </div>
 
-            
+
           </div>
 
-         
+
         </div>
 
         <!-- DATE CHANGE HERO -->
@@ -224,10 +215,10 @@
 
             <div class="text-end">
               <p class="text-[11px] uppercase text-[var(--gray-text)] mb-1">Net Change</p>
-              
-              <p class="font-semibold text-[22px] text-[var(--tertiary)] leading-none m-0" >
+
+              <p class="font-semibold text-[22px] text-green-500 leading-none m-0">
                 <span class="text-inherit text-[22px] font-semibold" id="modalSymbol">+</span>
-                <span class="font-semibold text-[22px] text-inherit leading-none m-0" id="modalTotalDiff">5</span> 
+                <span class="font-semibold text-[22px] text-inherit leading-none m-0" id="modalTotalDiff">5</span>
                 days
               </p>
               <!-- <p class="font-semibold text-[22px] text-rose-500 leading-none m-0" >
@@ -271,57 +262,57 @@
             </div>
           </div>
 
-        
+
         </div>
 
         <!-- REQUEST DETAILS -->
         <div class="rounded-xl border p-3 bg-[var(--white)]">
 
-  <!-- HEADER -->
-  <div class="flex items-center justify-between mb-3">
-    <p class="text-[11px] uppercase text-[var(--gray-text)] m-0">
-      Request Details
-    </p>
-  </div>
+          <!-- HEADER -->
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-[11px] uppercase text-[var(--gray-text)] m-0">
+              Request Details
+            </p>
+          </div>
 
-  <!-- META LIST -->
-  <div class="flex flex-col gap-2 text-[14px]">
+          <!-- META LIST -->
+          <div class="flex flex-col gap-2 text-[14px]">
 
-    <!-- REQUESTED BY -->
-    <div class="flex justify-between items-start gap-3">
-      <span class="text-[var(--gray-text)]">Requested by</span>
-      <span class="font-medium text-[var(--gray-text2)] text-right" id="modalReqName">
-        Kurita, Hiroki
-      </span>
-    </div>
+            <!-- REQUESTED BY -->
+            <div class="flex justify-between items-start gap-3">
+              <span class="text-[var(--gray-text)]">Requested by</span>
+              <span class="font-medium text-[var(--gray-text2)] text-right" id="modalReqName">
+                Kurita, Hiroki
+              </span>
+            </div>
 
-    <!-- REQUESTED ON -->
-    <div class="flex justify-between items-start gap-3">
-      <span class="text-[var(--gray-text)]">Requested on</span>
-      <span class="font-medium text-[var(--gray-text2)] text-right" id="modalReqDate">
-        6 Feb 2026
-      </span>
-    </div>
+            <!-- REQUESTED ON -->
+            <div class="flex justify-between items-start gap-3">
+              <span class="text-[var(--gray-text)]">Requested on</span>
+              <span class="font-medium text-[var(--gray-text2)] text-right" id="modalReqDate">
+                6 Feb 2026
+              </span>
+            </div>
 
-    <!-- GROUP -->
-    <div class="flex justify-between items-start gap-3">
-      <span class="text-[var(--gray-text)]">Group</span>
-      <span class="font-medium text-[var(--gray-text2)] text-right" id="modalReqGrp">
-        Boiler Group
-      </span>
-    </div>
+            <!-- GROUP -->
+            <div class="flex justify-between items-start gap-3">
+              <span class="text-[var(--gray-text)]">Group</span>
+              <span class="font-medium text-[var(--gray-text2)] text-right" id="modalReqGrp">
+                Boiler Group
+              </span>
+            </div>
 
-  </div>
+          </div>
 
-  <!-- REASON -->
-  <div class="mt-3 pt-3 border-t border-[var(--gray-100)]">
-    <p class="text-[12px] text-[var(--gray-text)] mb-1">Reason for Date Change</p>
-    <p class="text-[var(--gray-text2)] leading-[1.5] m-0 text-right md:text-left" id="modalReason">
-      Requesting extension due to project schedule adjustment.
-    </p>
-  </div>
+          <!-- REASON -->
+          <div class="mt-3 pt-3 border-t border-[var(--gray-100)]">
+            <p class="text-[12px] text-[var(--gray-text)] mb-1">Reason for Date Change</p>
+            <p class="text-[var(--gray-text2)] leading-[1.5] m-0 text-right md:text-left" id="modalReason">
+              Requesting extension due to project schedule adjustment.
+            </p>
+          </div>
 
-</div>
+        </div>
 
         <!-- MODIFIED -->
         <div id="modifyFooter" class="flex gap-1 justify-content-end">
@@ -337,22 +328,20 @@
           Review the proposed date change before approving or denying the request.
         </div>
 
-        <div class="flex gap-2 w-full lg:w-auto justify-content-end">
-          
+        <div class="flex gap-2 w-full  justify-content-end">
 
-          <button
-  type="button"
-  class="btn border rounded-lg px-4 py-2 min-w-[130px] font-semibold text-[var(--red-200)] bg-[var(--red-100)] hover:bg-[var(--red-100)] transition disabled:pointer-events-none"
-  id="btnDenyDateChange">
-  Deny Request
-</button>
 
-<button
-  type="button"
-  class="btn rounded-lg px-4 py-2 min-w-[130px] font-semibold text-white bg-[var(--tertiary)] hover:bg-[var(--darkest)] transition disabled:pointer-events-none"
-  id="btnApproveDateChange">
-  Approve Change
-</button>
+          <button type="button"
+            class="btn border rounded-lg px-4 py-2 min-w-[130px] font-semibold text-white bg-rose-500 hover:bg-rose-600 transition disabled:pointer-events-none"
+            id="btnDenyDateChange">
+            Deny Request
+          </button>
+
+          <button type="button"
+            class="btn rounded-lg px-4 py-2 min-w-[130px] font-semibold  bg-green-400 hover:bg-green-500 transition disabled:pointer-events-none "
+            id="btnApproveDateChange">
+            Approve Change
+          </button>
         </div>
       </div>
 
@@ -360,8 +349,8 @@
   </div>
 </div>
 
-<div class="modal fade" id="confirmDateChangeActionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-  aria-hidden="true">
+<div class="modal fade" id="confirmDateChangeActionModal" data-bs-backdrop="static" data-bs-keyboard="false"
+  tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content rounded-xl">
 
@@ -371,10 +360,7 @@
           <h1 class="modal-title text-[20px] font-semibold m-0" id="confirmActionTitle">Confirm Action</h1>
         </div>
 
-        <button
-          type="button"
-          class="btn-close text-[14px] m-1 w-auto h-auto"
-          data-bs-dismiss="modal"
+        <button type="button" class="btn-close text-[14px] m-1 w-auto h-auto" data-bs-dismiss="modal"
           aria-label="Close">
         </button>
       </div>
@@ -385,8 +371,7 @@
         <!-- SUMMARY -->
         <div class="rounded-xl border bg-white p-4">
           <div class="flex items-start gap-3">
-            <div
-              class="w-[42px] h-[42px] rounded-full flex items-center justify-center shrink-0"
+            <div class="w-[42px] h-[42px] rounded-full flex items-center justify-center shrink-0"
               id="confirmActionIconWrap">
               <i class='bx text-[22px]' id="confirmActionIcon"></i>
             </div>
@@ -405,65 +390,65 @@
         <!-- QUICK DETAILS -->
         <div class="rounded-xl border p-4 bg-[var(--white)] flex flex-col gap-4">
 
-  <!-- TOP META -->
-  <div class="flex items-center justify-between flex-wrap gap-2 text-[14px]">
-    <div class="flex items-center gap-2">
-      <span class="text-[var(--gray-text)]">REQ</span>
-      <span class="font-medium text-[var(--dark)]" id="confirmRequestId">0012</span>
-    </div>
+          <!-- TOP META -->
+          <div class="flex items-center justify-between flex-wrap gap-2 text-[14px]">
+            <div class="flex items-center gap-2">
+              <span class="text-[var(--gray-text)]">REQ</span>
+              <span class="font-medium text-[var(--dark)]" id="confirmRequestId">0012</span>
+            </div>
 
-    <div class="text-right">
-      <span class="text-[var(--gray-text)]">Employee</span>
-      <span class="font-medium text-[var(--dark)] ml-2" id="confirmEmpName">
-        Medrano, Collene Keith
-      </span>
-    </div>
-  </div>
+            <div class="text-right">
+              <span class="text-[var(--gray-text)]">Employee</span>
+              <span class="font-medium text-[var(--dark)] ml-2" id="confirmEmpName">
+                Medrano, Collene Keith
+              </span>
+            </div>
+          </div>
 
-  <!-- DATE CHANGE -->
-  <div class="flex flex-col gap-3">
+          <!-- DATE CHANGE -->
+          <div class="flex flex-col gap-3">
 
-    <p class="text-[13px] text-[var(--gray-text)] m-0">Date Change</p>
+            <p class="text-[13px] text-[var(--gray-text)] m-0">Date Change</p>
 
-    <div class="grid grid-cols-[1fr_auto_1fr] gap-3 items-center">
+            <div class="grid grid-cols-[1fr_auto_1fr] gap-3 items-center">
 
-      <!-- CURRENT -->
-      <div class="rounded-lg border bg-white p-3">
-        <p class="text-[10px] uppercase text-[var(--gray-text)] mb-1">Current</p>
-        <p class="font-semibold text-[var(--dark)] m-0 leading-snug">
-          <span id="confirmOldDateFrom">19 Feb 2026</span>
-          <span class="mx-1 text-[var(--gray-text)]">—</span>
-          <span id="confirmOldDateTo">30 Jun 2026</span>
-        </p>
-      </div>
+              <!-- CURRENT -->
+              <div class="rounded-lg border bg-white p-3">
+                <p class="text-[10px] uppercase text-[var(--gray-text)] mb-1">Current</p>
+                <p class="font-semibold text-[var(--dark)] m-0 leading-snug">
+                  <span id="confirmOldDateFrom">19 Feb 2026</span>
+                  <span class="mx-1 text-[var(--gray-text)]">—</span>
+                  <span id="confirmOldDateTo">30 Jun 2026</span>
+                </p>
+              </div>
 
-      <!-- ARROW -->
-      <div class="flex justify-center">
-        <i class='bx bx-right-arrow-alt text-[22px] text-[var(--gray-text)]'></i>
-      </div>
+              <!-- ARROW -->
+              <div class="flex justify-center">
+                <i class='bx bx-right-arrow-alt text-[22px] text-[var(--gray-text)]'></i>
+              </div>
 
-      <!-- PROPOSED -->
-      <div class="rounded-lg border bg-[var(--main)] p-3">
-        <p class="text-[10px] uppercase text-[var(--gray-text)] mb-1">Proposed</p>
-        <p class="font-semibold text-[var(--dark)] m-0 leading-snug">
-          <span id="confirmNewDateFrom">19 Feb 2026</span>
-          <span class="mx-1 text-[var(--tertiary)]">—</span>
-          <span id="confirmNewDateTo">05 Jul 2026</span>
-        </p>
-      </div>
+              <!-- PROPOSED -->
+              <div class="rounded-lg border bg-[var(--main)] p-3">
+                <p class="text-[10px] uppercase text-[var(--gray-text)] mb-1">Proposed</p>
+                <p class="font-semibold text-[var(--dark)] m-0 leading-snug">
+                  <span id="confirmNewDateFrom">19 Feb 2026</span>
+                  <span class="mx-1 text-[var(--tertiary)]">—</span>
+                  <span id="confirmNewDateTo">05 Jul 2026</span>
+                </p>
+              </div>
 
-    </div>
-  </div>
+            </div>
+          </div>
 
-  <!-- NET CHANGE -->
-  <div class="flex justify-between items-center text-[14px]">
-    <span class="text-[var(--gray-text)]">Net Change</span>
-    <span class="font-semibold text-[var(--tertiary)]" id="confirmNetChange">
-      +5 days
-    </span>
-  </div>
+          <!-- NET CHANGE -->
+          <div class="flex justify-between items-center text-[14px]">
+            <span class="text-[var(--gray-text)]">Net Change</span>
+            <span class="font-semibold text-[var(--tertiary)]" id="confirmNetChange">
+              +5 days
+            </span>
+          </div>
 
-</div>
+        </div>
 
         <!-- OPTIONAL NOTE -->
         <div class="rounded-xl border p-3 bg-white hidden" id="confirmActionNoteWrap">
@@ -475,28 +460,26 @@
       <!-- FOOTER -->
       <div class="modal-footer border-0 pt-0 flex flex-col gap-3">
 
-      <div class="text-[12px] text-[var(--gray-text)] text-start w-full" id="confirmActionFooterText">
-        Once approved, the original dispatch dates will be updated.
+        <div class="text-[12px] text-[var(--gray-text)] text-start w-full" id="confirmActionFooterText">
+          Once approved, the original dispatch dates will be updated.
+        </div>
+
+        <div class="flex gap-2 w-full justify-end">
+          <button type="button"
+            class="btn border rounded-lg px-4 py-2 min-w-[130px] font-semibold text-[var(--dark)] bg-white hover:bg-[var(--gray-100)] transition"
+            data-bs-dismiss="modal">
+            Back
+          </button>
+
+          <button type="button"
+            class="btn rounded-lg px-4 py-2 min-w-[150px] font-semibold text-white transition disabled:pointer-events-none"
+            id="btnConfirmDateChangeAction">
+            Approve Change
+          </button>
+        </div>
+
       </div>
-
-      <div class="flex gap-2 w-full justify-end">
-        <button
-        type="button"
-        class="btn border rounded-lg px-4 py-2 min-w-[130px] font-semibold text-[var(--dark)] bg-white hover:bg-[var(--gray-100)] transition"
-        data-bs-dismiss="modal">
-          Back
-        </button>
-
-        <button
-        type="button"
-        class="btn rounded-lg px-4 py-2 min-w-[150px] font-semibold text-white transition disabled:pointer-events-none"
-        id="btnConfirmDateChangeAction">
-          Approve Change
-        </button>
-      </div>
-
     </div>
-  </div>
   </div>
 </div>
 
@@ -525,35 +508,29 @@
               </li>
             </a>
             <a href="../requestList/">
-              <li >
+              <li>
                 <div class="d-flex align-items-center gap-2">
                   <i class="bx bx-task text-[18px]"></i>
                   <p class="m-0">Request List</p>
                 </div>
               </li>
             </a>
-               <a href="./changeRequests/"
-                ><li class="active">
-                  <div class="d-flex align-items-center gap-2">
-                    <span
-                      class="w-[18px] h-[18px] inline-flex items-center justify-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="w-full h-full"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                        <path
-                          d="M18.71 5.29a.996.996 0 0 0-1.41 0l-11 11a1 1 0 0 0-.29.71v3c0 .55.45 1 1 1h3c.27 0 .52-.11.71-.29l11-11a.996.996 0 0 0 0-1.41l-3-3ZM9.59 19H8v-1.59l7.5-7.5 1.59 1.59zm8.91-8.91L16.91 8.5 18 7.41 19.59 9zm-10.73.06C9.5 8.72 11 7.49 11 6c0-3.81-7.5-4-9-4v2c3.31 0 7 .83 7 2 0 .54-1.51 1.78-2.5 2.6-2.06 1.7-4.4 3.63-4.24 6.07.09 1.4 1 2.67 2.74 3.86V17c0-.3.07-.59.2-.85-.59-.56-.91-1.1-.94-1.61-.09-1.41 1.83-3 3.52-4.39Z"
-                        ></path>
-                      </svg>
-                    </span>
-                    <p class="m-0">Change Requests</p>
-                  </div>
-                </li></a
-              >
+            <a href="./changeRequests/">
+              <li class="active">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="w-[18px] h-[18px] inline-flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" fill="currentColor"
+                      viewBox="0 0 24 24">
+                      <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                      <path
+                        d="M18.71 5.29a.996.996 0 0 0-1.41 0l-11 11a1 1 0 0 0-.29.71v3c0 .55.45 1 1 1h3c.27 0 .52-.11.71-.29l11-11a.996.996 0 0 0 0-1.41l-3-3ZM9.59 19H8v-1.59l7.5-7.5 1.59 1.59zm8.91-8.91L16.91 8.5 18 7.41 19.59 9zm-10.73.06C9.5 8.72 11 7.49 11 6c0-3.81-7.5-4-9-4v2c3.31 0 7 .83 7 2 0 .54-1.51 1.78-2.5 2.6-2.06 1.7-4.4 3.63-4.24 6.07.09 1.4 1 2.67 2.74 3.86V17c0-.3.07-.59.2-.85-.59-.56-.91-1.1-.94-1.61-.09-1.41 1.83-3 3.52-4.39Z">
+                      </path>
+                    </svg>
+                  </span>
+                  <p class="m-0">Change Requests</p>
+                </div>
+              </li>
+            </a>
             <a href="../checkAvailability/">
               <li>
                 <div class="d-flex align-items-center gap-2">
@@ -592,7 +569,7 @@
               <div class="w-full">
                 <div class="" id="empLabel"></div>
                 <div class="text-uppercase text-[10px] text-gray-400" id="grpLabel">
-              
+
                 </div>
               </div>
             </div>
@@ -614,9 +591,7 @@
             </li>
           </a>
           <div class="relative">
-            <p
-              class="absolute bottom-[-10px] m-0 text-[var(--gray-text)] text-xs"
-            >
+            <p class="absolute bottom-[-10px] m-0 text-[var(--gray-text)] text-xs">
               ©2024 KDT.トラベる v1.0.0
             </p>
           </div>
@@ -633,7 +608,7 @@
         </div>
 
         <div class=" w-full pt-3 min-h-120 flex flex-col  gap-3 relative">
-         
+
           <div class="w-full h-[calc(100%-275px)] lg:h-[calc(100%-130px)] bg-white rounded-lg border">
 
             <div class="flex lg:flex-row flex-col justify-content-between p-3 gap-2 lg:gap-0 border-b-[1px]">
@@ -651,7 +626,7 @@
                   <button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" tabindex="-1"
                     class="relative block  p-2 tab rounded-full flex gap-1 items-center justify-content-center">
                     <p class=" text-[var(--gray-text)] m-0 text-sm">Pending</p>
-                 
+
                   </button>
                   <button role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" tabindex="-2"
                     class="relative block p-2 tab rounded-full flex gap-1 items-center justify-content-center">
@@ -710,7 +685,10 @@
                 <thead>
                   <tr>
                     <th>Employee</th>
-                    <th><div class="flex gap-2 items-center text-[12px] text-[var(--text-color)]">Date requested<i id="sortDate" class='bx bx-sort cursor-pointer'></i></div></th>
+                    <th>
+                      <div class="flex gap-2 items-center text-[12px] text-[var(--text-color)]">Date requested<i
+                          id="sortDate" class='bx bx-sort cursor-pointer'></i></div>
+                    </th>
                     <th>Start date</th>
                     <th>End date</th>
                     <th>Requested by</th>
@@ -729,7 +707,7 @@
 
             </div>
 
-            
+
 
           </div>
 
@@ -738,66 +716,70 @@
             <div class="border-b-1 p-3 border-b-[1px] space-y-2">
               <!-- 🔹 HEADER ROW 1 -->
               <div class="flex lg:flex-row flex-col justify-content-between   gap-2 lg:gap-0">
-            
+
                 <!-- LEFT: TITLE -->
                 <div class="flex items-center">
-                <h5 class="font-semibold text-[16px]">Date Change Requests</h5>
+                  <h5 class="font-semibold text-[16px]">Date Change Requests</h5>
                 </div>
-              
+
                 <!-- RIGHT: STATUS TABS -->
                 <div
-                class="tabs-datechange w-full lg:w-auto flex gap-2 items-center relative overflow-hidden bg-[var(--white)] border grid grid-cols-4 px-[3px] rounded-lg"
-              >
-                <div class="indicator-datechange absolute top-0 my-[0.25rem] bottom-0 left-0 rounded-md bg-[var(--secondary)]"></div>
-            
-                <button id="datechange-tab-1" class="tab-datechange p-2 rounded-full flex justify-center">
-                  <p class="text-sm text-[var(--gray-text)] m-0">All</p>
-                </button>
-            
-                <button id="datechange-tab-2" class="tab-datechange p-2 rounded-full flex justify-center">
-                  <p class="text-sm text-[var(--gray-text)] m-0">Pending</p>
-                </button>
-            
-                <button id="datechange-tab-3" class="tab-datechange p-2 rounded-full flex justify-center">
-                  <p class="text-sm text-[var(--gray-text)] m-0">Accepted</p>
-                </button>
-            
-                <button id="datechange-tab-4" class="tab-datechange p-2 rounded-full flex justify-center">
-                  <p class="text-sm text-[var(--gray-text)] m-0">Cancelled</p>
-                </button>
+                  class="tabs-datechange w-full lg:w-auto flex gap-2 items-center relative overflow-hidden bg-[var(--white)] border grid grid-cols-4 px-[3px] rounded-lg">
+                  <div
+                    class="indicator-datechange absolute top-0 my-[0.25rem] bottom-0 left-0 rounded-md bg-[var(--secondary)]">
+                  </div>
+
+                  <button id="datechange-tab-1" class="tab-datechange p-2 rounded-full flex justify-center">
+                    <p class="text-sm text-[var(--gray-text)] m-0">All</p>
+                  </button>
+
+                  <button id="datechange-tab-2" class="tab-datechange p-2 rounded-full flex justify-center">
+                    <p class="text-sm text-[var(--gray-text)] m-0">Pending</p>
+                  </button>
+
+                  <button id="datechange-tab-3" class="tab-datechange p-2 rounded-full flex justify-center">
+                    <p class="text-sm text-[var(--gray-text)] m-0">Accepted</p>
+                  </button>
+
+                  <button id="datechange-tab-4" class="tab-datechange p-2 rounded-full flex justify-center">
+                    <p class="text-sm text-[var(--gray-text)] m-0">Cancelled</p>
+                  </button>
                 </div>
               </div>
-            
+
               <!-- 🔹 HEADER ROW 2 -->
               <div class="filters  w-100 flex  gap-2">
                 <div class="flex gap-2 w-full justify-content-end">
                   <div class="relative  w-full">
-                    <input type="search" id="searchbar-datechange" class="input search " placeholder="Search here . . .">
+                    <input type="search" id="searchbar-datechange" class="input search "
+                      placeholder="Search here . . .">
                     <i class='bx bx-search absolute top-[8px] text-[18px] left-[8px] text-[var(--gray-text)]'></i>
                   </div>
                   <div class="relative">
-            
-                    <input type="month" id="monthSel-datechange" class="opacity-0  h-full w-full absolute cursor-pointer">
-            
-            
+
+                    <input type="month" id="monthSel-datechange"
+                      class="opacity-0  h-full w-full absolute cursor-pointer">
+
+
                     <div
                       class="mobtn rounded-md border flex gap-1 pl-2 pr-1 py-2 items-center justify-content-center hover:bg-[var(--white)] monthCont"
                       role="button">
-                        <i class='bx bx-calendar'></i>
-                        <span class="" id="monthLabel">Requested Month</span>
-                        <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+                      <i class='bx bx-calendar'></i>
+                      <span class="" id="monthLabel">Requested Month</span>
+                      <i class='bx bx-chevron-down text-[18px] ml-3'></i>
                     </div>
                   </div>
                   <div class="relative">
-                    <select name="grp select" id="grpSel-datechange" class="opacity-0  h-full w-full absolute cursor-pointer">
+                    <select name="grp select" id="grpSel-datechange"
+                      class="opacity-0  h-full w-full absolute cursor-pointer">
                     </select>
-                    
+
                     <div
                       class="grpbtn rounded-md border transition flex gap-1 pl-2 pr-1   py-2 items-center justify-content-center hover:bg-[var(--white)] grpCont"
                       role="button">
-                        <i class='bx bx-group'></i>
-                        <span id="lblGrp">All Groups</span>
-                        <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+                      <i class='bx bx-group'></i>
+                      <span id="lblGrp">All Groups</span>
+                      <i class='bx bx-chevron-down text-[18px] ml-3'></i>
                     </div>
                   </div>
                 </div>
@@ -806,71 +788,73 @@
 
             <!-- 🔹 TABLE -->
             <div class="relative h-[500px]   p-3 pt-0 mt-3 overflow-auto">
-            <table class="mainTable-datechange">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Employee</th>
-                  <th>Proposed Dates</th>
-                  <th>Changes</th>
-                  <th>Requested by</th>
-                  <th>Status</th>           
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="datechangeTableBody">
-                <tr>
-                  <td class="text-sm uppercase">DC-0001</td>
-                  <td>
-                    <div class="">
-                      <p class="font-normal">Medrano, Collene Keith</p>
-                      <p class="uppercase opacity-60 text-xs">EMP-475</p>
-                    </div>
-                  </td>
-                  <td class="dates">
-                    <div class="flex gap-2 items-center">
-                      <p class="font-normal">19 Feb 2026</p>
-                      <span class="font-bold bg-[var(--secondary)] w-4 h-[4px]"></span>
-                      <p class="font-normal">30 Jun 2026</p>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="p-2 bg-[var(--main)] rounded-lg flex items-center justify-center gap-1 w-fit">
-                      <span class="text-[var(--darkest-100)] font-bold">+</span>
-                      <p class="font-semibold">5</p>
-                    </div></td>
-                  <td>Kurita, Hiroki</td>
-                  <td><span class="status cancelled">Cancelled</span></td>
-                  <td><i class="bx bx-link-external text-[16px] opacity-50"></i></td>
-                </tr>
-                <tr>
-                  <td class="text-sm uppercase">DC-0001</td>
-                  <td>
-                    <div class="">
-                      <p class="font-normal">Medrano, Collene Keith</p>
-                      <p class="uppercase opacity-60 text-xs">EMP-475</p>
-                    </div>
-                  </td>
-                  <td class="dates">
-                    <div class="flex gap-2 items-center">
-                      <p class="font-normal">19 Feb 2026</p>
-                      <span class="font-bold bg-[var(--secondary)] w-4 h-[4px]"></span>
-                      <p class="font-normal">30 Jun 2026</p>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="p-2 bg-rose-100 rounded-lg flex items-center justify-center gap-1 w-fit">
-                      <span class="text-[var(--red-color)] font-bold">-</span>
-                      <p class="font-semibold">5</p>
-                    </div></td>
-                  <td>Kurita, Hiroki</td>
-                  <td><span class="status cancelled">Cancelled</span></td>
-                  <td><i class="bx bx-link-external text-[16px] opacity-50"></i></td>
-                </tr>
-                
-                
-              </tbody>
-            </table>
+              <table class="mainTable-datechange">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Employee</th>
+                    <th>Proposed Dates</th>
+                    <th>Changes</th>
+                    <th>Requested by</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="datechangeTableBody">
+                  <tr>
+                    <td class="text-sm uppercase">DC-0001</td>
+                    <td>
+                      <div class="">
+                        <p class="font-normal">Medrano, Collene Keith</p>
+                        <p class="uppercase opacity-60 text-xs">EMP-475</p>
+                      </div>
+                    </td>
+                    <td class="dates">
+                      <div class="flex gap-2 items-center">
+                        <p class="font-normal">19 Feb 2026</p>
+                        <span class="font-bold bg-[var(--secondary)] w-4 h-[4px]"></span>
+                        <p class="font-normal">30 Jun 2026</p>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="p-2 bg-[var(--main)] rounded-lg flex items-center justify-center gap-1 w-fit">
+                        <span class="text-[var(--darkest-100)] font-bold">+</span>
+                        <p class="font-semibold">5</p>
+                      </div>
+                    </td>
+                    <td>Kurita, Hiroki</td>
+                    <td><span class="status cancelled">Cancelled</span></td>
+                    <td><i class="bx bx-link-external text-[16px] opacity-50"></i></td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm uppercase">DC-0001</td>
+                    <td>
+                      <div class="">
+                        <p class="font-normal">Medrano, Collene Keith</p>
+                        <p class="uppercase opacity-60 text-xs">EMP-475</p>
+                      </div>
+                    </td>
+                    <td class="dates">
+                      <div class="flex gap-2 items-center">
+                        <p class="font-normal">19 Feb 2026</p>
+                        <span class="font-bold bg-[var(--secondary)] w-4 h-[4px]"></span>
+                        <p class="font-normal">30 Jun 2026</p>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="p-2 bg-rose-100 rounded-lg flex items-center justify-center gap-1 w-fit">
+                        <span class="text-[var(--red-color)] font-bold">-</span>
+                        <p class="font-semibold">5</p>
+                      </div>
+                    </td>
+                    <td>Kurita, Hiroki</td>
+                    <td><span class="status cancelled">Cancelled</span></td>
+                    <td><i class="bx bx-link-external text-[16px] opacity-50"></i></td>
+                  </tr>
+
+
+                </tbody>
+              </table>
             </div>
 
           </div>
