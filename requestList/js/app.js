@@ -30,17 +30,18 @@ function initApp() {
         return Promise.reject(emp.message);
       }
     })
-.then(([grps, reqs, counts, pres, header]) => {
-  groupList = grps["data"];
-  fillGroups(groupList);
-  reqList = reqs["data"];
-  cardData = counts["data"];
-  presID = pres["data"];
-  fillCards();
-  renderHeader(header["data"]);
-  renderSalutation(header["data"]);
-  $(".tab")[0].click();
-})
+    .then(([grps, reqs, counts, pres, header]) => {
+      groupList = grps["data"];
+      fillGroups(groupList);
+      reqList = reqs["data"];
+      cardData = counts["data"];
+      presID = pres["data"];
+      fillCards();
+      openRequestFromUrl();
+      renderHeader(header["data"]);
+      renderSalutation(header["data"]);
+      $(".tab")[0].click();
+    })
     .catch((error) => {
       if (error !== "Access Denied") {
         alert(`${error}`);

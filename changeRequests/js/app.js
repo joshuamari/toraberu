@@ -1,6 +1,7 @@
 function initApp() {
   initSidebar();
   bindEvents();
+  initDateChangeRequestsTable();
 
   checkAccess()
     .then((emp) => {

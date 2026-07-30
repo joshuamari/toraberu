@@ -47,6 +47,20 @@ thead {
   top: 0;
   z-index: 10;
 }
+
+.change-request-table-wrapper {
+  height: auto;
+  max-height: none;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.change-request-table-wrapper thead {
+  position: static;
+  top: auto;
+  z-index: auto;
+}
+
 .selection {
   justify-content: space-between;
 }
@@ -171,6 +185,46 @@ tbody tr:hover td {
   background-color: var(--red-100);
   /* border: 1px solid var(--red-200); */
   color: var(--red-200) !important;
+}
+.status.denied {
+  background-color: var(--red-100);
+  color: var(--red-200) !important;
+}
+.date-change-request-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.date-change-request-row:hover {
+  background-color: #f8fafc;
+}
+.date-change-request-row:focus-visible {
+  outline: 2px solid #22c55e;
+  outline-offset: -2px;
+}
+.change-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+.change-badge-positive {
+  background-color: var(--main);
+  color: var(--darkest-100);
+}
+.change-badge-negative {
+  background-color: rgb(255 241 242);
+  color: var(--red-color);
+}
+.change-badge-neutral {
+  background-color: var(--gray-100);
+  color: var(--gray-text2);
+}
+.change-badge .change-symbol,
+.change-badge .change-value {
+  color: inherit;
 }
 .openIcon {
   display: flex;
@@ -341,6 +395,156 @@ tbody tr:hover td {
 }
 p.active {
   color: var(--dark) !important;
+}
+
+.table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--gray);
+  background-color: #fff;
+}
+
+.table-pagination__count {
+  margin: 0;
+  font-size: 13px;
+  color: var(--gray-text);
+  white-space: nowrap;
+}
+
+.table-pagination__controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px 12px;
+}
+
+.table-pagination__per-page {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--gray-text);
+  white-space: nowrap;
+}
+
+.table-pagination__select-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.table-pagination__select {
+  appearance: none;
+  border: 1px solid var(--gray);
+  border-radius: 6px;
+  background-color: #fff;
+  color: var(--dark);
+  font-size: 13px;
+  line-height: 1.2;
+  padding: 6px 30px 6px 10px;
+  cursor: pointer;
+}
+
+.table-pagination__select-icon {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--gray-text);
+}
+
+.table-pagination__select:focus {
+  outline: none;
+  border-color: var(--tertiary);
+}
+
+.pagination-previous,
+.pagination-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pagination-controls svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+.table-pagination__nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  color: var(--dark);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+.table-pagination__nav:hover:not(.is-disabled):not(:disabled) {
+  color: var(--tertiary);
+}
+
+.table-pagination__nav.is-disabled,
+.table-pagination__nav:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: default;
+}
+
+.table-pagination__nav.is-disabled svg,
+.table-pagination__nav:disabled svg {
+  opacity: 1;
+}
+
+.table-pagination__pages {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.table-pagination__page {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--gray-text2);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.table-pagination__page:hover:not(.is-active) {
+  color: var(--dark);
+}
+
+.table-pagination__page.is-active {
+  border: 1px solid var(--gray);
+  background: #fff;
+  color: var(--dark);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  cursor: default;
+}
+
+.table-pagination__ellipsis {
+  min-width: 20px;
+  text-align: center;
+  color: var(--gray-text);
+  font-size: 13px;
+  user-select: none;
 }
 
 /* END OF BUTTON CSS */

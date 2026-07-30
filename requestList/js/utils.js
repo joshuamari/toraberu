@@ -37,4 +37,24 @@ function ajaxJsonErrorMessage(xhr, fallback) {
   }
   return fallback;
 }
+function openRequestFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const requestId = params.get("open_request");
+
+  if (!requestId || requestId === "undefined") return;
+
+  const req = reqList.find((item) => String(item.req_id) === String(requestId));
+
+  if (!req) {
+    $("#searchbar").val(requestId);
+    searchFilter(reqList);
+    return;
+  }
+
+  fillOpenModal(req.req_id);
+
+  getRequestData(req.req_id).then((res) => {
+    if (res.isSuccess) printData = res.data;
+  });
+}
 //#endregion

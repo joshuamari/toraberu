@@ -82,20 +82,73 @@ function bindEvents() {
     searchFilter(reqList);
   });
 
-  $(document).on("click", ".tab-datechange", function () {
-    var indicator = document.querySelector(".indicator-datechange");
-    var $this = $(this);
-    var rect = $this[0].getBoundingClientRect();
-    var parentRect = $this.parent()[0].getBoundingClientRect();
+  bindDateChangeStatusTabs();
+  bindDateChangeDetails();
+  bindPaginationEvents();
 
-    indicator.style.width = rect.width + "px";
-    indicator.style.left = rect.left - parentRect.left + "px";
+  $(document).on("input", "#searchbar-datechange", function () {
+    applyDateChangeRequestFilters();
+  });
 
-    $(".tab-datechange p").removeClass(
-      "font-semibold text-[var(--dark)] active",
+  $(document).on("change", "#grpSel-datechange", function () {
+    var sel = $("#grpSel-datechange option:selected").text();
+    var grphl = $(this).val().split(",").length;
+    var grp = $(this).val();
+
+    if (grphl === 1) {
+      $(this).addClass("active");
+    } else {
+      $(this).removeClass("active");
+    }
+
+    $(".datechange-grpCont").html(
+      `<i class='bx bx-group'></i>
+      <span id="lblGrp-datechange">${sel}</span>
+      <i class='bx bx-x text-[18px] ml-3 z-[100]' id="removeGroup-datechange"></i>`,
     );
-    $(this).find("p").addClass("font-semibold text-[var(--dark)] active");
-    searchFilter(reqList);
+
+    applyDateChangeRequestFilters();
+  });
+
+  $(document).on("click", "#removeGroup-datechange", function () {
+    $("#grpSel-datechange").removeClass("active");
+    $(".datechange-grpCont").html(
+      `   <i class='bx bx-group'></i>
+        <span id="lblGrp-datechange">All Groups</span>
+        <i class='bx bx-chevron-down text-[18px] ml-3'></i>`,
+    );
+    $("#grpSel-datechange").val($("#grpSel-datechange option:first").val());
+    $("#grpSel-datechange").change();
+  });
+
+  $(document).on("input", "#monthSel-datechange", function () {
+    var [year, month] = $(this).val().split("-");
+    $(this).removeClass("active");
+    var monthName = monthNames[parseInt(month) - 1];
+    let display = `Requested Month`;
+    let iClass = `<i class='bx bx-chevron-down text-[18px] ml-3'></i>`;
+
+    if (monthName) {
+      $(this).addClass("active");
+      display = `${monthName} ${year}`;
+      iClass = `<i class='bx bx-x text-[18px] ml-3 z-[100]' id="removeMonth-datechange"></i>`;
+    }
+
+    $(".datechange-monthCont").html(`<i class='bx bx-calendar'></i>
+                      <span id="monthLabel-datechange">${display}</span>
+                      ${iClass}
+                      `);
+    applyDateChangeRequestFilters();
+  });
+
+  $(document).on("click", "#removeMonth-datechange", function () {
+    $("#monthSel-datechange").removeClass("active");
+    $(".datechange-monthCont").html(`<i class='bx bx-calendar'></i>
+    <span id="monthLabel-datechange">Requested Month</span>
+    <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+    `);
+    $("#monthSel-datechange").val("");
+    applyDateChangeRequestFilters();
   });
 
   $(document).on("click", ".mainTable tr", function () {
@@ -111,11 +164,6 @@ function bindEvents() {
         alert(`Error: ${error}`);
       });
   });
-  $(document).on("click", ".mainTable-datechange tr", function () {
-    var rowID = $(this).closest("tr").attr("req-id");
-    fillChangeDateModal(1);
-  });
-
   $(document).on("click", "#openModal .btn-close", function () {
     $("#openModal").modal("hide");
   });
@@ -127,6 +175,151 @@ function bindEvents() {
     sortDateAsc = !sortDateAsc;
     searchFilter(reqList);
   });
+}
+
+function bindDateChangeStatusTabs() {
+  $(document)
+    .off("click.dateChangeStatus", ".tab-datechange")
+    .on("click.dateChangeStatus", ".tab-datechange", function () {
+      selectedDateChangeStatus = String($(this).data("status") || "all")
+        .trim()
+        .toLowerCase();
+
+      setActiveDateChangeStatusTab(selectedDateChangeStatus);
+      applyDateChangeRequestFilters();
+    });
+}
+
+function bindDateChangeDetails() {
+  $(document)
+    .off("click.dateChangeRow", ".date-change-request-row")
+    .on("click.dateChangeRow", ".date-change-request-row", function (event) {
+      if (
+        $(event.target).closest("button, a, input, select, textarea, label").length
+      ) {
+        return;
+      }
+
+      openDateChangeRequestByKey($(this).data("request-key"));
+    });
+
+  $(document)
+    .off("click.dateChangeIcon", ".view-date-change-request")
+    .on("click.dateChangeIcon", ".view-date-change-request", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      openDateChangeRequestByKey($(this).data("request-key"));
+    });
+
+  $(document)
+    .off("keydown.dateChangeRow", ".date-change-request-row")
+    .on("keydown.dateChangeRow", ".date-change-request-row", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openDateChangeRequestByKey($(this).data("request-key"));
+      }
+    });
+}
+
+function bindPaginationEvents() {
+  refreshPaginationIcons($("[data-pagination]"));
+
+  $(document)
+    .off("click.pagination", '[data-pagination] [data-role="prev"]')
+    .on("click.pagination", '[data-pagination] [data-role="prev"]', function () {
+      const tableKey = $(this).closest("[data-pagination]").data("pagination");
+
+      if (tableKey === "cancellation" && cancellationCurrentPage > 1) {
+        cancellationCurrentPage -= 1;
+        renderCancellationRequests();
+        return;
+      }
+
+      if (tableKey === "datechange" && dateChangeCurrentPage > 1) {
+        dateChangeCurrentPage -= 1;
+        renderDateChangeRequests();
+      }
+    });
+
+  $(document)
+    .off("click.pagination", '[data-pagination] [data-role="next"]')
+    .on("click.pagination", '[data-pagination] [data-role="next"]', function () {
+      const tableKey = $(this).closest("[data-pagination]").data("pagination");
+
+      if (tableKey === "cancellation") {
+        const totalPages = Math.max(
+          1,
+          Math.ceil(
+            filteredCancellationRequests.length / cancellationItemsPerPage,
+          ),
+        );
+
+        if (cancellationCurrentPage < totalPages) {
+          cancellationCurrentPage += 1;
+          renderCancellationRequests();
+        }
+        return;
+      }
+
+      if (tableKey === "datechange") {
+        const totalPages = Math.max(
+          1,
+          Math.ceil(filteredDateChangeRequests.length / dateChangeItemsPerPage),
+        );
+
+        if (dateChangeCurrentPage < totalPages) {
+          dateChangeCurrentPage += 1;
+          renderDateChangeRequests();
+        }
+      }
+    });
+
+  $(document)
+    .off("click.pagination", '[data-pagination] [data-role="pages"] .table-pagination__page')
+    .on(
+      "click.pagination",
+      '[data-pagination] [data-role="pages"] .table-pagination__page',
+      function () {
+        const tableKey = $(this).closest("[data-pagination]").data("pagination");
+        const page = Number($(this).data("page"));
+
+        if (!page || $(this).hasClass("is-active")) {
+          return;
+        }
+
+        if (tableKey === "cancellation") {
+          cancellationCurrentPage = page;
+          renderCancellationRequests();
+          return;
+        }
+
+        if (tableKey === "datechange") {
+          dateChangeCurrentPage = page;
+          renderDateChangeRequests();
+        }
+      },
+    );
+
+  $(document)
+    .off("change.pagination", '[data-pagination] [data-role="per-page"]')
+    .on("change.pagination", '[data-pagination] [data-role="per-page"]', function () {
+      const tableKey = $(this).closest("[data-pagination]").data("pagination");
+      const itemsPerPage = Number($(this).val()) || 10;
+
+      if (tableKey === "cancellation") {
+        cancellationItemsPerPage = itemsPerPage;
+        cancellationCurrentPage = 1;
+        renderCancellationRequests();
+        return;
+      }
+
+      if (tableKey === "datechange") {
+        dateChangeItemsPerPage = itemsPerPage;
+        dateChangeCurrentPage = 1;
+        renderDateChangeRequests();
+      }
+    });
 }
 
 //#region confirmation modal
@@ -146,8 +339,8 @@ $(document).on("click", "#btnApproveDateChange", function () {
   );
   $("#confirmNetChange")
     .text(`${$("#modalSymbol").text()}${$("#modalTotalDiff").text()} days`)
-    .removeClass("text-[var(--red-200)]")
-    .addClass("text-[var(--tertiary)]");
+    .removeClass("text-rose-500")
+    .addClass("text-green-500");
 
   $("#confirmActionIconWrap")
     .removeClass("bg-[var(--red-100)]")
@@ -161,8 +354,8 @@ $(document).on("click", "#btnApproveDateChange", function () {
   );
   $("#btnConfirmDateChangeAction")
     .text("Approve Change")
-    .removeClass("bg-[var(--red-200)] hover:bg-[var(--red-color)]")
-    .addClass("bg-[var(--tertiary)] hover:bg-[var(--darkest)]");
+    .removeClass("bg-rose-500 hover:bg-rose-600 text-white")
+    .addClass(" bg-green-400 hover:bg-green-500");
 
   $("#confirmActionNoteWrap").addClass("hidden");
 
@@ -201,8 +394,8 @@ $(document).on("click", "#btnDenyDateChange", function () {
   );
   $("#btnConfirmDateChangeAction")
     .text("Deny Request")
-    .removeClass("bg-[var(--tertiary)] hover:bg-[var(--darkest)]")
-    .addClass("bg-[var(--red-200)] hover:bg-[var(--red-color)]");
+    .removeClass(" bg-green-400 hover:bg-green-500")
+    .addClass("bg-rose-500 hover:bg-rose-600 text-white");
 
   $("#confirmActionNoteWrap").addClass("hidden");
 
@@ -229,5 +422,80 @@ $(document).on("click", "#btnConfirmDateChangeAction", function () {
 
   $("#dateChangeModal").data("keep-closed", true);
   $("#confirmDateChangeActionModal").modal("hide");
+});
+
+$(document).on("click", "#cancelModalRequestIdBtn", function () {
+  const requestId = $(this).attr("data-request-id");
+
+  if (!requestId) {
+    console.error("Missing original request id on cancellation modal button");
+    return;
+  }
+
+  window.location.href = `../requestList/?open_request=${encodeURIComponent(requestId)}`;
+});
+$(document).on("click", "#changeModalRequestIdBtn", function () {
+  const requestId = $(this).attr("data-request-id");
+
+  if (!requestId) {
+    console.error("Missing original request id on date change modal button");
+    return;
+  }
+
+  window.location.href = `../requestList/?open_request=${encodeURIComponent(requestId)}`;
+});
+$(document).on("click", "#btnApproveCancellation", function () {
+  openCancellationConfirmModal("approve");
+});
+
+$(document).on("click", "#btnDenyCancellation", function () {
+  openCancellationConfirmModal("deny");
+});
+
+$(document).on("click", "#btnConfirmCancellationAction", function () {
+  if (pendingCancellationAction === "approve") {
+    console.log("APPROVE CANCELLATION");
+    // call approve cancellation API here
+  }
+
+  if (pendingCancellationAction === "deny") {
+    console.log("DENY CANCELLATION");
+    // call deny cancellation API here
+  }
+});
+$(document).on("click", "#btnBackToCancellationModal", function () {
+  document.activeElement.blur();
+
+  const confirmModal = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById("confirmCancellationActionModal"),
+  );
+
+  const parentModal = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById("openModal"),
+  );
+
+  confirmModal.hide();
+
+  $("#confirmCancellationActionModal").one("hidden.bs.modal", function () {
+    parentModal.show();
+  });
+});
+
+$(document).on("click", "#btnCloseConfirmCancelModal", function () {
+  document.activeElement.blur();
+
+  const confirmModal = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById("confirmCancellationActionModal"),
+  );
+
+  const parentModal = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById("openModal"),
+  );
+
+  confirmModal.hide();
+
+  $("#confirmCancellationActionModal").one("hidden.bs.modal", function () {
+    parentModal.show();
+  });
 });
 //#endregion
