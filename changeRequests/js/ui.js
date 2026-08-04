@@ -1,21 +1,42 @@
-function fillCards() {
-  var pending = cardData.data.pending;
-  var accepted = cardData.data.accepted;
-  var cancelled = cardData.data.cancelled;
-  var todayTotal = cardData.data.todaytotal;
-  var todayAccept = cardData.data.todayaccept;
-  var total = cardData.data.total;
+function countPendingRequests(list) {
+  return (list || []).filter(function (item) {
+    return (
+      String(item.status || "")
+        .trim()
+        .toLowerCase() === "pending"
+    );
+  }).length;
+}
 
-  $("#tab-2 p").nextAll().remove();
-
-  if (pending != 0) {
-    $("#tab-2").append(`
-         <small
-                      class="rounded-full w-[14px] h-[14px] bg-[var(--dark)] text-white text-[8px] flex items-center justify-content-center font-semibold" >${pending}</small>
-      `);
+function renderPendingTabBadge($tab, count) {
+  if (!$tab || !$tab.length) {
+    return;
   }
 
-  $("#cardPending").text(pending);
+  $tab.find("p").nextAll().remove();
+
+  if (count != 0) {
+    $tab.append(`
+         <small
+                      class="rounded-full w-[14px] h-[14px] bg-[var(--dark)] text-white text-[8px] flex items-center justify-content-center font-semibold" >${count}</small>
+      `);
+  }
+}
+
+function fillCards() {
+  var data = (cardData && cardData.data) || {};
+  var pendingCancellations = countPendingRequests(reqList);
+  var pendingDateChanges = countPendingRequests(allDateChangeRequests);
+  var accepted = data.accepted || 0;
+  var cancelled = data.cancelled || 0;
+  var todayTotal = data.todaytotal || 0;
+  var todayAccept = data.todayaccept || 0;
+  var total = data.total || 0;
+
+  renderPendingTabBadge($("#tab-2"), pendingCancellations);
+  renderPendingTabBadge($("#datechange-tab-2"), pendingDateChanges);
+
+  $("#cardPending").text(pendingCancellations);
   $("#cardAccepted").text(accepted);
 
   if (todayAccept != 0) {

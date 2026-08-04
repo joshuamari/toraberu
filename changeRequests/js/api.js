@@ -40,6 +40,7 @@ function putJson(url, data, fallbackMessage) {
       url: url,
       data: JSON.stringify(data || {}),
       contentType: "application/json",
+      dataType: "json",
       success: function (response) {
         resolve(response);
       },
@@ -51,7 +52,10 @@ function putJson(url, data, fallbackMessage) {
           reject("Internal Server Error: There was a server error.");
         } else {
           reject(
-            `An unspecified error occurred while updating status: ${error}`,
+            ajaxJsonErrorMessage(
+              xhr,
+              `An unspecified error occurred while updating status: ${error}`,
+            ),
           );
         }
       },
@@ -107,14 +111,48 @@ function checkAccess() {
   );
 }
 
-// function updateStatus(status) {
-//   return putJson(
-//     "php/update_status.php",
-//     {
-//       request_status: status,
-//       request_id: printData["dispatch_request"]["request_id"],
-//     },
-//     "An unspecified error occurred while updating status.",
-//   );
-// }
+function updateChangeRequestStatus(changeRequestId, action) {
+  return putJson(
+    "php/update_change_status.php",
+    {
+      change_request_id: changeRequestId,
+      action: action,
+    },
+    "An unspecified error occurred while updating change request status.",
+  ).then((response) => {
+    if (!response || response.isSuccess === false) {
+      return Promise.reject(
+        (response && response.message) ||
+          "Failed to update change request status.",
+      );
+    }
+    return response;
+  });
+}
+
+function refreshChangeRequests() {
+  return Promise.all([getRequests(), getCount()]).then(([reqs, counts]) => {
+    if (!reqs || reqs.isSuccess === false) {
+      throw (reqs && reqs.message) || "Failed to reload change requests.";
+    }
+
+    const changeData = reqs.data || {};
+    reqList = Array.isArray(changeData.cancellation)
+      ? changeData.cancellation
+      : [];
+    allDateChangeRequests = Array.isArray(changeData.date_change)
+      ? changeData.date_change
+      : [];
+    cardData = counts || {};
+
+    fillCards();
+    initDateChangeRequestsTable();
+    searchFilter(reqList);
+
+    return {
+      reqs,
+      counts,
+    };
+  });
+}
 //#endregion

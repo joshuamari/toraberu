@@ -31,7 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 #region main function
 try {
-    $getQ = "SELECT COUNT(CASE WHEN `request_status` IS NULL THEN 1 END) as pending,COUNT(CASE WHEN `request_status` = 1 THEN 1 END) as accepted,COUNT(CASE WHEN `request_status`= 0 THEN 1 END) as cancelled,COUNT(CASE WHEN DATE(`date_requested`)= CURDATE() THEN 1 END) as todaytotal,COUNT(CASE WHEN `request_status` = 1 AND DATE(`date_modified`)= CURDATE() THEN 1 END) as todayaccept,COUNT(*) as total FROM `request_list`";
+    $getQ = "SELECT
+            COUNT(CASE WHEN `status` = 'pending' THEN 1 END) AS pending,
+            COUNT(CASE WHEN `status` = 'approved' THEN 1 END) AS accepted,
+            COUNT(CASE WHEN `status` = 'declined' THEN 1 END) AS cancelled,
+            COUNT(CASE WHEN DATE(`requested_at`) = CURDATE() THEN 1 END) AS todaytotal,
+            COUNT(CASE WHEN `status` = 'approved' AND DATE(`date_modified`) = CURDATE() THEN 1 END) AS todayaccept,
+            COUNT(*) AS total
+        FROM `request_change_list`";
     $getStmt = $connpcs->query($getQ);
     if ($getStmt->rowCount() > 0) {
         $countArr = $getStmt->fetch();

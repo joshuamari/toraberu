@@ -410,18 +410,35 @@ $(document).on("hidden.bs.modal", "#confirmDateChangeActionModal", function () {
 });
 
 $(document).on("click", "#btnConfirmDateChangeAction", function () {
-  if (pendingDateChangeAction === "approve") {
-    // call your approve API here
-    console.log("APPROVE DATE CHANGE");
+  const changeRequestId = $("#dateChangeModal").data("active-request-id");
+  const action = pendingDateChangeAction;
+
+  if (!changeRequestId || (action !== "approve" && action !== "deny")) {
+    alert("Missing change request details.");
+    return;
   }
 
-  if (pendingDateChangeAction === "deny") {
-    // call your deny API here
-    console.log("DENY DATE CHANGE");
-  }
+  const $btn = $(this);
+  $btn.prop("disabled", true);
 
-  $("#dateChangeModal").data("keep-closed", true);
-  $("#confirmDateChangeActionModal").modal("hide");
+  updateChangeRequestStatus(changeRequestId, action)
+    .then(() => refreshChangeRequests())
+    .then(() => {
+      $("#dateChangeModal").data("keep-closed", true);
+      $("#confirmDateChangeActionModal").modal("hide");
+      alert(
+        action === "approve"
+          ? "Date change request approved."
+          : "Date change request declined.",
+      );
+    })
+    .catch((error) => {
+      alert(error || "Failed to update date change request.");
+    })
+    .finally(() => {
+      $btn.prop("disabled", false);
+      pendingDateChangeAction = null;
+    });
 });
 
 $(document).on("click", "#cancelModalRequestIdBtn", function () {
@@ -453,15 +470,38 @@ $(document).on("click", "#btnDenyCancellation", function () {
 });
 
 $(document).on("click", "#btnConfirmCancellationAction", function () {
-  if (pendingCancellationAction === "approve") {
-    console.log("APPROVE CANCELLATION");
-    // call approve cancellation API here
+  const changeRequestId = $("#openModal").data("active-request-id");
+  const action = pendingCancellationAction;
+
+  if (!changeRequestId || (action !== "approve" && action !== "deny")) {
+    alert("Missing change request details.");
+    return;
   }
 
-  if (pendingCancellationAction === "deny") {
-    console.log("DENY CANCELLATION");
-    // call deny cancellation API here
-  }
+  const $btn = $(this);
+  $btn.prop("disabled", true);
+
+  updateChangeRequestStatus(changeRequestId, action)
+    .then(() => refreshChangeRequests())
+    .then(() => {
+      const confirmModal = bootstrap.Modal.getOrCreateInstance(
+        document.getElementById("confirmCancellationActionModal"),
+      );
+      confirmModal.hide();
+      $("#openModal").modal("hide");
+      alert(
+        action === "approve"
+          ? "Cancellation request approved."
+          : "Cancellation request declined.",
+      );
+    })
+    .catch((error) => {
+      alert(error || "Failed to update cancellation request.");
+    })
+    .finally(() => {
+      $btn.prop("disabled", false);
+      pendingCancellationAction = null;
+    });
 });
 $(document).on("click", "#btnBackToCancellationModal", function () {
   document.activeElement.blur();

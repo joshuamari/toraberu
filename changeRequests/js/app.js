@@ -1,7 +1,6 @@
 function initApp() {
   initSidebar();
   bindEvents();
-  initDateChangeRequestsTable();
 
   checkAccess()
     .then((emp) => {
@@ -30,13 +29,31 @@ function initApp() {
       }
     })
     .then(([grps, reqs, counts, pres]) => {
-      groupList = grps;
+      groupList = Array.isArray(grps) ? grps : [];
       fillGroups(groupList);
-      reqList = reqs["data"];
-      cardData = counts;
-      presID = pres["data"];
+
+      if (!reqs || reqs.isSuccess === false) {
+        throw reqs && reqs.message
+          ? reqs.message
+          : "Failed to load change requests.";
+      }
+
+      const changeData = reqs.data || {};
+      reqList = Array.isArray(changeData.cancellation)
+        ? changeData.cancellation
+        : [];
+      allDateChangeRequests = Array.isArray(changeData.date_change)
+        ? changeData.date_change
+        : [];
+
+      cardData = counts || {};
+      presID = (pres && pres.data) || [];
       fillCards();
-      $(".tab")[0].click();
+      initDateChangeRequestsTable();
+
+      if ($(".tab").length) {
+        $(".tab")[0].click();
+      }
     })
     .catch((error) => {
       if (error !== "Access Denied") {

@@ -1,68 +1,84 @@
 function fillOpenModal(trID) {
-  const req = reqList.find((req) => req.req_id == trID);
-  const name = req.emp_name;
-  const grp = req.group_name;
-  const passValidity = req.passValid;
-  const visaValidity = req.visaValid;
-  const startDate = req.from;
-  const endDate = req.to;
-  const reqName = req.requester_name;
+  const req = reqList.find((item) => item.req_id == trID);
+
+  if (!req) {
+    console.error("Cancellation request not found:", trID);
+    return;
+  }
+
+  const name = req.emp_name || "";
+  const grp = req.group_name || "";
+  const startDate = req.from || req.old_date;
+  const endDate = req.to || req.old_date_to;
+  const reqName = req.requester_name || "";
   const reqDate = req.req_date;
-  const status = parseInt(req.status);
-  const location = req.specific_loc;
-  const country = req.location;
-  const duration = req.duration;
-  const reqGrp = req.requester_group;
-  const empnum = req.emp_number;
-  const [last, given] = name.split(",");
-  const surname = last.toUpperCase();
-  const first = given.replace(/\s+/g, "");
-  const modi = req.modified;
+  const normalizedStatus = normalizeDateChangeStatus(req.status);
+  const locationLabel = req.location || req.specific_loc || "";
+  const duration = req.duration || calculateInclusiveDays(startDate, endDate);
+  const reqGrp = req.requester_group || "";
+  const originalRequestId = req.original_request_id || req.req_id;
+  const isPending = normalizedStatus === "pending";
 
   console.log(req);
 
-  formatStatus(status);
-  // formatVisaPassport(visaValidity, passValidity);
-  $("#modalEmpName").text(name);
-  $("#modalGroup").text(grp);
-  $("#modalDateFrom").text(formatDate(startDate));
-  $("#modalDateTo").text(formatDate(endDate));
-  $("#modalReqName").text(reqName);
-  $("#modalReqDate").text(formatDate(reqDate));
-  $("#modalLoc").text(location);
-  $("#modalCountry").text(country);
-  $("#modalReqGrp").text(reqGrp);
-  $("#cancelModalRequestIdBtn")
-    .text(`REQ# ${req.req_id}`)
-    .attr("data-request-id", req.req_id);
+  renderCancellationModalStatusBadge(normalizedStatus);
+  updateCancellationModalActions(normalizedStatus);
 
-  if (!modi) {
-    $("#modalModiDate").text("");
-  } else {
-    var [date, time] = modi.split(" ");
-    $("#modalModiDate").text(formatDate(date) + " " + time);
-  }
+  $("#modalEmpName").text(name);
+  $("#modalEmpNumber").text(req.emp_number || "");
+  $("#modalGroup").text(grp);
+  $("#modalLocCountry").text(locationLabel);
+  $("#modalDateFrom").text(
+    isValidIsoDate(startDate) ? formatDate(startDate) : "Not available",
+  );
+  $("#modalDateTo").text(
+    isValidIsoDate(endDate) ? formatDate(endDate) : "Not available",
+  );
+  $("#modalReqName").text(reqName);
+  $("#modalReqDate").text(
+    isValidIsoDate(reqDate) ? formatDate(reqDate) : "Not available",
+  );
+  $("#modalReqGrp").text(reqGrp);
+  $("#modalCancelReason").text(req.reason || "");
+  $("#cancelModalRequestIdBtn")
+    .text(originalRequestId ? `REQ# ${originalRequestId}` : "Not available")
+    .attr("data-request-id", originalRequestId || "");
 
   if (duration > 1) {
     $("#modalDuration").html(
-      `<span class="text-[16px] font-semibold" >${duration}</span>
-       <p>days in total</p>`,
+      `<span class="text-[16px] font-semibold">${duration}</span>
+       <p class="text-[12px] text-[var(--gray-text)] m-0">days in total</p>`,
     );
   } else {
     $("#modalDuration").html(
-      `<span class="text-[16px] font-semibold" >${duration}</span>
-       <p>day in total</p>`,
+      `<span class="text-[16px] font-semibold">${duration || "—"}</span>
+       <p class="text-[12px] text-[var(--gray-text)] m-0">day in total</p>`,
     );
   }
 
-  if (status === null || isNaN(status)) {
-    $("#modifyFooter").addClass("d-none");
-  } else {
-    $("#modifyFooter").removeClass("d-none");
-  }
-
-  // formatButtons(status);
+  $("#openModal").data("active-request-id", req.req_id);
   $("#openModal").modal("show");
+}
+
+function renderCancellationModalStatusBadge(normalizedStatus) {
+  const config =
+    DATE_CHANGE_STATUS_CONFIG[normalizedStatus] ||
+    DATE_CHANGE_STATUS_CONFIG.pending;
+  const $badge = $("#cancelModalStatus");
+
+  $badge
+    .removeClass("pending accepted cancelled denied")
+    .addClass(config.className)
+    .text(config.label);
+}
+
+function updateCancellationModalActions(normalizedStatus) {
+  const isPending = normalizedStatus === "pending";
+
+  $("#btnApproveCancellation, #btnDenyCancellation").toggleClass(
+    "d-none",
+    !isPending,
+  );
 }
 
 function openDateChangeRequestByKey(requestKey) {
@@ -117,6 +133,7 @@ function normalizeDateChangeStatus(value) {
     cancelled: "cancelled",
     canceled: "cancelled",
     denied: "denied",
+    declined: "denied",
     rejected: "denied",
     null: "pending",
     1: "accepted",
@@ -330,6 +347,20 @@ function openCancellationConfirmModal(action) {
   });
 }
 
+function getCancellationStatusBadgeHtml(status) {
+  const normalized = normalizeDateChangeStatus(status);
+
+  if (normalized === "accepted") {
+    return `<span class="status accepted">Accepted</span>`;
+  }
+
+  if (normalized === "denied" || normalized === "cancelled") {
+    return `<span class="status cancelled">Declined</span>`;
+  }
+
+  return `<span class="status pending">Pending</span>`;
+}
+
 function fillTable(sampleData) {
   $("#tableBody").empty();
   var str = "";
@@ -343,19 +374,7 @@ function fillTable(sampleData) {
       <td>${formatDate(item.from)}</td>
       <td>${formatDate(item.to)}</td>
       <td>${item.requester_name}</td>
-      <td>${
-        item.status === null
-          ? ` <span class=" status pending ">
-                        Pending
-                      </span>`
-          : item.status == 1
-            ? `  <span class=" status accepted ">
-                        Accepted
-                      </span>`
-            : `<span class=" status cancelled ">
-                        Cancelled
-                      </span>`
-      }</td>
+      <td>${getCancellationStatusBadgeHtml(item.status)}</td>
       <td>${
         item.passValid === true
           ? `  <span class="validity "><i class='bx bx-check text-[18px]   font-semibold'></i></span>`
@@ -510,21 +529,23 @@ function searchFilter(req_list) {
   const dateFilter = $("#monthSel").val();
   const activeTabId = $("button.tab").has("p.active").attr("id");
   const tabFilters = {
-    "tab-2": null,
-    "tab-3": 1,
-    "tab-4": 0,
+    "tab-2": "pending",
+    "tab-3": "accepted",
+    "tab-4": "denied",
   };
-  const filter =
-    tabFilters[activeTabId] !== undefined ? tabFilters[activeTabId] : undefined;
+  const filter = tabFilters[activeTabId];
 
   const results = req_list.filter((emp) => {
     const searchMatch =
-      emp.emp_name.toLowerCase().includes(keyword) ||
-      emp.requester_name.toLowerCase().includes(keyword);
+      (emp.emp_name || "").toLowerCase().includes(keyword) ||
+      (emp.requester_name || "").toLowerCase().includes(keyword);
 
     const groupMatch = grps.includes(parseInt(emp.group_id));
-    const dateMatch = dateFilter ? emp.req_date.startsWith(dateFilter) : true;
-    const statusMatch = filter !== undefined ? emp.status == filter : true;
+    const dateMatch = dateFilter
+      ? String(emp.req_date || "").startsWith(dateFilter)
+      : true;
+    const normalizedStatus = normalizeDateChangeStatus(emp.status);
+    const statusMatch = filter ? normalizedStatus === filter : true;
 
     return searchMatch && groupMatch && statusMatch && dateMatch;
   });
@@ -585,7 +606,6 @@ function setActiveDateChangeStatusTab(status) {
 }
 
 function initDateChangeRequestsTable() {
-  allDateChangeRequests = [...originalDateChangeRequestData];
   filteredDateChangeRequests = [...allDateChangeRequests];
   selectedDateChangeStatus = "all";
   setActiveDateChangeStatusTab("all");
