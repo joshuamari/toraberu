@@ -25,6 +25,32 @@ Format is based on a simplified version of Keep a Changelog.
 - Optional context, warnings, or migration notes
 -->
 
+## [2026-08-04] - Change Request Workflow
+
+### Added
+
+- Added `request_change_list` table for date-change and cancellation requests (separate from `request_list`)
+- Added DB migration: `db/migrations/001_create_request_change_list.sql`
+- Added optional local seed: `db/seeds/dev_request_change_list.sql` (1 pending date change + 1 pending cancellation)
+- Change Requests page now loads from `request_change_list`
+- Added approve/deny API: `changeRequests/php/update_change_status.php`
+
+### Notes
+
+- **Required for other developers:** run the migration on local `pcosdb` after pulling:
+  ```bash
+  mysql -u root pcosdb < db/migrations/001_create_request_change_list.sql
+  ```
+  Or import `db/migrations/001_create_request_change_list.sql` in phpMyAdmin (select `pcosdb` first).
+- Safe to re-run (`CREATE TABLE IF NOT EXISTS`)
+- **Optional local sample data** (do not run on production):
+  ```bash
+  mysql -u root pcosdb < db/seeds/dev_request_change_list.sql
+  ```
+  Requires employees `518` and `521` to exist (or edit emp numbers in the seed file).
+  Creates approved `request_list` + `dispatch_list` rows, then pending change requests.
+---
+
 ## [Unreleased] - API Refactor & Environment Configuration
 
 ### Added

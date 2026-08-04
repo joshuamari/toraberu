@@ -14,7 +14,10 @@ date_default_timezone_set('Asia/Manila');
 $result = [
     "isSuccess" => FALSE,
     "message" => "",
-    "data" => array()
+    "data" => [
+        "date_change" => [],
+        "cancellation" => [],
+    ],
 ];
 $userID = 0;
 #endregion
@@ -39,51 +42,117 @@ if (count($groupMembers) > 0) {
 
 #region main query
 try {
-    $requestQ = "SELECT `rl`.request_id,`rl`.emp_number,`rl`.requester_id,`gll`.name as requester_group,`rl`.dispatch_from,`rl`.dispatch_to,`rl`.date_requested,`rl`.location_id,`ll`.location_name,`rl`.specific_loc,`el`.group_id,`gl`.name,`pd`.passport_expiry,`vd`.visa_expiry,`rl`.request_status,`rl`.date_modified FROM `pcosdb`.request_list rl JOIN `kdtphdb_new`.employee_list el ON `rl`.emp_number=`el`.id LEFT JOIN `passport_details` 
-    AS pd ON `pd`.emp_number=`el`.id LEFT JOIN `kdtphdb_new`.group_list gl ON `el`.group_id=`gl`.id LEFT JOIN `pcosdb`.khi_details kd ON `kd`.number=`rl`.requester_id LEFT JOIN `kdtphdb_new`.group_list gll ON `kd`.group_id=`gll`.id  LEFT JOIN `pcosdb`.location_list ll ON `rl`.location_id=`ll`.location_id LEFT JOIN `visa_details` AS vd ON `vd`.emp_number=`el`.id WHERE `rl`.emp_number != 0 $membersStatement ORDER BY `rl`.date_requested DESC";
+    $requestQ = "SELECT
+            `rcl`.change_request_id,
+            `rcl`.request_id,
+            `rcl`.change_type,
+            `rcl`.status,
+            `rcl`.original_start_date,
+            `rcl`.original_end_date,
+            `rcl`.requested_start_date,
+            `rcl`.requested_end_date,
+            `rcl`.reason,
+            `rcl`.requested_by,
+            `rcl`.requested_at,
+            `rcl`.date_modified,
+            `rl`.emp_number,
+            `rl`.location_id,
+            `rl`.specific_loc,
+            `ll`.location_name,
+            `el`.group_id,
+            `gl`.name AS group_name,
+            `gll`.name AS requester_group,
+            `pd`.passport_expiry,
+            `vd`.visa_expiry
+        FROM `pcosdb`.request_change_list rcl
+        JOIN `pcosdb`.request_list rl
+            ON `rl`.request_id = `rcl`.request_id
+        JOIN `kdtphdb_new`.employee_list el
+            ON `rl`.emp_number = `el`.id
+        LEFT JOIN `passport_details` pd
+            ON `pd`.emp_number = `el`.id
+        LEFT JOIN `kdtphdb_new`.group_list gl
+            ON `el`.group_id = `gl`.id
+        LEFT JOIN `pcosdb`.khi_details kd
+            ON `kd`.number = `rcl`.requested_by
+        LEFT JOIN `kdtphdb_new`.group_list gll
+            ON `kd`.group_id = `gll`.id
+        LEFT JOIN `pcosdb`.location_list ll
+            ON `rl`.location_id = `ll`.location_id
+        LEFT JOIN `visa_details` vd
+            ON `vd`.emp_number = `el`.id
+        WHERE `rl`.emp_number != 0
+        $membersStatement
+        ORDER BY `rcl`.requested_at DESC";
+
     $requestStmt = $connpcs->prepare($requestQ);
     $requestStmt->execute();
+
     if ($requestStmt->rowCount() > 0) {
         $requestArr = $requestStmt->fetchAll();
+
         foreach ($requestArr as $req) {
-            $output = array();
-            $passValidity = false;
-            $visaValidity = false;
-            $output["req_id"] = (int)$req['request_id'];
-            $empnum = $req['emp_number'];
-            $output["emp_name"] = getName($empnum);
-            $output["emp_number"] = (int)$req['emp_number'];
-            $output["group_id"] = (int)$req['group_id'];
-            $output["specific_loc"] = $req['specific_loc'];
-            $output["location"] = $req['location_name'];
-            $output["location_id"] = (int)$req['location_id'];
-            $output["group_name"] = $req['name'];
-            $requesterID = $req['requester_id'];
-            $output["requester_name"] = getName($requesterID);
-            $output["requester_group"] = $req['requester_group'];
-            $output['from'] = $req['dispatch_from'];
-            $to = $req['dispatch_to'];
-            $output['to'] = $to;
-            $output['duration'] = countDays($req['dispatch_from'], $to);
-            $output['req_date'] = date("Y-m-d", strtotime($req['date_requested']));
+            $changeRequestId = (int)$req['change_request_id'];
+            $originalRequestId = (int)$req['request_id'];
+            $empnum = (int)$req['emp_number'];
+            $requesterID = (int)$req['requested_by'];
+            $changeType = $req['change_type'];
+            $status = strtolower(trim((string)$req['status']));
+
+            $specificLoc = $req['specific_loc'];
+            $locationName = $req['location_name'];
+            $locationLabel = trim($specificLoc . ($specificLoc && $locationName ? ', ' : '') . $locationName);
+
+            $originalEnd = $req['original_end_date'];
             $passExp = $req['passport_expiry'];
             $visaExp = $req['visa_expiry'];
-            if ($passExp && (strtotime($passExp) >= strtotime($to))) {
-                $passValidity = true;
+            $passValidity = $passExp && strtotime($passExp) >= strtotime($originalEnd);
+            $visaValidity = $visaExp && strtotime($visaExp) >= strtotime($originalEnd);
+
+            if ($changeType === 'date_change') {
+                $prefix = 'DC';
+            } else {
+                $prefix = 'CR';
             }
-            if ($visaExp && (strtotime($visaExp) >= strtotime($to))) {
-                $visaValidity = true;
+
+            $output = [
+                "req_id" => $changeRequestId,
+                "display_id" => $prefix . '-' . str_pad((string)$changeRequestId, 4, '0', STR_PAD_LEFT),
+                "original_request_id" => $originalRequestId,
+                "change_type" => $changeType,
+                "emp_name" => getName($empnum),
+                "emp_number" => $empnum,
+                "group_id" => (int)$req['group_id'],
+                "group_name" => $req['group_name'],
+                "specific_loc" => $specificLoc,
+                "location" => $locationLabel,
+                "location_id" => (int)$req['location_id'],
+                "requester_name" => getName($requesterID),
+                "requester_group" => $req['requester_group'],
+                "req_date" => date("Y-m-d", strtotime($req['requested_at'])),
+                "old_date" => $req['original_start_date'],
+                "old_date_to" => $req['original_end_date'],
+                "new_date" => $req['requested_start_date'],
+                "new_date_to" => $req['requested_end_date'],
+                "from" => $req['original_start_date'],
+                "to" => $req['original_end_date'],
+                "duration" => countDays($req['original_start_date'], $originalEnd),
+                "reason" => $req['reason'],
+                "status" => $status,
+                "passValid" => (bool)$passValidity,
+                "visaValid" => (bool)$visaValidity,
+                "modified" => $req['date_modified'],
+            ];
+
+            if ($changeType === 'date_change') {
+                $result['data']['date_change'][] = $output;
+            } elseif ($changeType === 'cancellation') {
+                $result['data']['cancellation'][] = $output;
             }
-            $output["passValid"] = $passValidity;
-            $output["visaValid"] = $visaValidity;
-            // $status = ($req['request_status'] === NULL) ? "Pending" : (($req['request_status'] === 1) ? "Approved" : "Denied");
-            $status = $req['request_status'];
-            $output['status'] = $status;
-            $output['modified'] = $req['date_modified'];
-            $result['data'][] = $output;
         }
-        $result["isSuccess"] = TRUE;
     }
+
+    $result["isSuccess"] = TRUE;
 } catch (Exception $e) {
     $result["isSuccess"] = FALSE;
     $result["message"] = "Connection failed: " . $e->getMessage();

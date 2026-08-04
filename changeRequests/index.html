@@ -26,15 +26,16 @@
   <script src="../js/tableToExcel.js"></script>
 
   <!-- Page JS -->
-  <script src="js/state.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/render.js"></script>
+  <script src="js/state.js?v=20260804d"></script>
+  <script src="js/utils.js?v=20260804d"></script>
+  <script src="js/api.js?v=20260804d"></script>
+  <script src="js/pagination.js?v=20260804d"></script>
+  <script src="js/ui.js?v=20260804d"></script>
+  <script src="js/render.js?v=20260804d"></script>
   <script src="../js/sidebar.js"></script>
-  <script src="js/events.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/events.js?v=20260804d"></script>
+  <script src="js/app.js?v=20260804d"></script>
+  <script src="js/main.js?v=20260804d"></script>
 </head>
 
 <!-- #region modal -->
@@ -776,7 +777,7 @@
                   </button>
                   <button role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4" tabindex="-3"
                     class="relative block p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)] m-0 text-sm">Cancelled</p>
+                    <p class=" text-[var(--gray-text)] m-0 text-sm">Declined</p>
                   </button>
 
                 </div>
@@ -849,7 +850,30 @@
 
             </div>
 
-
+            <div data-pagination="cancellation" class="table-pagination p-3 border-t">
+              <div data-role="count" class="table-pagination__count">Showing 0 to 0 of 0 requests</div>
+              <div class="table-pagination__controls">
+                <label class="table-pagination__per-page">
+                  Rows
+                  <span class="table-pagination__select-wrap">
+                    <select data-role="per-page" class="table-pagination__select">
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                    </select>
+                  </span>
+                </label>
+                <div class="table-pagination__nav-wrap pagination-controls flex items-center gap-2">
+                  <button type="button" data-role="prev" class="table-pagination__nav pagination-previous" aria-label="Previous page">
+                    <i class="bx bx-chevron-left text-[18px]"></i>
+                  </button>
+                  <div data-role="pages" class="table-pagination__pages"></div>
+                  <button type="button" data-role="next" class="table-pagination__nav pagination-next" aria-label="Next page">
+                    <i class="bx bx-chevron-right text-[18px]"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
 
           </div>
 
@@ -871,24 +895,24 @@
                     class="indicator-datechange absolute top-0 my-[0.25rem] bottom-0 left-0 rounded-md bg-[var(--secondary)]">
                   </div>
 
-                  <button id="datechange-tab-1"
+                  <button id="datechange-tab-1" data-status="all"
                     class="relative z-[1] tab-datechange p-2 rounded-full flex justify-center items-center">
                     <p class="text-sm text-[var(--gray-text)] m-0">All</p>
                   </button>
 
-                  <button id="datechange-tab-2"
+                  <button id="datechange-tab-2" data-status="pending"
                     class="relative z-[1] tab-datechange p-2 rounded-full flex justify-center items-center">
                     <p class="text-sm text-[var(--gray-text)] m-0">Pending</p>
                   </button>
 
-                  <button id="datechange-tab-3"
+                  <button id="datechange-tab-3" data-status="accepted"
                     class="relative z-[1] tab-datechange p-2 rounded-full flex justify-center items-center">
                     <p class="text-sm text-[var(--gray-text)] m-0">Accepted</p>
                   </button>
 
-                  <button id="datechange-tab-4"
+                  <button id="datechange-tab-4" data-status="denied"
                     class="relative z-[1] tab-datechange p-2 rounded-full flex justify-center items-center">
-                    <p class="text-sm text-[var(--gray-text)] m-0">Cancelled</p>
+                    <p class="text-sm text-[var(--gray-text)] m-0">Declined</p>
                   </button>
                 </div>
               </div>
@@ -951,19 +975,28 @@
               </table>
             </div>
 
-            <div id="datechangePagination"
-              class="flex flex-col sm:flex-row justify-between items-center gap-2 p-3 border-t">
-              <span id="datechangePaginationInfo" class="text-sm text-[var(--gray-text)]">Showing 0 of 0</span>
-              <div class="flex items-center gap-2">
-                <button type="button" id="datechangePrevPage"
-                  class="rounded-md border px-3 py-1 text-sm font-semibold text-[var(--dark)] hover:bg-[var(--gray-100)] disabled:opacity-50 disabled:pointer-events-none">
-                  Previous
-                </button>
-                <span id="datechangePageLabel" class="text-sm text-[var(--gray-text)]">Page 1 of 1</span>
-                <button type="button" id="datechangeNextPage"
-                  class="rounded-md border px-3 py-1 text-sm font-semibold text-[var(--dark)] hover:bg-[var(--gray-100)] disabled:opacity-50 disabled:pointer-events-none">
-                  Next
-                </button>
+            <div data-pagination="datechange" class="table-pagination p-3 border-t">
+              <div data-role="count" class="table-pagination__count">Showing 0 to 0 of 0 requests</div>
+              <div class="table-pagination__controls">
+                <label class="table-pagination__per-page">
+                  Rows
+                  <span class="table-pagination__select-wrap">
+                    <select data-role="per-page" class="table-pagination__select">
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                    </select>
+                  </span>
+                </label>
+                <div class="table-pagination__nav-wrap pagination-controls flex items-center gap-2">
+                  <button type="button" data-role="prev" class="table-pagination__nav pagination-previous" aria-label="Previous page">
+                    <i class="bx bx-chevron-left text-[18px]"></i>
+                  </button>
+                  <div data-role="pages" class="table-pagination__pages"></div>
+                  <button type="button" data-role="next" class="table-pagination__nav pagination-next" aria-label="Next page">
+                    <i class="bx bx-chevron-right text-[18px]"></i>
+                  </button>
+                </div>
               </div>
             </div>
 
