@@ -68,20 +68,7 @@ function bindEvents() {
     window.location.href = `${rootFolder}`;
   });
 
-  $(document).on("click", ".tab", function () {
-    var indicator = document.querySelector(".indicator");
-    var $this = $(this);
-    var rect = $this[0].getBoundingClientRect();
-    var parentRect = $this.parent()[0].getBoundingClientRect();
-
-    indicator.style.width = rect.width + "px";
-    indicator.style.left = rect.left - parentRect.left + "px";
-
-    $(".tab p").removeClass("font-semibold text-[var(--dark)] active");
-    $(this).find("p").addClass("font-semibold text-[var(--dark)] active");
-    searchFilter(reqList);
-  });
-
+  bindCancellationStatusTabs();
   bindDateChangeStatusTabs();
   bindDateChangeDetails();
   bindPaginationEvents();
@@ -175,6 +162,19 @@ function bindEvents() {
     sortDateAsc = !sortDateAsc;
     searchFilter(reqList);
   });
+}
+
+function bindCancellationStatusTabs() {
+  $(document)
+    .off("click.cancellationStatus", ".tab-cancellation")
+    .on("click.cancellationStatus", ".tab-cancellation", function () {
+      selectedCancellationStatus = String($(this).data("status") || "all")
+        .trim()
+        .toLowerCase();
+
+      setActiveCancellationStatusTab(selectedCancellationStatus);
+      searchFilter(reqList);
+    });
 }
 
 function bindDateChangeStatusTabs() {
@@ -323,6 +323,21 @@ function bindPaginationEvents() {
 }
 
 //#region confirmation modal
+$(document).on("show.bs.modal", "#confirmDateChangeActionModal", function () {
+  syncConfirmDateChangeModalFields();
+});
+
+$(document).on("click", "#confirmDateChangeOriginalDispatchIdBtn", function () {
+  const requestId = $(this).attr("data-request-id");
+
+  if (!requestId) {
+    console.error("Missing original request id on confirm date change modal button");
+    return;
+  }
+
+  window.location.href = `../requestList/?open_request=${encodeURIComponent(requestId)}`;
+});
+
 $(document).on("click", "#btnApproveDateChange", function () {
   pendingDateChangeAction = "approve";
 
@@ -446,6 +461,17 @@ $(document).on("click", "#cancelModalRequestIdBtn", function () {
 
   if (!requestId) {
     console.error("Missing original request id on cancellation modal button");
+    return;
+  }
+
+  window.location.href = `../requestList/?open_request=${encodeURIComponent(requestId)}`;
+});
+
+$(document).on("click", "#confirmCancelOriginalDispatchIdBtn", function () {
+  const requestId = $(this).attr("data-request-id");
+
+  if (!requestId) {
+    console.error("Missing original request id on confirm cancellation modal button");
     return;
   }
 

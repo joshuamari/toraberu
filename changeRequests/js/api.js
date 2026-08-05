@@ -147,7 +147,7 @@ function refreshChangeRequests() {
 
     fillCards();
     initDateChangeRequestsTable();
-    searchFilter(reqList);
+    initCancellationRequestsTable();
 
     return {
       reqs,

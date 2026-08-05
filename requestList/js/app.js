@@ -33,14 +33,15 @@ function initApp() {
     .then(([grps, reqs, counts, pres, header]) => {
       groupList = grps["data"];
       fillGroups(groupList);
-      reqList = reqs["data"];
+      reqList = syncRequestListStatusFields(reqs["data"]);
       cardData = counts["data"];
       presID = pres["data"];
       fillCards();
       openRequestFromUrl();
       renderHeader(header["data"]);
       renderSalutation(header["data"]);
-      $(".tab")[0].click();
+      initDispatchStatusFilter();
+      searchFilter(reqList);
     })
     .catch((error) => {
       if (error !== "Access Denied") {

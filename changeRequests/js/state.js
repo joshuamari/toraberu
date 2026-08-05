@@ -44,6 +44,7 @@ let cancellationItemsPerPage = 10;
 let allDateChangeRequests = [];
 let filteredDateChangeRequests = [];
 let selectedDateChangeStatus = "all";
+let selectedCancellationStatus = "all";
 let dateChangeCurrentPage = 1;
 let dateChangeItemsPerPage = 10;
 let cardData = [];

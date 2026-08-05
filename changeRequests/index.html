@@ -39,237 +39,244 @@
 </head>
 
 <!-- #region modal -->
-<div class="modal fade" id="openModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content rounded-xl">
+<div class="modal fade" id="openModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="cancelModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable change-request-modal-dialog">
+    <div class="modal-content change-request-modal-content">
 
-      <!-- HEADER -->
-      <div class="modal-header border-0 pb-2" style="padding: 21px !important;">
-        <div class="flex items-center gap-3">
-          <h1 class="text-[20px] font-semibold m-0">Cancellation Request</h1>
-          <span class="status lg " id="cancelModalStatus">Pending</span>
+      <div class="modal-header change-request-modal-header border-0">
+        <div class="d-flex flex-column gap-1 w-100 pe-3">
+          <h1 class="change-request-modal-title d-flex align-items-center gap-2 flex-wrap m-0" id="cancelModalTitle">
+            Cancellation Request
+            <span class="status lg" id="cancelModalStatus">Pending</span>
+          </h1>
+          <span class="cr-detail-request-id" id="cancelModalDisplayId">CR-00001</span>
+          <p class="change-request-modal-subtitle mb-0">
+            Cancellation request submitted to KDT for review.
+          </p>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close change-request-modal-close" data-bs-dismiss="modal"
+          aria-label="Close"></button>
       </div>
 
-      <!-- BODY -->
-      <div class="modal-body flex flex-col gap-4 " style="padding: 0 21px 21px 21px !important">
+      <div class="modal-body change-request-modal-body cr-detail-modal-body">
 
-        <!-- EMPLOYEE + REQUEST -->
-        <div class="rounded-xl border bg-white p-4 flex justify-between items-center flex-wrap gap-4">
-
-          <div class="flex items-center gap-3">
-            <div class="w-[42px] h-[42px] rounded-full bg-[var(--red-100)] flex items-center justify-center">
-              <i class="bx bxs-user text-[18px] text-[var(--red-200)]"></i>
-            </div>
-
-            <div>
-              <p class="font-semibold text-[18px] m-0" id="modalEmpName">
-                Medrano, Collene Keith
-              </p>
-              <p class="text-[13px] text-[var(--gray-text)] m-0">
-                <span id="modalEmpNumber">EMP-475</span> •
-                <span id="modalGroup">Systems Group</span>
-              </p>
-            </div>
-          </div>
-
-          <div class="text-right">
-            <p class="text-[11px] text-[var(--gray-text)] uppercase m-0">Original Request</p>
-            <button class="text-[14px] font-semibold text-[var(--tertiary)] underline" id="cancelModalRequestIdBtn">
-              RQ-482
-            </button>
-          </div>
-
-        </div>
-
-        <!-- DISPATCH -->
-        <div class="rounded-xl border p-4 flex justify-between items-center flex-wrap gap-4">
-
-          <div class="flex items-start gap-3">
-<div class="w-[42px] h-[42px] rounded-lg bg-[var(--red-100)] flex items-center justify-center">
-              <i class="bx bx-calendar text-[20px] text-[var(--red-200)]"></i>
-            </div>
-
-            <div>
-              <p class="text-[11px] uppercase text-[var(--gray-text)] m-0">Dispatch to be Cancelled</p>
-              <p class="font-semibold m-0" id="modalLocCountry">Kobe City, Japan</p>
-              <p class="text-[var(--gray-text)] m-0">
-                <span id="modalDateFrom">19 Feb 2026</span> —
-                <span id="modalDateTo">30 Jun 2026</span>
-              </p>
+        <section aria-labelledby="cancelModalEmployeeSectionTitle">
+          <h2 class="change-request-modal-section-title" id="cancelModalEmployeeSectionTitle">
+            Employee &amp; Dispatch
+          </h2>
+          <div class="change-request-summary-card">
+            <div class="cancellation-modal-summary-grid">
+              <div class="cancellation-modal-summary-column">
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Employee</span>
+                  <span class="change-request-summary-value is-strong" id="modalEmpName"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">KDT Group</span>
+                  <span class="change-request-summary-value" id="modalGroup"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Dispatch Dates</span>
+                  <span class="change-request-summary-value" id="modalDispatchDates"></span>
+                </div>
+              </div>
+              <div class="cancellation-modal-summary-column">
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Employee ID</span>
+                  <span class="change-request-summary-value" id="modalEmpNumber"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Original Dispatch Request ID</span>
+                  <span class="change-request-summary-value">
+                    <button type="button" id="cancelModalRequestIdBtn"
+                      class="underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition bg-transparent border-0 p-0 font-inherit">
+                      REQ# 0000
+                    </button>
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
+        </section>
 
-          <div class="text-right">
-            <p class="font-semibold text-[18px] m-0" id="modalDuration">133 days</p>
-            <p class="text-[12px] text-[var(--gray-text)] m-0">Total duration</p>
+        <section aria-labelledby="cancelModalReasonSectionTitle">
+          <h2 class="change-request-modal-section-title" id="cancelModalReasonSectionTitle">
+            Reason for Cancellation
+          </h2>
+          <div class="cr-detail-reason-card">
+            <div class="d-flex align-items-start gap-2 mb-2">
+              <span class="cr-detail-reason-icon" aria-hidden="true">
+                <i class="bx bx-message-square-detail"></i>
+              </span>
+              <span class="change-request-summary-label mb-0">Submitted reason</span>
+            </div>
+            <p class="change-request-summary-value mb-0 leading-relaxed" id="modalCancelReason"></p>
           </div>
+        </section>
 
-        </div>
-
-        <!-- REASON -->
-        <div class="rounded-xl border p-4 relative bg-white">
-
-          <div class="absolute left-0 top-0 bottom-0 w-[4px] bg-[var(--red-200)] rounded-l-xl"></div>
-
-          <div class="flex items-start gap-3">
-            <div class="w-[42px] h-[42px] rounded-full bg-[var(--red-100)] flex items-center justify-center">
-              <i class="bx bx-error text-[18px] text-[var(--red-200)]"></i>
-            </div>
-
-            <div>
-              <p class="text-[11px] uppercase text-[var(--gray-text)] mb-1">Reason for Cancellation</p>
-              <p class="font-medium text-[var(--dark)] m-0" id="modalCancelReason">
-                Dispatch is no longer required due to project schedule changes.
-              </p>
+        <section aria-labelledby="cancelModalMetaSectionTitle">
+          <h2 class="change-request-modal-section-title" id="cancelModalMetaSectionTitle">
+            Submission Details
+          </h2>
+          <div class="change-request-summary-card">
+            <div class="change-request-summary-grid">
+              <div class="change-request-summary-item">
+                <span class="change-request-summary-label">Requested By</span>
+                <span class="change-request-summary-value" id="modalReqName"></span>
+              </div>
+              <div class="change-request-summary-item">
+                <span class="change-request-summary-label">Date Requested</span>
+                <span class="change-request-summary-value" id="modalReqDate"></span>
+              </div>
             </div>
           </div>
+        </section>
 
-        </div>
-
-        <!-- METADATA -->
-        <div class="rounded-xl border py-4 px-4 md:!px-0 bg-[var(--white)]">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-[14px]">
-
-            <div class="md:border-r-2 md:px-4">
-              <p class="text-[var(--gray-text)] m-0">Requested by</p>
-              <p class="font-medium m-0" id="modalReqName">Kurita, Hiroki</p>
-            </div>
-
-            <div class="md:border-r-2 md:px-4">
-              <p class="text-[var(--gray-text)] m-0">Requested on</p>
-              <p class="font-medium m-0" id="modalReqDate">6 Feb 2026</p>
-            </div>
-
-            <div class="md:px-4">
-              <p class="text-[var(--gray-text)] m-0">Group</p>
-              <p class="font-medium m-0" id="modalReqGrp">Boiler Group</p>
-            </div>
-
-          </div>
-        </div>
-
+        <span id="modalLocCountry" class="sr-only" aria-hidden="true"></span>
+        <span id="modalDateFrom" class="sr-only" aria-hidden="true"></span>
+        <span id="modalDateTo" class="sr-only" aria-hidden="true"></span>
       </div>
 
-      <!-- FOOTER -->
-      <div class=" py-4 mx-4 border-t   flex flex-col lg:flex-row gap-3">
-
-        <div class="flex items-center gap-2 text-[12px] text-[var(--gray-text)]">
-          <i class="bx bx-error text-[16px] text-wrap text-[var(--red-200)]"></i>
-          <spakuyn class="text-[12px] text-gray-800/70">Approving this request will cancel the approved dispatch.
-          </spakuyn>
-        </div>
-
-        <div class="flex justify-end gap-2 w-full">
-
-
-          <button class="rounded-lg px-4 py-2 font-semibold text-rose-500 border-1 border-rose-400 hover:bg-gray-800/10"
-            id="btnDenyCancellation">
-            Deny Request
-          </button>
-
-          <button
-            class=" rounded-lg px-4 py-2 font-semibold text-white bg-rose-500 hover:bg-rose-600 transition disabled:pointer-events-none "
-            id="btnApproveCancellation">
-            Approve Cancellation
-          </button>
-        </div>
-
+      <div id="cancelModalActionFooter" class="modal-footer change-request-footer border-0">
+        
+          <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 w-full">
+            <div class="d-flex align-items-start gap-2">
+              <i class="bx bx-info-circle text-[16px] text-[var(--gray-text)] shrink-0" aria-hidden="true"></i>
+              <p class="cancellation-modal-footer-note mb-0">
+                Approving this request will cancel the approved dispatch.
+              </p>
+            </div>
+            <div class="d-flex justify-content-end gap-2 flex-wrap">
+              <button type="button" class="btn-Back transition" id="btnDenyCancellation">
+                Deny Request
+              </button>
+              <button type="button" class="btn-accept transition disabled:pointer-events-none"
+                id="btnApproveCancellation">
+                Approve Cancellation
+              </button>
+            </div>
+          </div>
+        
       </div>
 
     </div>
   </div>
 </div>
 <div class="modal fade" id="confirmCancellationActionModal" data-bs-backdrop="static" data-bs-keyboard="false"
-  tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-xl">
+  tabindex="-1" aria-labelledby="confirmCancelActionTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable change-request-modal-dialog max-w-[560px]">
+    <div class="modal-content change-request-modal-content">
 
-      <div class="modal-header border-0 pb-2">
-        <h1 class="modal-title text-[20px] font-semibold m-0" id="confirmCancelActionTitle">
-          Confirm Action
+      <div class="modal-header change-request-modal-header border-0">
+        <h1 class="change-request-modal-title m-0" id="confirmCancelActionTitle">
+          Confirm Cancellation
         </h1>
-
-        <button type="button" class="btn-close text-[14px] m-1 w-auto h-auto" id="btnCloseConfirmCancelModal" 
+        <button type="button" class="btn-close change-request-modal-close" id="btnCloseConfirmCancelModal"
           aria-label="Close"></button>
       </div>
 
-      <div class="modal-body pt-2 flex flex-col gap-4">
+      <div class="modal-body change-request-modal-body cr-detail-modal-body">
 
-        <div class="rounded-xl border bg-white p-4">
-          <div class="flex items-start gap-3">
-            <div class="w-[42px] h-[42px] rounded-full flex items-center justify-center shrink-0 bg-[var(--red-100)] "
-              id="confirmCancelIconWrap">
-              <i class="bx bx-help-circle text-[var(--red-200)] text-[22px]" id="confirmCancelIcon"></i>
+        <section aria-labelledby="confirmCancelWarningSectionTitle">
+          <h2 class="change-request-modal-section-title" id="confirmCancelWarningSectionTitle">
+            Cancellation Confirmation
+          </h2>
+          <div class="change-request-summary-card">
+            <div class="d-flex align-items-start gap-2">
+              <i class="bx bx-info-circle text-[16px] text-[var(--gray-text)] shrink-0 mt-[2px]"
+                aria-hidden="true"></i>
+              <div>
+                <p class="change-request-summary-value is-strong mb-2" id="confirmCancelHeading">
+                  Approve this cancellation request?
+                </p>
+                <p class="change-request-summary-value mb-0 text-[var(--gray-text2)]" id="confirmCancelMessage">
+                  This action will cancel the approved dispatch. The original dispatch request will remain available for reference.
+                </p>
+              </div>
             </div>
+          </div>
+        </section>
 
-            <div>
-              <p class="font-semibold text-[18px] text-[var(--dark)] m-0" id="confirmCancelHeading">
-                Approve this cancellation request?
-              </p>
-              <p class="text-[14px] text-[var(--gray-text2)] mt-2 mb-0" id="confirmCancelMessage">
-                This will cancel the approved dispatch. The original request will remain available for reference.
-              </p>
+        <section aria-labelledby="confirmCancelSummarySectionTitle">
+          <h2 class="change-request-modal-section-title" id="confirmCancelSummarySectionTitle">
+            Request Summary
+          </h2>
+          <div class="change-request-summary-card">
+            <div class="cancellation-modal-summary-grid">
+              <div class="cancellation-modal-summary-column">
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Cancellation Request ID</span>
+                  <span class="change-request-summary-value is-strong" id="confirmCancelCancellationId"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Employee</span>
+                  <span class="change-request-summary-value is-strong" id="confirmCancelEmpName"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">KDT Group</span>
+                  <span class="change-request-summary-value" id="confirmCancelGroup"></span>
+                </div>
+              </div>
+              <div class="cancellation-modal-summary-column">
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Approved Dispatch Dates</span>
+                  <span class="change-request-summary-value" id="confirmCancelDates"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Original Dispatch Request ID</span>
+                  <span class="change-request-summary-value">
+                    <button type="button" id="confirmCancelOriginalDispatchIdBtn"
+                      class="underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition bg-transparent border-0 p-0 font-inherit">
+                      REQ# 0000
+                    </button>
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="rounded-xl border p-4 bg-[var(--white)] flex flex-col gap-3">
-          <div class="flex justify-between items-start gap-3">
-            <span class="text-[var(--gray-text)]">Original Request</span>
-            <span class="font-medium text-[var(--dark)] text-right" id="confirmCancelRequestId">REQ# 0012</span>
+        <section aria-labelledby="confirmCancelReasonSectionTitle">
+          <h2 class="change-request-modal-section-title" id="confirmCancelReasonSectionTitle">
+            Reason for Cancellation
+          </h2>
+          <div class="cr-detail-reason-card">
+            <div class="d-flex align-items-start gap-2 mb-2">
+              <span class="cr-detail-reason-icon" aria-hidden="true">
+                <i class="bx bx-message-square-detail"></i>
+              </span>
+              <span class="change-request-summary-label mb-0">Submitted reason</span>
+            </div>
+            <p class="change-request-summary-value mb-0 leading-relaxed" id="confirmCancelReason"></p>
           </div>
-
-          <div class="flex justify-between items-start gap-3">
-            <span class="text-[var(--gray-text)]">Employee</span>
-            <span class="font-medium text-[var(--dark)] text-right" id="confirmCancelEmpName">
-              Medrano, Collene Keith
-            </span>
-          </div>
-
-          <div class="flex justify-between items-start gap-3">
-            <span class="text-[var(--gray-text)]">Dispatch</span>
-            <span class="font-medium text-[var(--dark)] text-right" id="confirmCancelDispatch">
-              Kobe City, Japan
-            </span>
-          </div>
-
-          <div class="flex justify-between items-start gap-3">
-            <span class="text-[var(--gray-text)]">Approved Dates</span>
-            <span class="font-medium text-[var(--dark)] text-right" id="confirmCancelDates">
-              19 Feb 2026 — 30 Jun 2026
-            </span>
-          </div>
-        </div>
-
-        <div class="rounded-xl border p-3 bg-white">
-          <p class="text-[12px] text-[var(--gray-text)] mb-1">Reason for Cancellation</p>
-          <p class="text-[14px] text-[var(--gray-text2)] m-0" id="confirmCancelReason">
-            Dispatch is no longer required due to project schedule changes.
-          </p>
-        </div>
+        </section>
 
       </div>
 
-      <div class="py-3 mx-3 border-0 pt-0 flex flex-col gap-3 border-t">
-        <div class="text-[12px] text-[var(--gray-text)] text-start w-full" id="confirmCancelFooterText">
-          Once approved, this dispatch will be cancelled.
-        </div>
-
-        <div class="flex gap-2 w-full justify-end">
-          <button type="button"
-            class="btn border rounded-lg px-4 py-2 min-w-[130px] font-semibold text-[var(--dark)] hover:bg-[var(--gray-100)] transition"
-            id="btnBackToCancellationModal">
-            Back
-          </button>
-
-          <button type="button"
-            class="btn rounded-lg px-4 py-2 min-w-[170px] font-semibold transition disabled:pointer-events-none bg-rose-500 hover:bg-rose-600 text-white"
-            id="btnConfirmCancellationAction">
-            Approve Cancellation
-          </button>
-        </div>
+      <div class="modal-footer change-request-footer border-0">
+       
+          <div class="flex items-center justify-between gap-4">
+            <!-- <div class="flex min-w-0 items-center gap-2">
+              <i class="bx bx-info-circle text-[16px] text-[var(--gray-text)] shrink-0" aria-hidden="true"></i>
+              <p class="cancellation-modal-footer-note mb-0" id="confirmCancelFooterText">
+                Once approved, this dispatch will be cancelled.
+              </p>
+            </div> -->
+            <div class="flex shrink-0 items-center justify-between gap-3">
+              <button type="button"
+                class="rounded-lg px-4 py-2 min-w-[130px] font-semibold text-[var(--dark)] border border-[var(--gray)] hover:bg-[var(--gray-100)] transition"
+                id="btnBackToCancellationModal">
+                Back
+              </button>
+              <button type="button"
+                class="rounded-lg px-4 py-2 min-w-[170px] font-semibold transition disabled:pointer-events-none bg-rose-500 hover:bg-rose-600 text-white"
+                id="btnConfirmCancellationAction">
+                Approve Cancellation
+              </button>
+            </div>
+          </div>
+       
       </div>
 
     </div>
@@ -277,336 +284,314 @@
 </div>
 
 <div class="modal fade" id="dateChangeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content rounded-xl">
+  aria-labelledby="dateChangeModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable change-request-modal-dialog">
+    <div class="modal-content change-request-modal-content">
 
-      <!-- HEADER -->
-      <div class="modal-header border-0 pb-2" style="padding: 21px !important;">
-        <div class="flex items-center gap-3 flex-wrap">
-          <h1 class="modal-title text-[20px] font-semibold m-0">Date Change Request</h1>
-          <span class="status lg pending" id="modalChangeStatus">Pending</span>
+      <div class="modal-header change-request-modal-header border-0">
+        <div class="d-flex flex-column gap-1 w-100 pe-3">
+          <h1 class="change-request-modal-title d-flex align-items-center gap-2 flex-wrap m-0" id="dateChangeModalTitle">
+            Date Change Request
+            <span class="status lg pending" id="modalChangeStatus">Pending</span>
+          </h1>
+          <span class="cr-detail-request-id" id="dateChangeModalDisplayId">DC-00001</span>
+          <p class="change-request-modal-subtitle mb-0">
+            Date change request submitted to KDT for review.
+          </p>
         </div>
-
-        <button type="button" class="btn-close text-[14px] m-1 w-auto h-auto" data-bs-dismiss="modal"
+        <button type="button" class="btn-close change-request-modal-close" data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>
 
-      <!-- BODY -->
-      <div class="px-4 pb-4 flex flex-col gap-4 ">
+      <div class="modal-body change-request-modal-body cr-detail-modal-body">
 
-        <!-- IDENTITY CARD -->
-        <div class="rounded-xl border bg-white p-4 grid grid-cols-1  gap-4">
-
-          <!-- LEFT -->
-          <div class="flex flex-col gap-3">
-
-            <div class="flex w-full  justify-content-between gap-4">
-              <!-- LEFT -->
-              <div class="flex gap-3 items-center">
-                <div class="w-[42px] h-[42px] rounded-full bg-green-100 flex items-center justify-center">
-                  <i class="bx bxs-user text-[18px] text-green-600"></i>
+        <section aria-labelledby="dateChangeModalEmployeeSectionTitle">
+          <h2 class="change-request-modal-section-title" id="dateChangeModalEmployeeSectionTitle">
+            Employee &amp; Dispatch
+          </h2>
+          <div class="change-request-summary-card">
+            <div class="cancellation-modal-summary-grid">
+              <div class="cancellation-modal-summary-column">
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Employee</span>
+                  <span class="change-request-summary-value is-strong" id="modalDCEmpName"></span>
                 </div>
-                <div>
-                  <p class="font-semibold text-[20px] leading-[1.1] text-[var(--dark)] m-0" id="modalDCEmpName">
-                    Medrano, Collene Keith
-                  </p>
-
-                  <div class="flex items-center gap-2 mt-2 flex-wrap">
-                    <span class="text-[14px] uppercase text-[var(--gray-text)]" id="modalEmpNumber">
-                      EMP-475
-                    </span>
-
-                    <span class="text-[var(--gray-text)] text-[12px]">•</span>
-
-                    <span class="text-[14px] text-[var(--gray-text)]" id="modalDCGroup">
-                      Systems Group
-                    </span>
-                  </div>
-                  <div class="flex items-center mt-1 flex-wrap">
-                    <i class="bx bxs-map text-[13px] text-[var(--gray-text)] p-1 "></i>
-                    <p class="text-[14px] text-[var(--gray-text)] font-medium leading-tight m-0" id="modalLocCountry">
-                      Kobe City, Japan
-                    </p>
-                  </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">KDT Group</span>
+                  <span class="change-request-summary-value" id="modalDCGroup"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Current Approved Dates</span>
+                  <span class="change-request-summary-value" id="modalDCCurrentDates"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Current Total Days</span>
+                  <span class="change-request-summary-value" id="modalDCCurrentTotalDays"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Net Change</span>
+                  <span class="change-request-summary-value is-strong" id="modalDCNetChange"></span>
                 </div>
               </div>
-              <!-- RIGHT -->
-
-              <div class="text-right">
-                <p class="text-[11px] text-[var(--gray-text)] uppercase m-0">Original Request</p>
-                <button class="text-[14px] font-semibold text-[var(--tertiary)] underline" id="changeModalRequestIdBtn">
-                  RQ#482
-                </button>
+              <div class="cancellation-modal-summary-column">
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Employee ID</span>
+                  <span class="change-request-summary-value" id="modalDCEmpNumber"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Original Dispatch Request ID</span>
+                  <span class="change-request-summary-value">
+                    <button type="button" id="changeModalRequestIdBtn"
+                      class="underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition bg-transparent border-0 p-0 font-inherit">
+                      REQ# 0000
+                    </button>
+                  </span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Proposed Dates</span>
+                  <span class="change-request-summary-value" id="modalDCProposedDates"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Proposed Total Days</span>
+                  <span class="change-request-summary-value" id="modalDCProposedTotalDays"></span>
+                </div>
               </div>
             </div>
-
-
           </div>
+        </section>
 
-
-        </div>
-
-        <!-- DATE CHANGE HERO -->
-        <div class="rounded-xl border bg-white p-4">
-          <div class="flex items-center justify-content-between mb-3 gap-3 flex-wrap">
-            <div>
-              <p class="text-[11px] uppercase text-[var(--gray-text)] mb-1">Requested Date Change</p>
-              <p class="font-semibold text-[16px] text-[var(--dark)] m-0">Current vs Proposed Schedule</p>
+        <section aria-labelledby="dateChangeModalReasonSectionTitle">
+          <h2 class="change-request-modal-section-title" id="dateChangeModalReasonSectionTitle">
+            Reason for Date Change
+          </h2>
+          <div class="cr-detail-reason-card">
+            <div class="d-flex align-items-start gap-2 mb-2">
+              <span class="cr-detail-reason-icon" aria-hidden="true">
+                <i class="bx bx-message-square-detail"></i>
+              </span>
+              <span class="change-request-summary-label mb-0">Submitted reason</span>
             </div>
-
-            <div class="text-end">
-              <p class="text-[11px] uppercase text-[var(--gray-text)] mb-1">Net Change</p>
-
-              <p id="modalTotalDiff" class="font-semibold text-[22px] leading-none m-0">
-                + 5 days
-              </p>
-            </div>
+            <p class="change-request-summary-value mb-0 leading-relaxed" id="modalReason"></p>
           </div>
+        </section>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-
-            <!-- CURRENT -->
-            <div class="rounded-xl border p-4 bg-white">
-              <p class="text-[11px] uppercase text-[var(--gray-text)] mb-2">Current Approved Dates</p>
-
-              <div class="flex items-center gap-2 whitespace-nowrap flex-wrap">
-                <p class="font-semibold text-[18px] text-[var(--dark)] m-0" id="modalOldDateFrom">19 Feb 2026</p>
-                <span class="block w-[18px] h-[2px] bg-[var(--gray)] rounded-full"></span>
-                <p class="font-semibold text-[18px] text-[var(--dark)] m-0" id="modalOldDateTo">30 Jun 2026</p>
+        <section aria-labelledby="dateChangeModalMetaSectionTitle">
+          <h2 class="change-request-modal-section-title" id="dateChangeModalMetaSectionTitle">
+            Submission Details
+          </h2>
+          <div class="change-request-summary-card">
+            <div class="change-request-summary-grid">
+              <div class="change-request-summary-item">
+                <span class="change-request-summary-label">Requested By</span>
+                <span class="change-request-summary-value" id="modalChangeReqName"></span>
               </div>
-
-              <p class="text-[14px] text-[var(--gray-text)] mt-3 m-0">
-                <span class="font-semibold text-[var(--dark)]" id="modalOldDuration">133</span> days total
-              </p>
-            </div>
-
-            <!-- PROPOSED -->
-            <div class="rounded-xl border p-4 bg-[var(--main)]">
-              <p class="text-[11px] uppercase text-[var(--gray-text)] mb-2">Proposed New Dates</p>
-
-              <div class="flex items-center gap-2 whitespace-nowrap flex-wrap">
-                <p class="font-semibold text-[18px] text-[var(--dark)] m-0" id="modalNewDateFrom">19 Feb 2026</p>
-                <span class="block w-[18px] h-[2px] bg-[var(--tertiary)] rounded-full"></span>
-                <p class="font-semibold text-[18px] text-[var(--dark)] m-0" id="modalNewDateTo">05 Jul 2026</p>
+              <div class="change-request-summary-item">
+                <span class="change-request-summary-label">Date Requested</span>
+                <span class="change-request-summary-value" id="modalChangeReqDate"></span>
               </div>
-
-              <p class="text-[14px] text-[var(--gray-text)] mt-3 m-0">
-                <span class="font-semibold text-[var(--dark)]" id="modalNewDuration">138</span> days total
-              </p>
             </div>
           </div>
+        </section>
 
-
-        </div>
-        <!-- REASON -->
-        <div class="rounded-xl border p-4 relative bg-white">
-
-          <div class="absolute left-0 top-0 bottom-0 w-[4px] bg-green-200 rounded-l-xl"></div>
-
-          <div class="flex items-start gap-3">
-            <div class="w-[42px] h-[42px] rounded-full bg-green-100 flex items-center justify-center">
-              <i class="bx bx-error text-[18px] text-green-600"></i>
-            </div>
-
-            <div>
-              <p class="text-[11px] uppercase text-[var(--gray-text)] mb-1">Reason for Cancellation</p>
-              <p class="font-medium text-[var(--dark)] m-0" id="modalReason">
-                Dispatch is no longer required due to project schedule changes.
-              </p>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- METADATA -->
-        <div class="rounded-xl border py-4 px-4 md:!px-0 bg-[var(--white)]">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-[14px]">
-
-            <div class="md:border-r-2 md:px-4">
-              <p class="text-[var(--gray-text)] m-0">Requested by</p>
-              <p class="font-medium m-0" id="modalChangeReqName">Kurita, Hiroki</p>
-            </div>
-
-            <div class="md:border-r-2 md:px-4">
-              <p class="text-[var(--gray-text)] m-0">Requested on</p>
-              <p class="font-medium m-0" id="modalChangeReqDate">6 Feb 2026</p>
-            </div>
-
-            <div class="md:px-4">
-              <p class="text-[var(--gray-text)] m-0">Group</p>
-              <p class="font-medium m-0" id="modalChangeReqGrp">Boiler Group</p>
-            </div>
-
-          </div>
-        </div>
-
-
-
-
-      </div>
-      <!-- FOOTER -->
-      <div class=" py-4 mx-4 border-t   flex flex-col lg:flex-row gap-3">
-
-        <div class="flex items-center gap-2  ">
-          <i class="bx bx-error text-[16px] text-wrap text-[var(--red-200)]"></i>
-          <span class="text-[12px] text-gray-800/70">Review the proposed date change before approving or denying the
-            request.</span>
-        </div>
-
-        <div class="flex justify-end gap-2 w-full">
-
-
-          <button class="rounded-lg px-4 py-2 font-semibold text-rose-500 border-1 border-rose-400 hover:bg-gray-800/10"
-            id="btnDenyDateChange">
-            Deny Request
-          </button>
-
-          <button
-            class=" rounded-lg px-4 py-2 font-semibold  bg-green-400 hover:bg-green-500 transition disabled:pointer-events-none "
-            id="btnApproveDateChange">
-            Approve Change
-          </button>
-        </div>
-
+        <span id="modalLocCountry" class="sr-only" aria-hidden="true"></span>
+        <span id="modalOriginalRequestId" class="sr-only" aria-hidden="true"></span>
+        <span id="modalOldDateFrom" class="sr-only" aria-hidden="true"></span>
+        <span id="modalOldDateTo" class="sr-only" aria-hidden="true"></span>
+        <span id="modalNewDateFrom" class="sr-only" aria-hidden="true"></span>
+        <span id="modalNewDateTo" class="sr-only" aria-hidden="true"></span>
+        <span id="modalSymbol" class="sr-only" aria-hidden="true"></span>
+        <span id="modalTotalDiff" class="sr-only" aria-hidden="true"></span>
+        <span id="modalOldDuration" class="sr-only" aria-hidden="true"></span>
+        <span id="modalNewDuration" class="sr-only" aria-hidden="true"></span>
       </div>
 
-
-
+      <div class="modal-footer change-request-footer border-0" id="dateChangeModalFooter">
+        <div id="dateChangeModalFooterPending" class="cancellation-modal-action-panel w-100">
+          <div class="flex items-center justify-between gap-4">
+            <div id="dateChangeModalFooterReview" class="flex min-w-0 items-center gap-2">
+              <i class="bx bx-info-circle text-[16px] text-[var(--gray-text)] shrink-0" aria-hidden="true"></i>
+              <p class="cancellation-modal-footer-note mb-0">
+                Review the proposed date change before approving or denying the request.
+              </p>
+            </div>
+            <div id="dateChangeModalFooterActions" class="flex shrink-0 items-center justify-end gap-3">
+              <button type="button" class="btn-Back transition" id="btnDenyDateChange">
+                Deny Request
+              </button>
+              <button type="button" class="btn-accept transition disabled:pointer-events-none"
+                id="btnApproveDateChange">
+                Approve Change
+              </button>
+            </div>
+          </div>
+        </div>
+        <p id="dateChangeModalFooterMessage" class="cancellation-modal-footer-note mb-0 w-100 d-none"></p>
+      </div>
     </div>
   </div>
 </div>
 
 <div class="modal fade" id="confirmDateChangeActionModal" data-bs-backdrop="static" data-bs-keyboard="false"
-  tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-xl">
+  tabindex="-1" aria-labelledby="confirmActionTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable change-request-modal-dialog max-w-[560px]">
+    <div class="modal-content change-request-modal-content">
 
-      <!-- HEADER -->
-      <div class="modal-header border-0 pb-2">
-        <div class="flex items-center gap-3 flex-wrap">
-          <h1 class="modal-title text-[20px] font-semibold m-0" id="confirmActionTitle">Confirm Action</h1>
-        </div>
-
-        <button type="button" class="btn-close text-[14px] m-1 w-auto h-auto" data-bs-dismiss="modal"
-          aria-label="Close">
-        </button>
+      <div class="modal-header change-request-modal-header border-0">
+        <h1 class="change-request-modal-title m-0" id="confirmActionTitle">Confirm Approval</h1>
+        <button type="button" class="btn-close change-request-modal-close" data-bs-dismiss="modal"
+          aria-label="Close"></button>
       </div>
 
-      <!-- BODY -->
-      <div class="modal-body pt-2 flex flex-col gap-4">
+      <div class="modal-body change-request-modal-body cr-detail-modal-body">
 
-        <!-- SUMMARY -->
-        <div class="rounded-xl border bg-white p-4">
-          <div class="flex items-start gap-3">
-            <div class="w-[42px] h-[42px] rounded-full flex items-center justify-center shrink-0"
-              id="confirmActionIconWrap">
-              <i class='bx text-[22px]' id="confirmActionIcon"></i>
-            </div>
-
-            <div class="min-w-0">
-              <p class="font-semibold text-[18px] text-[var(--dark)] m-0" id="confirmActionHeading">
-                Approve this date change request?
-              </p>
-              <p class="text-[14px] text-[var(--gray-text2)] mt-2 mb-0" id="confirmActionMessage">
-                This will update the original approved dispatch dates to the newly proposed schedule.
-              </p>
+        <section aria-labelledby="confirmDateChangeWarningSectionTitle">
+          <h2 class="change-request-modal-section-title" id="confirmDateChangeWarningSectionTitle">
+            Date Change Confirmation
+          </h2>
+          <div class="change-request-summary-card">
+            <div class="d-flex align-items-start gap-2">
+              <div class="dc-confirm-icon-wrap shrink-0" id="confirmActionIconWrap" aria-hidden="true">
+                <i class="bx" id="confirmActionIcon"></i>
+              </div>
+              <div>
+                <p class="change-request-summary-value is-strong mb-2" id="confirmActionHeading">
+                  Approve this date change request?
+                </p>
+                <p class="change-request-summary-value mb-0 text-[var(--gray-text2)]" id="confirmActionMessage">
+                  This action will update the approved dispatch dates to the newly proposed schedule.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- QUICK DETAILS -->
-        <div class="rounded-xl border p-4 bg-[var(--white)] flex flex-col gap-4">
+        <section aria-labelledby="confirmDateChangeSummarySectionTitle">
+          <h2 class="change-request-modal-section-title" id="confirmDateChangeSummarySectionTitle">
+            Request Summary
+          </h2>
+          <div class="change-request-summary-card">
+            <div class="cancellation-modal-summary-grid">
+              <div class="cancellation-modal-summary-column">
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Date Change Request ID</span>
+                  <span class="change-request-summary-value is-strong" id="confirmRequestId"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Employee</span>
+                  <span class="change-request-summary-value is-strong" id="confirmEmpName"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Current Approved Dates</span>
+                  <span class="change-request-summary-value" id="confirmDateChangeCurrentDates"></span>
+                </div>
+              </div>
+              <div class="cancellation-modal-summary-column">
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Original Dispatch Request ID</span>
+                  <span class="change-request-summary-value">
+                    <button type="button" id="confirmDateChangeOriginalDispatchIdBtn"
+                      class="underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition bg-transparent border-0 p-0 font-inherit">
+                      REQ# 0000
+                    </button>
+                  </span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Requested By</span>
+                  <span class="change-request-summary-value" id="confirmDateChangeRequestedBy"></span>
+                </div>
+                <div class="change-request-summary-item">
+                  <span class="change-request-summary-label">Date Requested</span>
+                  <span class="change-request-summary-value" id="confirmDateChangeRequestedDate"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-          <!-- TOP META -->
-          <div class="flex items-center justify-between flex-wrap gap-2 text-[14px]">
-            <div class="flex items-center gap-2">
-              <span class="text-[var(--gray-text)]">REQ</span>
-              <span class="font-medium text-[var(--dark)]" id="confirmRequestId">0012</span>
+        <section aria-labelledby="confirmDateChangeScheduleSectionTitle">
+          <h2 class="change-request-modal-section-title" id="confirmDateChangeScheduleSectionTitle">
+            Schedule Comparison
+          </h2>
+          <div class="change-request-summary-card">
+            <div class="dc-schedule-comparison-grid">
+              <div class="dc-schedule-card">
+                <span class="change-request-summary-label">Current</span>
+                <p class="change-request-summary-value is-strong mb-1 mt-1 leading-snug">
+                  <span id="confirmOldDateFrom"></span>
+                  <span class="text-[var(--gray-text)]"> — </span>
+                  <span id="confirmOldDateTo"></span>
+                </p>
+                <p class="change-request-summary-value mb-0 text-[var(--gray-text2)] text-[0.8125rem]">
+                  <span id="confirmDateChangeCurrentDays"></span>
+                </p>
+              </div>
+
+              <div class="dc-schedule-arrow" aria-hidden="true">
+                <i class="bx bx-right-arrow-alt"></i>
+              </div>
+
+              <div class="dc-schedule-card is-proposed">
+                <span class="change-request-summary-label">Proposed</span>
+                <p class="change-request-summary-value is-strong mb-1 mt-1 leading-snug">
+                  <span id="confirmNewDateFrom"></span>
+                  <span class="text-[var(--gray-text)]"> — </span>
+                  <span id="confirmNewDateTo"></span>
+                </p>
+                <p class="change-request-summary-value mb-0 text-[var(--gray-text2)] text-[0.8125rem]">
+                  <span id="confirmDateChangeProposedDays"></span>
+                </p>
+              </div>
             </div>
 
-            <div class="text-right">
-              <span class="text-[var(--gray-text)]">Employee</span>
-              <span class="font-medium text-[var(--dark)] ml-2" id="confirmEmpName">
-                Medrano, Collene Keith
+            <div class="dc-schedule-net-change">
+              <span class="change-request-summary-label mb-0">Net Change</span>
+              <span class="change-request-summary-value is-strong mb-0" id="confirmNetChange"></span>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="confirmDateChangeReasonSectionTitle">
+          <h2 class="change-request-modal-section-title" id="confirmDateChangeReasonSectionTitle">
+            Reason for Date Change
+          </h2>
+          <div class="cr-detail-reason-card">
+            <div class="d-flex align-items-start gap-2 mb-2">
+              <span class="cr-detail-reason-icon" aria-hidden="true">
+                <i class="bx bx-message-square-detail"></i>
               </span>
+              <span class="change-request-summary-label mb-0">Submitted reason</span>
             </div>
+            <p class="change-request-summary-value mb-0 leading-relaxed" id="confirmDateChangeReason"></p>
           </div>
+        </section>
 
-          <!-- DATE CHANGE -->
-          <div class="flex flex-col gap-3">
-
-            <p class="text-[13px] text-[var(--gray-text)] m-0">Date Change</p>
-
-            <div class="grid grid-cols-[1fr_auto_1fr] gap-3 items-center">
-
-              <!-- CURRENT -->
-              <div class="rounded-lg border bg-white p-3">
-                <p class="text-[10px] uppercase text-[var(--gray-text)] mb-1">Current</p>
-                <p class="font-semibold text-[var(--dark)] m-0 leading-snug">
-                  <span id="confirmOldDateFrom">19 Feb 2026</span>
-                  <span class="mx-1 text-[var(--gray-text)]">—</span>
-                  <span id="confirmOldDateTo">30 Jun 2026</span>
-                </p>
-              </div>
-
-              <!-- ARROW -->
-              <div class="flex justify-center">
-                <i class='bx bx-right-arrow-alt text-[22px] text-[var(--gray-text)]'></i>
-              </div>
-
-              <!-- PROPOSED -->
-              <div class="rounded-lg border bg-[var(--main)] p-3">
-                <p class="text-[10px] uppercase text-[var(--gray-text)] mb-1">Proposed</p>
-                <p class="font-semibold text-[var(--dark)] m-0 leading-snug">
-                  <span id="confirmNewDateFrom">19 Feb 2026</span>
-                  <span class="mx-1 text-[var(--tertiary)]">—</span>
-                  <span id="confirmNewDateTo">05 Jul 2026</span>
-                </p>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- NET CHANGE -->
-          <div class="flex justify-between items-center text-[14px]">
-            <span class="text-[var(--gray-text)]">Net Change</span>
-            <span class="font-semibold text-[var(--tertiary)]" id="confirmNetChange">
-              +5 days
-            </span>
-          </div>
-
-        </div>
-
-        <!-- OPTIONAL NOTE -->
-        <div class="rounded-xl border p-3 bg-white hidden" id="confirmActionNoteWrap">
-          <p class="text-[12px] text-[var(--gray-text)] mb-1" id="confirmActionNoteLabel">Note</p>
-          <p class="text-[14px] text-[var(--gray-text2)] m-0" id="confirmActionNoteText"></p>
+        <span id="confirmDateChangeRange" class="sr-only" aria-hidden="true"></span>
+        <div class="hidden" id="confirmActionNoteWrap">
+          <p id="confirmActionNoteLabel">Note</p>
+          <p id="confirmActionNoteText"></p>
         </div>
       </div>
 
-      <!-- FOOTER -->
-      <div class="py-3 mx-3 border-0 pt-0 flex flex-col gap-3 border-t">
-
-        <div class="text-[12px] text-[var(--gray-text)] text-start w-full" id="confirmActionFooterText">
-          Once approved, the original dispatch dates will be updated.
+      <div class="modal-footer change-request-footer border-0">
+        <div class="flex items-center justify-between gap-4 w-100">
+          <p class="cancellation-modal-footer-note mb-0 min-w-0" id="confirmActionFooterText">
+            Once approved, the original approved dispatch dates will be updated.
+          </p>
+          <div class="flex shrink-0 items-center gap-3">
+            <button type="button"
+              class="rounded-lg px-4 py-2 min-w-[130px] font-semibold text-[var(--dark)] border border-[var(--gray)] hover:bg-[var(--gray-100)] transition"
+              data-bs-dismiss="modal">
+              Back
+            </button>
+            <button type="button"
+              class="rounded-lg px-4 py-2 min-w-[150px] font-semibold transition disabled:pointer-events-none bg-green-400 hover:bg-green-500 text-white"
+              id="btnConfirmDateChangeAction">
+              Approve Change
+            </button>
+          </div>
         </div>
-
-        <div class="flex gap-2 w-full justify-end">
-          <button type="button"
-            class="btn border rounded-lg px-4 py-2 min-w-[130px] font-semibold text-[var(--dark)]  hover:bg-[var(--gray-100)] transition"
-            data-bs-dismiss="modal">
-            Back
-          </button>
-
-          <button type="button"
-            class="btn rounded-lg px-4 py-2 min-w-[150px] font-semibold transition disabled:pointer-events-none"
-            id="btnConfirmDateChangeAction">
-            Approve Change
-          </button>
-        </div>
-
       </div>
+
     </div>
   </div>
 </div>
@@ -646,20 +631,12 @@
             <a href="./changeRequests/">
               <li class="active">
                 <div class="d-flex align-items-center gap-2">
-                  <span
-                    class="inline-flex h-4 w-4 shrink-0 items-center justify-center"
-                    aria-hidden="true"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="block h-full w-full"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      focusable="false"
-                    >
+                  <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="block h-full w-full" fill="currentColor"
+                      viewBox="0 0 24 24" focusable="false">
                       <path
-                        d="M18.71 5.29a.996.996 0 0 0-1.41 0l-11 11a1 1 0 0 0-.29.71v3c0 .55.45 1 1 1h3c.27 0 .52-.11.71-.29l11-11a.996.996 0 0 0 0-1.41l-3-3ZM9.59 19H8v-1.59l7.5-7.5 1.59 1.59zm8.91-8.91L16.91 8.5 18 7.41 19.59 9zm-10.73.06C9.5 8.72 11 7.49 11 6c0-3.81-7.5-4-9-4v2c3.31 0 7 .83 7 2 0 .54-1.51 1.78-2.5 2.6-2.06 1.7-4.4 3.63-4.24 6.07.09 1.4 1 2.67 2.74 3.86V17c0-.3.07-.59.2-.85-.59-.56-.91-1.1-.94-1.61-.09-1.41 1.83-3 3.52-4.39Z"
-                      ></path>
+                        d="M18.71 5.29a.996.996 0 0 0-1.41 0l-11 11a1 1 0 0 0-.29.71v3c0 .55.45 1 1 1h3c.27 0 .52-.11.71-.29l11-11a.996.996 0 0 0 0-1.41l-3-3ZM9.59 19H8v-1.59l7.5-7.5 1.59 1.59zm8.91-8.91L16.91 8.5 18 7.41 19.59 9zm-10.73.06C9.5 8.72 11 7.49 11 6c0-3.81-7.5-4-9-4v2c3.31 0 7 .83 7 2 0 .54-1.51 1.78-2.5 2.6-2.06 1.7-4.4 3.63-4.24 6.07.09 1.4 1 2.67 2.74 3.86V17c0-.3.07-.59.2-.85-.59-.56-.91-1.1-.94-1.61-.09-1.41 1.83-3 3.52-4.39Z">
+                      </path>
                     </svg>
                   </span>
                   <p class="m-0">Change Requests</p>
@@ -735,273 +712,242 @@
     </div>
     <div class="content h-screen">
       <div class="flex flex-col  overflow-auto p-[14px] md:p-8 h-full w-full">
-        <div class="pageTitle w-100 gap-3 d-flex">
-          <div id="menu" class="aspect-square">
-            <i class="bx bx-menu-alt-left fs-3"></i>
+        <div class="pageTitle w-full flex flex-col items-start gap-2">
+          <div class="gap-3 flex items-center">
+            <div id="menu" class="aspect-square">
+              <i class="bx bx-menu-alt-left fs-3"></i>
+            </div>
+            <h1 class="fw-semibold m-0">Change Requests</h1>
           </div>
-          <h1 class="fw-semibold m-0">Change Requests</h1>
+
+          <div>
+
+            <p class="text-[12px]">
+              Review date-change and cancellation requests submitted by KHI.
+            </p>
+          </div>
         </div>
 
-        <div class=" w-full pt-3 min-h-120 flex flex-col  gap-3 relative">
+        <div class="w-full pt-3 flex flex-col gap-6 relative">
 
-          <div class="w-full bg-white rounded-lg border">
+          <section class="change-requests-section" aria-labelledby="dateChangeSectionTitle">
+            <h2 class="change-request-section-title mb-3" id="dateChangeSectionTitle">Date Change Requests</h2>
 
-            <div class="border-b-1 p-3 border-b-[1px] space-y-2">
-              <!-- 🔹 HEADER ROW 1 -->
-              <div class="flex lg:flex-row flex-col justify-content-between   gap-2 lg:gap-0">
+            <div class="change-requests-card w-full bg-white rounded-lg border flex flex-col">
+              <div class="selection flex gap-2 items-center justify-content-between border-b p-3">
+                <div class="w-100">
+                  <div class="tabs-datechange tabs relative bg-[var(--gray)] rounded-lg p-1 grid grid-cols-4"
+                    role="tablist" aria-label="Date change request status filters">
+                    <div
+                      class="indicator-datechange indicator absolute top-0 my-[0.25rem] bottom-0 left-0 rounded-md bg-[var(--secondary)]">
+                    </div>
 
-                <!-- LEFT: TITLE -->
-                <div class="flex items-center">
-                  <h5 class="font-semibold text-[16px]">Cancellation Requests</h5>
-                </div>
+                    <button id="datechange-tab-1" data-status="all" type="button"
+                      class="relative block p-2 tab-datechange tab rounded-full flex gap-1 items-center justify-content-center">
+                      <span
+                        class="tab-segment__label text-[12px] text-[var(--gray-text)] font-semibold text-[var(--dark)] active">All</span>
+                    </button>
 
-                <!-- RIGHT: STATUS TABS -->
-                <div
-                  class="tabs w-full lg:w-auto flex gap-2  items-center relative overflow-hidden bg-[var(--white)] border grid grid-cols-4 px-[3px] rounded-lg transition"
-                  role="tablist" aria-label="tabs">
-                  <div class="indicator absolute top-0 my-[0.25rem] bottom-0  left-0 rounded-md  bg-[var(--secondary)]">
+                    <button id="datechange-tab-2" data-status="pending" type="button"
+                      class="relative block p-2 tab-datechange tab rounded-full flex gap-1 items-center justify-content-center">
+                      <span class="tab-segment__label text-[12px] text-[var(--gray-text)]">Pending</span>
+                    </button>
+
+                    <button id="datechange-tab-3" data-status="accepted" type="button"
+                      class="relative block p-2 tab-datechange tab rounded-full flex gap-1 items-center justify-content-center">
+                      <span class="tab-segment__label text-[12px] text-[var(--gray-text)]">Accepted</span>
+                    </button>
+
+                    <button id="datechange-tab-4" data-status="denied" type="button"
+                      class="relative block p-2 tab-datechange tab rounded-full flex gap-1 items-center justify-content-center">
+                      <span class="tab-segment__label text-[12px] text-[var(--gray-text)]">Rejected</span>
+                    </button>
                   </div>
-                  <button role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" tabindex="0"
-                    class="relative block  p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)] m-0 text-sm">All</p>
-
-                  </button>
-                  <button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" tabindex="-1"
-                    class="relative block  p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)] m-0 text-sm">Pending</p>
-
-                  </button>
-                  <button role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" tabindex="-2"
-                    class="relative block p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)] m-0 text-sm">Accepted</p>
-                  </button>
-                  <button role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4" tabindex="-3"
-                    class="relative block p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)] m-0 text-sm">Declined</p>
-                  </button>
-
                 </div>
-              </div>
 
-              <div class="  flex gap-2 items-center w-100">
-
-                <div class="filters  w-100 flex  gap-2 ">
-                  <div class="flex gap-2 w-full justify-content-end">
-                    <div class="relative w-full">
-                      <input type="search" id="searchbar" class="input search " placeholder="Search here . . .">
-                      <i class='bx bx-search absolute top-[8px] text-[18px] left-[8px] text-[var(--gray-text)]'></i>
-                    </div>
-                    <div class="relative">
-
-                      <input type="month" id="monthSel" class="opacity-0  h-full w-full absolute cursor-pointer">
-
-                      <div
-                        class="mobtn rounded-md border flex gap-1 pl-2 pr-1 py-2 items-center justify-content-center hover:bg-[var(--white)] monthCont"
-                        role="button">
-                        <i class='bx bx-calendar'></i>
-                        <span class="" id="monthLabel">Requested Month</span>
-                        <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+                <div class="flex gap-2 items-center w-100">
+                  <div class="filters w-100 flex gap-2">
+                    <div class="flex gap-2 w-full justify-content-end">
+                      <div class="relative lg:w-auto w-full">
+                        <input type="search" id="searchbar-datechange" class="input search"
+                          placeholder="Search here . . .">
+                        <i class='bx bx-search absolute top-[8px] text-[18px] left-[8px] text-[var(--gray-text)]'></i>
                       </div>
-                    </div>
-                    <div class="relative">
-                      <select name="grp select" id="grpSel" class="opacity-0  h-full w-full absolute cursor-pointer">
-
-                      </select>
-                      <div
-                        class="grpbtn rounded-md border transition flex gap-1 pl-2 pr-1   py-2 items-center justify-content-center hover:b [var  (--white)] grpCont"
-                        role="button">
-                        <i class='bx bx-group'></i>
-                        <span id="lblGrp">All Groups</span>
-                        <i class='bx bx-chevron-down text-[18px] ml-3'></i>
-
+                      <div class="relative shrink-0">
+                        <input type="month" id="monthSel-datechange"
+                          class="opacity-0 h-full w-full absolute cursor-pointer">
+                        <div
+                          class="datechange-monthCont mobtn rounded-md border flex gap-1 pl-2 pr-1 py-2 items-center justify-content-center hover:bg-[var(--white)]"
+                          role="button">
+                          <i class='bx bx-calendar'></i>
+                          <span id="monthLabel-datechange">Requested Month</span>
+                          <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+                        </div>
+                      </div>
+                      <div class="relative shrink-0">
+                        <select name="grp select" id="grpSel-datechange"
+                          class="opacity-0 h-full w-full absolute cursor-pointer">
+                        </select>
+                        <div
+                          class="datechange-grpCont grpbtn rounded-md border transition flex gap-1 pl-2 pr-1 py-2 items-center justify-content-center hover:bg-[var(--white)]"
+                          role="button">
+                          <i class='bx bx-group'></i>
+                          <span id="lblGrp-datechange">All Groups</span>
+                          <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+                        </div>
                       </div>
                     </div>
                   </div>
-
-                </div>
-
-              </div>
-            </div>
-            <!-- TABLE TOP -->
-            <div class=" relative h-[500px]  p-3 pt-0 mt-3 overflow-auto">
-              <table class="mainTable">
-                <thead>
-                  <tr>
-                    <th>Employee</th>
-                    <th>
-                      <div class="flex gap-2 items-center text-[12px] text-[var(--text-color)]">Date requested<i
-                          id="sortDate" class='bx bx-sort cursor-pointer'></i></div>
-                    </th>
-                    <th>Start date</th>
-                    <th>End date</th>
-                    <th>Requested by</th>
-                    <th>Status</th>
-                    <th>Passport</th>
-                    <th>Visa</th>
-                    <th></th>
-                  </tr>
-
-                </thead>
-                <tbody id="tableBody">
-
-                </tbody>
-              </table>
-
-
-            </div>
-
-            <div data-pagination="cancellation" class="table-pagination p-3 border-t">
-              <div data-role="count" class="table-pagination__count">Showing 0 to 0 of 0 requests</div>
-              <div class="table-pagination__controls">
-                <label class="table-pagination__per-page">
-                  Rows
-                  <span class="table-pagination__select-wrap">
-                    <select data-role="per-page" class="table-pagination__select">
-                      <option value="10">10</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                    </select>
-                  </span>
-                </label>
-                <div class="table-pagination__nav-wrap pagination-controls flex items-center gap-2">
-                  <button type="button" data-role="prev" class="table-pagination__nav pagination-previous" aria-label="Previous page">
-                    <i class="bx bx-chevron-left text-[18px]"></i>
-                  </button>
-                  <div data-role="pages" class="table-pagination__pages"></div>
-                  <button type="button" data-role="next" class="table-pagination__nav pagination-next" aria-label="Next page">
-                    <i class="bx bx-chevron-right text-[18px]"></i>
-                  </button>
                 </div>
               </div>
-            </div>
 
-          </div>
+              <div class="change-request-table-wrapper relative p-3 pt-0 mt-3 overflow-x-auto overflow-y-visible">
+                <table class="min-w-full w-100 mainTable-datechange">
+                  <thead>
+                    <tr>
+                      <th>Request ID</th>
+                      <th>Employee</th>
+                      <th>Current Dates</th>
+                      <th>Proposed Dates</th>
+                      <th>Date Requested</th>
+                      <th>Status</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="datechangeTableBody">
+                  </tbody>
+                </table>
+              </div>
 
-          <div class="w-full bg-white rounded-lg border mt-3">
-
-            <div class="border-b-1 p-3 border-b-[1px] space-y-2">
-              <!-- 🔹 HEADER ROW 1 -->
-              <div class="flex lg:flex-row flex-col justify-content-between   gap-2 lg:gap-0">
-
-                <!-- LEFT: TITLE -->
-                <div class="flex items-center">
-                  <h5 class="font-semibold text-[16px]">Date Change Requests</h5>
-                </div>
-
-                <!-- RIGHT: STATUS TABS -->
-                <div
-                  class="tabs-datechange w-full lg:w-auto flex gap-2 items-center relative overflow-hidden bg-[var(--white)] border grid grid-cols-4 px-[3px] rounded-lg">
-                  <div
-                    class="indicator-datechange absolute top-0 my-[0.25rem] bottom-0 left-0 rounded-md bg-[var(--secondary)]">
+              <div data-pagination="datechange"
+                class="request-pagination table-pagination table-pagination--pcs d-flex flex-column flex-lg-row justify-content-lg-between align-items-lg-center gap-3 border-t border-[#ebebeb] p-3">
+                <p data-role="count" class="table-pagination__count text-[12px] text-[var(--gray-text)] m-0">Showing 0
+                  to 0 of 0 requests</p>
+                <div class="table-pagination__controls d-flex flex-wrap align-items-center gap-2 justify-content-end">
+                  <div class="table-pagination__nav-wrap d-flex align-items-center gap-1">
+                    <button type="button" data-role="prev" class="request-pagination__nav table-pagination__nav"
+                      aria-label="Previous page">
+                      <i class="bx bx-chevron-left text-[16px]" aria-hidden="true"></i>
+                      <span>Previous</span>
+                    </button>
+                    <div data-role="pages" class="table-pagination__pages d-flex align-items-center gap-1"></div>
+                    <button type="button" data-role="next" class="request-pagination__nav table-pagination__nav"
+                      aria-label="Next page">
+                      <span>Next</span>
+                      <i class="bx bx-chevron-right text-[16px]" aria-hidden="true"></i>
+                    </button>
                   </div>
-
-                  <button id="datechange-tab-1" data-status="all"
-                    class="relative z-[1] tab-datechange p-2 rounded-full flex justify-center items-center">
-                    <p class="text-sm text-[var(--gray-text)] m-0">All</p>
-                  </button>
-
-                  <button id="datechange-tab-2" data-status="pending"
-                    class="relative z-[1] tab-datechange p-2 rounded-full flex justify-center items-center">
-                    <p class="text-sm text-[var(--gray-text)] m-0">Pending</p>
-                  </button>
-
-                  <button id="datechange-tab-3" data-status="accepted"
-                    class="relative z-[1] tab-datechange p-2 rounded-full flex justify-center items-center">
-                    <p class="text-sm text-[var(--gray-text)] m-0">Accepted</p>
-                  </button>
-
-                  <button id="datechange-tab-4" data-status="denied"
-                    class="relative z-[1] tab-datechange p-2 rounded-full flex justify-center items-center">
-                    <p class="text-sm text-[var(--gray-text)] m-0">Declined</p>
-                  </button>
                 </div>
               </div>
+            </div>
+          </section>
 
-              <!-- 🔹 HEADER ROW 2 -->
-              <div class="filters  w-100 flex  gap-2">
-                <div class="flex gap-2 w-full justify-content-end">
-                  <div class="relative  w-full">
-                    <input type="search" id="searchbar-datechange" class="input search "
-                      placeholder="Search here . . .">
-                    <i class='bx bx-search absolute top-[8px] text-[18px] left-[8px] text-[var(--gray-text)]'></i>
-                  </div>
-                  <div class="relative">
+          <section class="change-requests-section" aria-labelledby="cancellationSectionTitle">
+            <h2 class="change-request-section-title mb-3" id="cancellationSectionTitle">Cancellation Requests</h2>
 
-                    <input type="month" id="monthSel-datechange"
-                      class="opacity-0  h-full w-full absolute cursor-pointer">
-
-
-                    <div
-                      class="datechange-monthCont mobtn rounded-md border flex gap-1 pl-2 pr-1 py-2 items-center justify-content-center hover:bg-[var(--white)]"
-                      role="button">
-                      <i class='bx bx-calendar'></i>
-                      <span id="monthLabel-datechange">Requested Month</span>
-                      <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+            <div class="change-requests-card w-full bg-white rounded-lg border flex flex-col">
+              <div class="selection flex gap-2 items-center justify-content-between border-b p-3">
+                <div class="w-100">
+                  <div class="tabs relative bg-[var(--gray)] rounded-lg p-1 grid grid-cols-4" role="tablist"
+                    aria-label="Cancellation request status filters">
+                    <div class="indicator absolute top-0 my-[0.25rem] bottom-0 left-0 rounded-md bg-[var(--secondary)]">
                     </div>
+                    <button role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" data-status="all" tabindex="0"
+                      type="button"
+                      class="relative block p-2 tab tab-cancellation rounded-full flex gap-1 items-center justify-content-center">
+                      <span
+                        class="tab-segment__label text-[12px] text-[var(--gray-text)] font-semibold text-[var(--dark)] active">All</span>
+                    </button>
+                    <button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" data-status="pending" tabindex="-1"
+                      type="button"
+                      class="relative block p-2 tab tab-cancellation rounded-full flex gap-1 items-center justify-content-center">
+                      <span class="tab-segment__label text-[12px] text-[var(--gray-text)]">Pending</span>
+                    </button>
+                    <button role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" data-status="accepted" tabindex="-2"
+                      type="button"
+                      class="relative block p-2 tab tab-cancellation rounded-full flex gap-1 items-center justify-content-center">
+                      <span class="tab-segment__label text-[12px] text-[var(--gray-text)]">Accepted</span>
+                    </button>
+                    <button role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4" data-status="denied" tabindex="-3"
+                      type="button"
+                      class="relative block p-2 tab tab-cancellation rounded-full flex gap-1 items-center justify-content-center">
+                      <span class="tab-segment__label text-[12px] text-[var(--gray-text)]">Rejected</span>
+                    </button>
                   </div>
-                  <div class="relative">
-                    <select name="grp select" id="grpSel-datechange"
-                      class="opacity-0  h-full w-full absolute cursor-pointer">
-                    </select>
+                </div>
 
-                    <div
-                      class="datechange-grpCont grpbtn rounded-md border transition flex gap-1 pl-2 pr-1 py-2 items-center justify-content-center hover:bg-[var(--white)]"
-                      role="button">
-                      <i class='bx bx-group'></i>
-                      <span id="lblGrp-datechange">All Groups</span>
-                      <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+                <div class="flex gap-2 items-center w-100">
+                  <div class="filters w-100 flex gap-2">
+                    <div class="flex gap-2 w-full justify-content-end">
+                      <div class="relative lg:w-auto w-full">
+                        <input type="search" id="searchbar" class="input search" placeholder="Search here . . .">
+                        <i class='bx bx-search absolute top-[8px] text-[18px] left-[8px] text-[var(--gray-text)]'></i>
+                      </div>
+                      <div class="relative shrink-0">
+                        <input type="month" id="monthSel" class="opacity-0 h-full w-full absolute cursor-pointer">
+                        <div
+                          class="mobtn rounded-md border flex gap-1 pl-2 pr-1 py-2 items-center justify-content-center hover:bg-[var(--white)] monthCont"
+                          role="button">
+                          <i class='bx bx-calendar'></i>
+                          <span id="monthLabel">Requested Month</span>
+                          <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+                        </div>
+                      </div>
+                      <div class="relative shrink-0">
+                        <select name="grp select" id="grpSel" class="opacity-0 h-full w-full absolute cursor-pointer">
+                        </select>
+                        <div
+                          class="grpbtn rounded-md border transition flex gap-1 pl-2 pr-1 py-2 items-center justify-content-center hover:bg-[var(--white)] grpCont"
+                          role="button">
+                          <i class='bx bx-group'></i>
+                          <span id="lblGrp">All Groups</span>
+                          <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- 🔹 TABLE -->
-            <div class="relative h-[500px]   p-3 pt-0 mt-3 overflow-auto">
-              <table class="mainTable-datechange">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Employee</th>
-                    <th>Proposed Dates</th>
-                    <th>Changes</th>
-                    <th>Requested by</th>
-                    <th>Status</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody id="datechangeTableBody">
-                </tbody>
-              </table>
-            </div>
+              <div class="change-request-table-wrapper relative p-3 pt-0 mt-3 overflow-x-auto overflow-y-visible">
+                <table class="min-w-full w-100 mainTable">
+                  <thead>
+                    <tr>
+                      <th>Request ID</th>
+                      <th>Employee</th>
+                      <th>Dispatch Dates</th>
+                      <th>Date Requested</th>
+                      <th>Status</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableBody">
+                  </tbody>
+                </table>
+              </div>
 
-            <div data-pagination="datechange" class="table-pagination p-3 border-t">
-              <div data-role="count" class="table-pagination__count">Showing 0 to 0 of 0 requests</div>
-              <div class="table-pagination__controls">
-                <label class="table-pagination__per-page">
-                  Rows
-                  <span class="table-pagination__select-wrap">
-                    <select data-role="per-page" class="table-pagination__select">
-                      <option value="10">10</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                    </select>
-                  </span>
-                </label>
-                <div class="table-pagination__nav-wrap pagination-controls flex items-center gap-2">
-                  <button type="button" data-role="prev" class="table-pagination__nav pagination-previous" aria-label="Previous page">
-                    <i class="bx bx-chevron-left text-[18px]"></i>
-                  </button>
-                  <div data-role="pages" class="table-pagination__pages"></div>
-                  <button type="button" data-role="next" class="table-pagination__nav pagination-next" aria-label="Next page">
-                    <i class="bx bx-chevron-right text-[18px]"></i>
-                  </button>
+              <div data-pagination="cancellation"
+                class="request-pagination table-pagination table-pagination--pcs d-flex flex-column flex-lg-row justify-content-lg-between align-items-lg-center gap-3 border-t border-[#ebebeb] p-3">
+                <p data-role="count" class="table-pagination__count text-[12px] text-[var(--gray-text)] m-0">Showing 0
+                  to 0 of 0 requests</p>
+                <div class="table-pagination__controls d-flex flex-wrap align-items-center gap-2 justify-content-end">
+                  <div class="table-pagination__nav-wrap d-flex align-items-center gap-1">
+                    <button type="button" data-role="prev" class="request-pagination__nav table-pagination__nav"
+                      aria-label="Previous page">
+                      <i class="bx bx-chevron-left text-[16px]" aria-hidden="true"></i>
+                      <span>Previous</span>
+                    </button>
+                    <div data-role="pages" class="table-pagination__pages d-flex align-items-center gap-1"></div>
+                    <button type="button" data-role="next" class="request-pagination__nav table-pagination__nav"
+                      aria-label="Next page">
+                      <span>Next</span>
+                      <i class="bx bx-chevron-right text-[16px]" aria-hidden="true"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-
-          </div>
-
+          </section>
 
         </div>
       </div>

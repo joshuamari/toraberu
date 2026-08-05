@@ -5,6 +5,7 @@
   <title>トラベる - KDT</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta charset="UTF-8" />
+  <link rel="icon" href="../favicon.ico" type="image/x-icon" />
 
   <!-- CSS FIRST (no delay) -->
   <link rel="stylesheet" href="../global.css">
@@ -30,6 +31,7 @@
   <script src="js/utils.js"></script>
   <script src="js/api.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/dispatchActivity.js"></script>
   <script src="js/render.js"></script>
   <script src="js/export.js"></script>
   <script src="../js/sidebar.js"></script>
@@ -40,111 +42,111 @@
 
 <!-- #region modal -->
 <div class="modal fade" id="openModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered ">
+  aria-labelledby="titleModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="  modal-header border-0 ">
-        <h1 class="modal-title text-[18px]" id="titleModal"> </h1>
-        <button type="button" class="btn-close text-[14px]  m-1 w-0 h-0  w-auto h-auto" data-bs-dismiss="modal"
+      <div class="modal-header border-0">
+        <h1 class="modal-title text-[18px]" id="titleModal"></h1>
+        <button type="button" class="btn-close text-[14px] m-1 w-0 h-0 w-auto h-auto" data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>
-      <div class="modal-body  flex flex-col">
-        <div class="flex gap-3 items-start">
-          <div class="rounded-lg border-1  flex items-center">
-            <i class='bx bxs-user text-[16px] text-[var(--gray-text)] p-1 '></i>
-          </div>
-          <div class="w-100">
-            <p class="text-[var(--gray-text)] text-[12px] uppercase">Employee Information</p>
-            <div>
+      <div class="modal-body">
+        <div id="dispatchModalBodyLayout" class="dispatch-modal-body-layout">
+          <div class="dispatch-modal-details-column">
+            <div class="flex gap-3 items-start">
+              <div class="rounded-lg border-1 flex items-center">
+                <i class='bx bxs-user text-[16px] text-[var(--gray-text)] p-1'></i>
+              </div>
+              <div class="w-100">
+                <p class="text-[var(--gray-text)] text-[12px] uppercase">Employee Information</p>
+                <div>
+                  <div>
+                    <p class="font-semibold" id="modalEmpName"></p>
+                  </div>
+                  <div>
+                    <p id="modalGroup"></p>
+                  </div>
+                  <div class="flex gap-2" id="modalPassport"></div>
+                  <div class="flex gap-2" id="modalVisa"></div>
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-3 items-start mt-4">
+              <div class="rounded-lg border-1 flex items-center">
+                <i class='bx bx-calendar text-[16px] text-[var(--gray-text)] p-1'></i>
+              </div>
               <div>
-                <p class="font-semibold " id="modalEmpName"></p>
+                <p class="text-[var(--gray-text)] text-[12px] uppercase">Duration</p>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <p id="modalDateFrom"></p>
+                    <span class="block w-[20px] h-[2px] bg-[var(--tertiary)] rounded-lg"></span>
+                    <p id="modalDateTo"></p>
+                  </div>
+                  <div class="flex gap-1 items-center" id="modalDuration">
+                    <span class="text-[16px] font-semibold"></span>
+                    <p>days in total</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-3 items-start mt-4">
+              <div class="rounded-lg border-1 flex items-center">
+                <i class='bx bxs-map text-[16px] text-[var(--gray-text)] p-1'></i>
               </div>
               <div>
-                <p class=" " id="modalGroup"></p>
-              </div>
-              <div class="flex gap-2 " id="modalPassport">
-
-              </div>
-              <div class="flex gap-2 " id="modalVisa">
-
-              </div>
-
-            </div>
-          </div>
-        </div>
-        <div class="flex gap-3 items-start mt-4">
-          <div class="rounded-lg border-1  flex items-center">
-            <i class='bx bx-calendar text-[16px] text-[var(--gray-text)] p-1 '></i>
-          </div>
-          <div class="">
-            <p class="text-[var(--gray-text)] text-[12px] uppercase">Duration</p>
-            <div>
-              <div class="flex items-center gap-2 ">
-                <p id="modalDateFrom"></p>
-                <span class="block w-[20px] h-[2px] bg-[var(--tertiary)]     ounded-lg"></span>
-                <p id="modalDateTo"></p>
-              </div>
-              <div class="flex gap-1 items-center" id="modalDuration">
-                <span class="text-[16px] font-semibold" ></span>
-                <p>days in total</p>
+                <p class="text-[var(--gray-text)] text-[12px] uppercase">Location</p>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <p class="font-semibold" id="modalLoc"></p>,
+                    <p id="modalCountry"></p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="flex gap-3 items-start mt-4">
-          <div class="rounded-lg border-1  flex items-center">
-            <i class='bx bxs-map text-[16px] text-[var(--gray-text)] p-1 '></i>
-          </div>
-          <div class="">
-            <p class="text-[var(--gray-text)] text-[12px] uppercase">Location</p>
-            <div>
-              <div class="flex items-center gap-2 ">
-                <p class="font-semibold" id="modalLoc"></p>,
-                <p id="modalCountry"></p>
+            <div class="flex gap-3 items-start mt-4">
+              <div class="rounded-lg border-1 flex items-center">
+                <i class='bx bxs-pin text-[16px] text-[var(--gray-text)] p-1'></i>
               </div>
-
+              <div class="attachments">
+                <p class="text-[var(--gray-text)] text-[12px] uppercase">Attachments</p>
+                <p class="underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition"
+                  id="attachment" role="button"></p>
+                <p class="underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition"
+                  id="attachment2" role="button"></p>
+              </div>
+            </div>
+            <div class="mt-4 p-3 rounded-md border-[1px] bg-[var(--white)]">
+              <div class="flex justify-content-between mb-2">
+                <label class="text-[var(--gray-text)]">Requester's Name:</label>
+                <p class="text-[var(--gray-text)]" id="modalReqName"></p>
+              </div>
+              <div class="flex justify-content-between mb-2">
+                <label class="text-[var(--gray-text)]">Requester's Group:</label>
+                <p class="text-[var(--gray-text)]" id="modalReqGrp"></p>
+              </div>
+              <div class="flex justify-content-between">
+                <label class="text-[var(--gray-text)]">Date Requested:</label>
+                <p class="text-[var(--gray-text)]" id="modalReqDate"></p>
+              </div>
+            </div>
+            <div id="modifyFooter" class="flex gap-1 mt-2 justify-content-end d-none">
+              <label class="text-[12px] text-[var(--gray-text)] capitalize" id="modiLabel">Modified:</label>
+              <p class="text-[var(--gray-text)] text-[12px]">on</p>
+              <p class="text-[var(--gray-text)] text-[12px]" id="modalModiDate"></p>
             </div>
           </div>
-        </div>
-        <div class="flex gap-3 items-start mt-4">
-          <div class="rounded-lg border-1  flex items-center">
-            <i class='bx bxs-pin text-[16px] text-[var(--gray-text)] p-1 '></i>
+          <div id="dispatchActivityHistory" class="dispatch-activity-history d-none"
+            aria-labelledby="dispatchActivityHistoryTitle" hidden>
+            <p class="text-[var(--gray-text)] text-[12px] uppercase mb-3" id="dispatchActivityHistoryTitle">
+              Activity History
+            </p>
+            <div class="dispatch-activity-scroll">
+              <div id="dispatchActivityTimeline" class="dispatch-activity-timeline"></div>
+            </div>
           </div>
-          <div class="attachments" >
-            <p class="text-[var(--gray-text)] text-[12px] uppercase">Attachments</p>
-           <p class=" underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition" id="attachment" role="button"></p>
-           <p class=" underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition" id="attachment2" role="button"></p>
-          </div>
-        </div>
-        <div class="mt-4 p-3 rounded-md border-[1px] bg-[var(--white)]">
-          <div class="flex justify-content-between mb-2">
-            <label for="" class="text-[var(--gray-text)]">Requester's Name:</label>
-            <p class="text-[var(--gray-text)]" id="modalReqName"></p>
-          </div>
-          <div class="flex justify-content-between mb-2">
-            <label for="" class="text-[var(--gray-text)]">Requester's Group:</label>
-            <p class="text-[var(--gray-text)]" id="modalReqGrp"></p>
-          </div>
-          <div class="flex justify-content-between ">
-            <label for="" class="text-[var(--gray-text)]">Date Requested:</label>
-            <p class="text-[var(--gray-text)]" id="modalReqDate"></p>
-          </div>
-        </div>
-        <div id="modifyFooter" class="flex gap-1 mt-2 justify-content-end">
-            <label
-              for=""
-              class="text-[12px] text-[var(--gray-text)] capitalize"
-              id="modiLabel"
-              >Modified:</label
-            >
-            <p class="text-[var(--gray-text)] text-[12px]">on</p>
-            <p
-              class="text-[var(--gray-text)] text-[12px]"
-              id="modalModiDate"
-            ></p>
         </div>
       </div>
-      
     </div>
   </div>
 </div>
@@ -837,8 +839,8 @@
         </div>
 
         <div class=" w-100 h-[calc(100%-35px)] lg:h-[calc(100%-30px)] pt-3 flex flex-col  gap-3 relative">
-          <div class="lg:flex  gap-2 lg:gap-4 w-100 grid grid-cols-2">
-            <span class="card active flex justify-between">
+          <div class="grid grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 w-100">
+            <span class="card active">
               <div class="flex gap-2 items-center">
                 <span class="icon"> <i class='bx bxs-error-circle text-[16px] font-medium '></i></span>
 
@@ -851,26 +853,41 @@
 
               </div>
             </span>
-            <span class="card flex justify-between">
+            <span class="card">
               <div class="flex gap-2 items-center">
                 <span class="icon aspect-square">
                   <i class='bx bx-check text-[16px] font-medium '></i>
                 </span>
 
-                <h6 class=" m-0 font-semibold">Total Accepted Requests</h6>
+                <h6 class=" m-0 font-semibold">Approved Requests</h6>
 
               </div>
               <div class="pt-6 flex gap-3 items-center justify-content-between w-100">
-                <h2 class=" text-[32px] font-bold m-0" id="cardAccepted"></h2>
-                <span class="bg-[var(--secondary)] m-0 px-2 py-0 rounded-lg " id="cardTodayAccepted"></span>
+                <h2 class=" text-[32px] font-bold m-0" id="cardApproved"></h2>
+                <span class="bg-[var(--secondary)] m-0 px-2 py-0 rounded-lg " id="cardTodayApproved"></span>
               </div>
             </span>
-            <span class="card flex justify-between">
+            <span class="card">
               <div class="flex gap-2 items-center">
-                <span class="w-[25px] h-[25px] flex items-center justify-content-center rounded-md bg-[var(--dark)] aspect-square">
-                  <i class='bx bx-x text-[16px] font-medium text-[var(--white)]'></i></span>
+                <span class="icon aspect-square">
+                  <i class='bx bx-x-circle text-[16px] font-medium'></i>
+                </span>
 
-                <h6 class=" m-0 font-semibold">Total Cancelled Requests</h6>
+                <h6 class=" m-0 font-semibold">Declined Requests</h6>
+
+              </div>
+              <div class="pt-6 flex gap-3 items-center justify-content-between w-100">
+                <h2 class=" text-[32px] font-bold m-0" id="cardDeclined"></h2>
+
+              </div>
+            </span>
+            <span class="card">
+              <div class="flex gap-2 items-center">
+                <span class="icon aspect-square">
+                  <i class='bx bx-x text-[16px] font-medium '></i>
+                </span>
+
+                <h6 class=" m-0 font-semibold">Cancelled Requests</h6>
 
               </div>
               <div class="pt-6 flex gap-3 items-center justify-content-between w-100">
@@ -878,10 +895,24 @@
 
               </div>
             </span>
-            <span class="card flex justify-between">
+            <span class="card">
               <div class="flex gap-2 items-center">
-                <span class="w-[25px] h-[25px] flex items-center justify-content-center rounded-md bg-[var(--dark)] aspect-square">
-                  <i class='bx bxs-file text-[12px] font-medium text-[var(--white)]'></i></span>
+                <span class="icon aspect-square">
+                  <i class='bx bx-check-double text-[16px] font-medium'></i>
+                </span>
+
+                <h6 class=" m-0 font-semibold">Completed Requests</h6>
+
+              </div>
+              <div class="pt-6 flex gap-3 items-center justify-content-between w-100">
+                <h2 class=" text-[32px] font-bold m-0" id="cardCompleted"></h2>
+
+              </div>
+            </span>
+            <span class="card">
+              <div class="flex gap-2 items-center">
+                <span class="icon aspect-square">
+                  <i class='bx bxs-file text-[12px] font-medium '></i></span>
 
                 <h6 class=" m-0 font-semibold">Total Requests</h6>
 
@@ -896,34 +927,44 @@
 
 
           </div>
-          <div class="w-100 h-[calc(100%-275px)] lg:h-[calc(100%-130px)] bg-white rounded-lg border">
+          <div class="w-100 flex-1 min-h-0 bg-white rounded-lg border flex flex-col">
 
             <div class="flex lg:flex-row flex-col justify-content-between p-3 gap-2 lg:gap-0 border-b-[1px]">
-              <div class="flex gap-3 w-100">
+              <div class="flex gap-3 w-100 min-w-0">
+                <div class="w-full overflow-x-auto lg:w-auto">
                 <div
-                  class="tabs w-full lg:w-auto flex gap-2  items-center relative overflow-hidden bg-[var(--white)] border grid grid-cols-4 px-[3px] rounded-lg transition"
+                  class="tabs relative flex min-w-max flex-nowrap items-center gap-2 overflow-hidden bg-[var(--white)] border px-[3px] rounded-lg transition lg:grid lg:min-w-0 lg:grid-cols-6"
                   role="tablist" aria-label="tabs">
-                  <div class="indicator absolute top-0 my-[0.25rem] bottom-0  left-0 rounded-md  bg-[var(--secondary)]">
+                  <div class="indicator absolute top-0 my-[0.25rem] left-0 rounded-md  bg-[var(--secondary)]">
                   </div>
-                  <button role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" tabindex="0"
-                    class="relative block  p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)] m-0 text-sm">All</p>
+                  <button type="button" role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" data-dispatch-status="all" tabindex="0"
+                    class="relative h-10 min-w-24 shrink-0 block p-2 tab rounded-full flex gap-1 items-center justify-content-center lg:min-w-0">
+                    <span class="text-[12px] text-[var(--gray-text)] font-semibold text-[var(--dark)] active">All</span>
 
                   </button>
-                  <button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" tabindex="-1"
-                    class="relative block  p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)] m-0 text-sm">Pending</p>
+                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" data-dispatch-status="pending" tabindex="-1"
+                    class="relative h-10 min-w-24 shrink-0 block p-2 tab rounded-full flex gap-1 items-center justify-content-center lg:min-w-0">
+                    <span class="text-[12px] text-[var(--gray-text)]">Pending</span>
                  
                   </button>
-                  <button role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" tabindex="-2"
-                    class="relative block p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)] m-0 text-sm">Accepted</p>
+                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" data-dispatch-status="approved" tabindex="-2"
+                    class="relative h-10 min-w-24 shrink-0 block p-2 tab rounded-full flex gap-1 items-center justify-content-center lg:min-w-0">
+                    <span class="text-[12px] text-[var(--gray-text)]">Approved</span>
                   </button>
-                  <button role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4" tabindex="-3"
-                    class="relative block p-2 tab rounded-full flex gap-1 items-center justify-content-center">
-                    <p class=" text-[var(--gray-text)] m-0 text-sm">Cancelled</p>
+                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4" data-dispatch-status="declined" tabindex="-3"
+                    class="relative h-10 min-w-24 shrink-0 block p-2 tab rounded-full flex gap-1 items-center justify-content-center lg:min-w-0">
+                    <span class="text-[12px] text-[var(--gray-text)]">Declined</span>
+                  </button>
+                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-5" id="tab-5" data-dispatch-status="cancelled" tabindex="-4"
+                    class="relative h-10 min-w-24 shrink-0 block p-2 tab rounded-full flex gap-1 items-center justify-content-center lg:min-w-0">
+                    <span class="text-[12px] text-[var(--gray-text)]">Cancelled</span>
+                  </button>
+                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-6" id="tab-6" data-dispatch-status="completed" tabindex="-5"
+                    class="relative h-10 min-w-24 shrink-0 block p-2 tab rounded-full flex gap-1 items-center justify-content-center lg:min-w-0">
+                    <span class="text-[12px] text-[var(--gray-text)]">Completed</span>
                   </button>
 
+                </div>
                 </div>
               </div>
               <div class="  flex gap-2 items-center w-100">
@@ -971,11 +1012,10 @@
               <table class="mainTable">
                 <thead>
                   <tr>
+                    <th>Request ID</th>
                     <th>Employee</th>
                     <th><div class="flex gap-2 items-center text-[12px] text-[var(--text-color)]">Date requested<i id="sortDate" class='bx bx-sort cursor-pointer'></i></div></th>
-                    <th>Start date</th>
-                    <th>End date</th>
-                    <th>Requested by</th>
+                    <th>Dispatch Dates</th>
                     <th>Status</th>
                     <th>Passport</th>
                     <th>Visa</th>

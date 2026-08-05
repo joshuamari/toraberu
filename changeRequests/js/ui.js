@@ -13,13 +13,10 @@ function renderPendingTabBadge($tab, count) {
     return;
   }
 
-  $tab.find("p").nextAll().remove();
+  $tab.find(".tab-segment__badge").remove();
 
-  if (count != 0) {
-    $tab.append(`
-         <small
-                      class="rounded-full w-[14px] h-[14px] bg-[var(--dark)] text-white text-[8px] flex items-center justify-content-center font-semibold" >${count}</small>
-      `);
+  if (count > 0) {
+    $tab.append(`<span class="tab-segment__badge">${count}</span>`);
   }
 }
 

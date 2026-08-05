@@ -1,43 +1,41 @@
 //#region UI
 function fillCards() {
-  const pending = cardData.pending;
-  const accepted = cardData.accepted;
-  const cancelled = cardData.cancelled;
-  const todayTotal = cardData.todaytotal;
-  const todayAccept = cardData.todayaccept;
-  const total = cardData.total;
+  const counts = getDispatchStatusCounts(reqList);
+  const pending = counts.pending;
+  const approved = counts.approved;
+  const declined = counts.declined;
+  const cancelled = counts.cancelled;
+  const completed = counts.completed;
+  const todayTotal = counts.todaytotal;
+  const todayApproved = counts.todayaccept;
+  const total = counts.total;
 
-  $("#tab-2 p").nextAll().remove();
-
-  if (pending !== 0) {
+  $("#tab-2 small").remove();
+  if (pending != 0) {
     $("#tab-2").append(`
-      <small
-        class="rounded-full w-[14px] h-[14px] bg-[var(--dark)] text-white text-[8px] flex items-center justify-content-center font-semibold"
-      >${pending}</small>
-    `);
+         <small
+                      class="rounded-full w-[14px] h-[14px] bg-[var(--dark)] text-white text-[8px] flex items-center justify-content-center font-semibold" >${pending}</small>
+      `);
   }
-
   $("#cardPending").text(pending);
-  $("#cardAccepted").text(accepted);
-
-  if (todayAccept !== 0) {
-    $("#cardTodayAccepted").html(
-      `<small class="font-semibold">+${todayAccept} today</small>`,
+  $("#cardApproved").text(approved);
+  if (todayApproved != 0) {
+    $("#cardTodayApproved").html(
+      `<small class="font-semibold" >+${todayApproved} today</small>`,
     );
   } else {
-    $("#cardTodayAccepted").empty();
+    $("#cardTodayApproved").empty();
   }
-
+  $("#cardDeclined").text(declined);
   $("#cardCancelled").text(cancelled);
-
-  if (todayTotal !== 0) {
+  $("#cardCompleted").text(completed);
+  if (todayTotal != 0) {
     $("#cardTodayTotal").html(
-      `<small class="font-semibold">+${todayTotal} today</small>`,
+      `<small class="font-semibold" >+${todayTotal} today</small>`,
     );
   } else {
     $("#cardTodayTotal").empty();
   }
-
   $("#cardTotal").text(total);
 }
 
@@ -256,6 +254,39 @@ function fillEmployeeDetails() {
   $("#empLabel").html(`${fName} ${sName}`);
   $("#empInitials").html(`${initials}`);
   $("#grpLabel").html(`${grpName}`);
+}
+
+function setActiveDispatchStatusTab($tab) {
+  if (!$tab || !$tab.length) {
+    return;
+  }
+
+  const $tabsContainer = $tab.closest(".tabs");
+  const indicator = $tabsContainer.find(".indicator")[0];
+
+  if (!indicator) {
+    return;
+  }
+
+  const rect = $tab[0].getBoundingClientRect();
+  const parentRect = $tabsContainer[0].getBoundingClientRect();
+
+  indicator.style.width = `${rect.width}px`;
+  indicator.style.left = `${rect.left - parentRect.left}px`;
+
+  $tabsContainer.find(".tab > span").removeClass("font-semibold text-[var(--dark)] active");
+  $tab.children("span").first().addClass("font-semibold text-[var(--dark)] active");
+
+  $tabsContainer.find(".tab").attr("aria-selected", "false");
+  $tab.attr("aria-selected", "true");
+}
+
+function initDispatchStatusFilter() {
+  const $allTab = $('.tabs[role="tablist"] [data-dispatch-status="all"]');
+  setActiveDispatchStatusTab($allTab);
+  requestAnimationFrame(function () {
+    setActiveDispatchStatusTab($allTab);
+  });
 }
 
 function toggleLoadingAnimation(show) {

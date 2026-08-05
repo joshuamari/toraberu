@@ -117,7 +117,7 @@ try {
 
             $output = [
                 "req_id" => $changeRequestId,
-                "display_id" => $prefix . '-' . str_pad((string)$changeRequestId, 4, '0', STR_PAD_LEFT),
+                "display_id" => $prefix . '-' . str_pad((string)$changeRequestId, 5, '0', STR_PAD_LEFT),
                 "original_request_id" => $originalRequestId,
                 "change_type" => $changeType,
                 "emp_name" => getName($empnum),

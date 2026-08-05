@@ -49,12 +49,79 @@ function calculateInclusiveDays(startDate, endDate) {
   return diff > 0 ? diff : null;
 }
 
+function formatPcsDate(date) {
+  if (!isValidIsoDate(date)) {
+    return "";
+  }
+
+  const [year, month, day] = date.split("-");
+  const monthName = monthNames2[parseInt(month, 10) - 1];
+  const dayNum = parseInt(day, 10);
+
+  return `${monthName} ${dayNum}, ${year}`;
+}
+
 function formatModalDate(value) {
   if (!isValidIsoDate(value)) {
     return "Not available";
   }
 
   return formatDate(value);
+}
+
+function formatDateRange(startDate, endDate) {
+  const start = isValidIsoDate(startDate) ? formatPcsDate(startDate) : "";
+  const end = isValidIsoDate(endDate) ? formatPcsDate(endDate) : "";
+
+  if (!start && !end) {
+    return "—";
+  }
+
+  if (start && end) {
+    return `${start} — ${end}`;
+  }
+
+  return start || end;
+}
+
+function formatDispatchDateRange(startDate, endDate) {
+  const start = isValidIsoDate(startDate) ? formatDate(startDate) : "";
+  const end = isValidIsoDate(endDate) ? formatDate(endDate) : "";
+
+  if (!start && !end) {
+    return "—";
+  }
+
+  if (start && end) {
+    return `${start} — ${end}`;
+  }
+
+  return start || end;
+}
+
+function formatNetChangeDisplay(totalDiff) {
+  const value = Number(totalDiff) || 0;
+  const absValue = Math.abs(value);
+  const unit = absValue === 1 ? "day" : "days";
+
+  if (value > 0) {
+    return {
+      text: `+${absValue} ${unit}`,
+      className: "net-change-positive",
+    };
+  }
+
+  if (value < 0) {
+    return {
+      text: `−${absValue} ${unit}`,
+      className: "net-change-negative",
+    };
+  }
+
+  return {
+    text: `0 days`,
+    className: "net-change-neutral",
+  };
 }
 
 function formatName(name) {

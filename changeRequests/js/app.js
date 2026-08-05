@@ -50,10 +50,7 @@ function initApp() {
       presID = (pres && pres.data) || [];
       fillCards();
       initDateChangeRequestsTable();
-
-      if ($(".tab").length) {
-        $(".tab")[0].click();
-      }
+      initCancellationRequestsTable();
     })
     .catch((error) => {
       if (error !== "Access Denied") {

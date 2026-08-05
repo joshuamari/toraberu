@@ -14,47 +14,37 @@ function fillOpenModal(trID) {
   const reqDate = req.req_date;
   const normalizedStatus = normalizeDateChangeStatus(req.status);
   const locationLabel = req.location || req.specific_loc || "";
-  const duration = req.duration || calculateInclusiveDays(startDate, endDate);
-  const reqGrp = req.requester_group || "";
   const originalRequestId = req.original_request_id || req.req_id;
-  const isPending = normalizedStatus === "pending";
-
-  console.log(req);
+  const displayId =
+    req.display_id || `CR-${String(req.req_id).padStart(5, "0")}`;
+  const dispatchDates = formatDispatchDateRange(startDate, endDate);
+  const formattedStartDate = isValidIsoDate(startDate)
+    ? formatDate(startDate)
+    : "Not available";
+  const formattedEndDate = isValidIsoDate(endDate)
+    ? formatDate(endDate)
+    : "Not available";
+  const formattedReqDate = isValidIsoDate(reqDate)
+    ? formatPcsDate(reqDate)
+    : "Not available";
 
   renderCancellationModalStatusBadge(normalizedStatus);
   updateCancellationModalActions(normalizedStatus);
 
+  $("#cancelModalDisplayId").text(displayId);
   $("#modalEmpName").text(name);
   $("#modalEmpNumber").text(req.emp_number || "");
   $("#modalGroup").text(grp);
+  $("#modalDispatchDates").text(dispatchDates);
   $("#modalLocCountry").text(locationLabel);
-  $("#modalDateFrom").text(
-    isValidIsoDate(startDate) ? formatDate(startDate) : "Not available",
-  );
-  $("#modalDateTo").text(
-    isValidIsoDate(endDate) ? formatDate(endDate) : "Not available",
-  );
+  $("#modalDateFrom").text(formattedStartDate);
+  $("#modalDateTo").text(formattedEndDate);
   $("#modalReqName").text(reqName);
-  $("#modalReqDate").text(
-    isValidIsoDate(reqDate) ? formatDate(reqDate) : "Not available",
-  );
-  $("#modalReqGrp").text(reqGrp);
+  $("#modalReqDate").text(formattedReqDate);
   $("#modalCancelReason").text(req.reason || "");
   $("#cancelModalRequestIdBtn")
     .text(originalRequestId ? `REQ# ${originalRequestId}` : "Not available")
     .attr("data-request-id", originalRequestId || "");
-
-  if (duration > 1) {
-    $("#modalDuration").html(
-      `<span class="text-[16px] font-semibold">${duration}</span>
-       <p class="text-[12px] text-[var(--gray-text)] m-0">days in total</p>`,
-    );
-  } else {
-    $("#modalDuration").html(
-      `<span class="text-[16px] font-semibold">${duration || "—"}</span>
-       <p class="text-[12px] text-[var(--gray-text)] m-0">day in total</p>`,
-    );
-  }
 
   $("#openModal").data("active-request-id", req.req_id);
   $("#openModal").modal("show");
@@ -75,10 +65,7 @@ function renderCancellationModalStatusBadge(normalizedStatus) {
 function updateCancellationModalActions(normalizedStatus) {
   const isPending = normalizedStatus === "pending";
 
-  $("#btnApproveCancellation, #btnDenyCancellation").toggleClass(
-    "d-none",
-    !isPending,
-  );
+  $("#cancelModalActionFooter").toggleClass("d-none", !isPending);
 }
 
 function openDateChangeRequestByKey(requestKey) {
@@ -115,9 +102,9 @@ const DATE_CHANGE_STATUS_CONFIG = {
     finalizedMessage: "This date change request has been cancelled.",
   },
   denied: {
-    label: "DENIED",
+    label: "REJECTED",
     className: "denied",
-    finalizedMessage: "This date change request has been denied.",
+    finalizedMessage: "This date change request has been rejected.",
   },
 };
 
@@ -170,10 +157,9 @@ function updateDateChangeModalActions(normalizedStatus) {
     DATE_CHANGE_STATUS_CONFIG[normalizedStatus] ||
     DATE_CHANGE_STATUS_CONFIG.pending;
 
-  $("#dateChangeModalFooterReview").toggleClass("hidden", !isPending);
-  $("#dateChangeModalFooterActions").toggleClass("hidden", !isPending);
+  $("#dateChangeModalFooterPending").toggleClass("d-none", !isPending);
   $("#dateChangeModalFooterMessage")
-    .toggleClass("hidden", isPending)
+    .toggleClass("d-none", isPending)
     .text(isPending ? "" : config.finalizedMessage);
 }
 
@@ -232,21 +218,52 @@ function openDateChangeRequestModal(request) {
       ? proposedTotalDays - currentTotalDays
       : null;
 
-  let diffText = "0 days";
+  const netChangeDisplay = formatNetChangeDisplay(netChange ?? 0);
+  const formatTotalDaysLabel = (days) => {
+    if (days === null) {
+      return "—";
+    }
+
+    const unit = days === 1 ? "day" : "days";
+    return `${days} ${unit}`;
+  };
+
+  let symbol = "";
+  let totalDiffValue = "0";
   if (netChange !== null) {
     if (netChange > 0) {
-      diffText = `+ ${netChange} days`;
+      symbol = "+";
+      totalDiffValue = String(netChange);
     } else if (netChange < 0) {
-      diffText = `− ${Math.abs(netChange)} days`;
+      symbol = "−";
+      totalDiffValue = String(Math.abs(netChange));
     }
   }
 
+  const displayId =
+    request.display_id || `DC-${String(request.req_id).padStart(5, "0")}`;
   const originalRequestId = request.original_request_id || "";
 
+  $("#dateChangeModalDisplayId").text(displayId);
+  $("#modalOriginalRequestId").text(displayId);
   $("#modalDCEmpName").text(request.emp_name || "");
-  $("#modalEmpNumber").text(request.emp_number || "");
+  $("#modalDCEmpNumber").text(request.emp_number || "");
   $("#modalDCGroup").text(request.group_name || "");
   $("#modalLocCountry").text(request.location || "");
+
+  $("#modalDCCurrentDates").text(
+    formatDispatchDateRange(modalData.currentStartDate, modalData.currentEndDate),
+  );
+  $("#modalDCProposedDates").text(
+    formatDispatchDateRange(modalData.proposedStartDate, modalData.proposedEndDate),
+  );
+  $("#modalDCCurrentTotalDays").text(formatTotalDaysLabel(currentTotalDays));
+  $("#modalDCProposedTotalDays").text(formatTotalDaysLabel(proposedTotalDays));
+
+  $("#modalDCNetChange")
+    .text(netChangeDisplay.text)
+    .removeClass("net-change-positive net-change-negative net-change-neutral")
+    .addClass(netChangeDisplay.className);
 
   $("#modalOldDateFrom").text(formatModalDate(modalData.currentStartDate));
   $("#modalOldDateTo").text(formatModalDate(modalData.currentEndDate));
@@ -255,9 +272,8 @@ function openDateChangeRequestModal(request) {
 
   $("#modalChangeReqName").text(request.requester_name || "");
   $("#modalChangeReqDate").text(
-    isValidIsoDate(request.req_date) ? formatDate(request.req_date) : "Not available",
+    isValidIsoDate(request.req_date) ? formatPcsDate(request.req_date) : "Not available",
   );
-  $("#modalChangeReqGrp").text(request.requester_group || "");
   $("#modalReason").text(request.reason || "");
 
   renderDateChangeModalStatusBadge(normalizedStatus);
@@ -270,16 +286,8 @@ function openDateChangeRequestModal(request) {
     proposedTotalDays !== null ? proposedTotalDays : "—",
   );
 
-  $("#modalTotalDiff")
-    .text(diffText)
-    .removeClass("text-green-500 text-red-500 text-gray-500")
-    .addClass(
-      netChange !== null && netChange > 0
-        ? "text-green-500"
-        : netChange !== null && netChange < 0
-          ? "text-red-500"
-          : "text-gray-500",
-    );
+  $("#modalSymbol").text(symbol);
+  $("#modalTotalDiff").text(totalDiffValue);
 
   $("#changeModalRequestIdBtn")
     .text(originalRequestId ? `REQ# ${originalRequestId}` : "Not available")
@@ -287,6 +295,22 @@ function openDateChangeRequestModal(request) {
 
   $("#dateChangeModal").data("active-request-id", request.req_id);
   $("#dateChangeModal").modal("show");
+}
+
+function syncConfirmDateChangeModalFields() {
+  $("#confirmOldDateFrom").text($("#modalOldDateFrom").text());
+  $("#confirmOldDateTo").text($("#modalOldDateTo").text());
+  $("#confirmNewDateFrom").text($("#modalNewDateFrom").text());
+  $("#confirmNewDateTo").text($("#modalNewDateTo").text());
+  $("#confirmDateChangeCurrentDates").text($("#modalDCCurrentDates").text());
+  $("#confirmDateChangeRequestedBy").text($("#modalChangeReqName").text());
+  $("#confirmDateChangeRequestedDate").text($("#modalChangeReqDate").text());
+  $("#confirmDateChangeReason").text($("#modalReason").text());
+  $("#confirmDateChangeCurrentDays").text($("#modalDCCurrentTotalDays").text());
+  $("#confirmDateChangeProposedDays").text($("#modalDCProposedTotalDays").text());
+  $("#confirmDateChangeOriginalDispatchIdBtn")
+    .text($("#changeModalRequestIdBtn").text() || "Not available")
+    .attr("data-request-id", $("#changeModalRequestIdBtn").attr("data-request-id") || "");
 }
 
 function fillCancellationConfirmModal(action) {
@@ -306,7 +330,7 @@ function fillCancellationConfirmModal(action) {
 
   $("#confirmCancelMessage").text(
     isApprove
-      ? "This will cancel the approved dispatch. The original request will remain available for reference."
+      ? "This action will cancel the approved dispatch. The original dispatch request will remain available for reference."
       : "This will keep the approved dispatch active.",
   );
 
@@ -320,13 +344,14 @@ function fillCancellationConfirmModal(action) {
     isApprove ? "Approve Cancellation" : "Deny Request",
   );
 
-  $("#confirmCancelRequestId").text($("#cancelModalRequestIdBtn").text());
+  $("#confirmCancelCancellationId").text($("#cancelModalDisplayId").text());
   $("#confirmCancelEmpName").text($("#modalEmpName").text());
-  $("#confirmCancelDispatch").text($("#modalLocCountry").text());
-  $("#confirmCancelDates").text(
-    `${$("#modalDateFrom").text()} — ${$("#modalDateTo").text()}`,
-  );
+  $("#confirmCancelGroup").text($("#modalGroup").text());
+  $("#confirmCancelDates").text($("#modalDispatchDates").text());
   $("#confirmCancelReason").text($("#modalCancelReason").text());
+  $("#confirmCancelOriginalDispatchIdBtn")
+    .text($("#cancelModalRequestIdBtn").text() || "Not available")
+    .attr("data-request-id", $("#cancelModalRequestIdBtn").attr("data-request-id") || "");
 }
 
 function openCancellationConfirmModal(action) {
@@ -355,7 +380,7 @@ function getCancellationStatusBadgeHtml(status) {
   }
 
   if (normalized === "denied" || normalized === "cancelled") {
-    return `<span class="status cancelled">Declined</span>`;
+    return `<span class="status denied">Rejected</span>`;
   }
 
   return `<span class="status pending">Pending</span>`;
@@ -367,24 +392,18 @@ function fillTable(sampleData) {
 
   if (sampleData.length != 0) {
     $.each(sampleData, function (index, item) {
+      const displayId =
+        item.display_id || `CR-${String(item.req_id).padStart(5, "0")}`;
+      const dispatchDates = formatDispatchDateRange(item.from, item.to);
+      const dateRequested = item.req_date ? formatPcsDate(item.req_date) : "—";
+
       str = `
     <tr req-id="${item.req_id}">
-      <td>${item.emp_name}</td>
-      <td>${formatDate(item.req_date)}</td>
-      <td>${formatDate(item.from)}</td>
-      <td>${formatDate(item.to)}</td>
-      <td>${item.requester_name}</td>
+      <td>${displayId}</td>
+      <td>${item.emp_name || ""}</td>
+      <td>${dispatchDates}</td>
+      <td>${dateRequested}</td>
       <td>${getCancellationStatusBadgeHtml(item.status)}</td>
-      <td>${
-        item.passValid === true
-          ? `  <span class="validity "><i class='bx bx-check text-[18px]   font-semibold'></i></span>`
-          : ` <span class="validity "><i class='bx bx-x text-[18px] font-semibold'></i></span>`
-      }</td>
-        <td>${
-          item.visaValid === true
-            ? `  <span class="validity "><i class='bx bx-check text-[18px]   font-semibold'></i></span>`
-            : ` <span class="validity "><i class='bx bx-x text-[18px] font-semibold'></i></span>`
-        }</td>
       <td>
         <div class="openIcon " title="Open item">
            <i class='bx bx-link-external text-[16px] opacity-50'></i>
@@ -395,10 +414,10 @@ function fillTable(sampleData) {
       $("#tableBody").append(str);
     });
   } else {
-    str = `<td colspan="12" class="h-[530px]"><div class="flex items-center justify-center flex-col gap-3"><img src="../images/empty.png"   class="w-[150px] h-auto opacity-[0.75]" alt="empty">
+    str = `<tr><td colspan="6" class="change-requests-empty-state"><div class="flex items-center justify-center flex-col gap-3"><img src="../images/empty.png" class="w-[150px] h-auto opacity-[0.75]" alt="empty">
     <h5 class="font-semibold text-[16px] text-[var(--gray-text)]">No item found.</h5>
     <p class="text-[var(--gray-text)]">Try adjusting your search or filter to find what you're looking for.</p>
-    </div></td>`;
+    </div></td></tr>`;
     $("#tableBody").append(str);
   }
 }
@@ -408,34 +427,12 @@ function fillTableDateChange(sampleData) {
 
   if (sampleData.length !== 0) {
     $.each(sampleData, function (index, item) {
-      const currentTotalDays = calculateInclusiveDays(
-        item.old_date,
-        item.old_date_to,
-      );
-      const proposedTotalDays = calculateInclusiveDays(
-        item.new_date,
-        item.new_date_to,
-      );
-      const totalDiff =
-        currentTotalDays !== null && proposedTotalDays !== null
-          ? proposedTotalDays - currentTotalDays
-          : 0;
-
-      const diffSign = totalDiff > 0 ? "+" : totalDiff < 0 ? "−" : "";
-      const diffValue = Math.abs(totalDiff);
-
-      const diffBadgeClass =
-        totalDiff > 0
-          ? "change-badge change-badge-positive"
-          : totalDiff < 0
-            ? "change-badge change-badge-negative"
-            : "change-badge change-badge-neutral";
-
       const statusHtml = getDateChangeStatusBadgeHtml(item.status);
-
-      const proposedFrom = item.new_date ? formatDate(item.new_date) : "";
-      const proposedTo = item.new_date_to ? formatDate(item.new_date_to) : "";
-      const displayId = item.display_id || `DC-${String(item.req_id).padStart(4, "0")}`;
+      const displayId =
+        item.display_id || `DC-${String(item.req_id).padStart(5, "0")}`;
+      const currentDates = formatDateRange(item.old_date, item.old_date_to);
+      const proposedDates = formatDateRange(item.new_date, item.new_date_to);
+      const dateRequested = item.req_date ? formatPcsDate(item.req_date) : "—";
 
       const row = `
         <tr
@@ -445,31 +442,15 @@ function fillTableDateChange(sampleData) {
           role="button"
           aria-label="View Date Change Request details"
         >
-          <td class="text-sm uppercase">${displayId}</td>
+          <td>${displayId}</td>
 
-          <td>
-            <div>
-              <p class="font-normal">${item.emp_name || ""}</p>
-              <p class="uppercase opacity-60 text-xs">${item.emp_number || ""}</p>
-            </div>
-          </td>
+          <td>${item.emp_name || ""}</td>
 
-          <td class="dates">
-            <div class="flex gap-2 items-center whitespace-nowrap">
-              <p class="font-normal">${proposedFrom}</p>
-              <span class="font-bold bg-[var(--secondary)] w-4 h-[4px]"></span>
-              <p class="font-normal">${proposedTo}</p>
-            </div>
-          </td>
+          <td>${currentDates}</td>
 
-          <td>
-            <span class="${diffBadgeClass}">
-              <span class="change-symbol">${diffSign}</span>
-              <span class="change-value">${diffValue}</span>
-            </span>
-          </td>
+          <td>${proposedDates}</td>
 
-          <td>${item.requester_name || ""}</td>
+          <td>${dateRequested}</td>
 
           <td>${statusHtml}</td>
 
@@ -492,7 +473,7 @@ function fillTableDateChange(sampleData) {
   } else {
     const emptyRow = `
       <tr>
-        <td colspan="7" class="h-[530px]">
+        <td colspan="7" class="change-requests-empty-state">
           <div class="flex items-center justify-center flex-col gap-3">
             <img src="../images/empty.png" class="w-[150px] h-auto opacity-[0.75]" alt="empty">
             <h5 class="font-semibold text-[16px] text-[var(--gray-text)]">No item found.</h5>
@@ -527,13 +508,6 @@ function searchFilter(req_list) {
   const keyword = $("#searchbar").val().toLowerCase().trim();
   const grps = $("#grpSel").val().split(",").map(Number);
   const dateFilter = $("#monthSel").val();
-  const activeTabId = $("button.tab").has("p.active").attr("id");
-  const tabFilters = {
-    "tab-2": "pending",
-    "tab-3": "accepted",
-    "tab-4": "denied",
-  };
-  const filter = tabFilters[activeTabId];
 
   const results = req_list.filter((emp) => {
     const searchMatch =
@@ -545,7 +519,9 @@ function searchFilter(req_list) {
       ? String(emp.req_date || "").startsWith(dateFilter)
       : true;
     const normalizedStatus = normalizeDateChangeStatus(emp.status);
-    const statusMatch = filter ? normalizedStatus === filter : true;
+    const statusMatch =
+      selectedCancellationStatus === "all" ||
+      normalizedStatus === selectedCancellationStatus;
 
     return searchMatch && groupMatch && statusMatch && dateMatch;
   });
@@ -584,6 +560,45 @@ function renderCancellationRequests() {
   });
 }
 
+function updateCancellationStatusIndicator($tab) {
+  if (!$tab || !$tab.length) {
+    return;
+  }
+
+  const $container = $tab.closest(".tabs:not(.tabs-datechange)");
+  const indicator = $container.find(".indicator")[0];
+
+  if (!indicator) {
+    return;
+  }
+
+  const rect = $tab[0].getBoundingClientRect();
+  const parentRect = $container[0].getBoundingClientRect();
+  indicator.style.width = rect.width + "px";
+  indicator.style.left = rect.left - parentRect.left + "px";
+}
+
+function setActiveCancellationStatusTab(status) {
+  const normalizedStatus = String(status || "all").trim().toLowerCase();
+
+  $(".tab-cancellation .tab-segment__label").removeClass(
+    "font-semibold text-[var(--dark)] active",
+  );
+  const $activeTab = $(
+    `.tab-cancellation[data-status="${normalizedStatus}"]`,
+  );
+  $activeTab
+    .find(".tab-segment__label")
+    .addClass("font-semibold text-[var(--dark)] active");
+  updateCancellationStatusIndicator($activeTab);
+}
+
+function initCancellationRequestsTable() {
+  selectedCancellationStatus = "all";
+  setActiveCancellationStatusTab("all");
+  searchFilter(reqList);
+}
+
 function updateDateChangeStatusIndicator($tab) {
   const indicator = document.querySelector(".indicator-datechange");
   if (!indicator || !$tab || !$tab.length) {
@@ -599,9 +614,13 @@ function updateDateChangeStatusIndicator($tab) {
 function setActiveDateChangeStatusTab(status) {
   const normalizedStatus = String(status || "all").trim().toLowerCase();
 
-  $(".tab-datechange p").removeClass("font-semibold text-[var(--dark)] active");
+  $(".tab-datechange .tab-segment__label").removeClass(
+    "font-semibold text-[var(--dark)] active",
+  );
   const $activeTab = $(`.tab-datechange[data-status="${normalizedStatus}"]`);
-  $activeTab.find("p").addClass("font-semibold text-[var(--dark)] active");
+  $activeTab
+    .find(".tab-segment__label")
+    .addClass("font-semibold text-[var(--dark)] active");
   updateDateChangeStatusIndicator($activeTab);
 }
 

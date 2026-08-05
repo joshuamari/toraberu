@@ -9,7 +9,8 @@ function fillOpenModal(trID) {
   const endDate = req.to;
   const reqName = req.requester_name;
   const reqDate = req.req_date;
-  const status = parseInt(req.status);
+  const rawStatus = getRawDispatchStatus(req);
+  const normalizedStatus = normalizeDispatchStatus(rawStatus);
   const location = req.specific_loc;
   const country = req.location;
   const duration = req.duration;
@@ -21,7 +22,7 @@ function fillOpenModal(trID) {
   const modi = req.modified;
 
 
-  formatStatus(status);
+  formatStatus(normalizedStatus);
   formatVisaPassport(visaValidity, passValidity);
   $("#modalEmpName").text(name);
   $("#modalGroup").text(grp);
@@ -35,13 +36,6 @@ function fillOpenModal(trID) {
   $("#attachment").text(`${empnum}_${surname}${first}_DispatchRequest`);
   $("#attachment2").text(`${empnum}_${surname}${first}_WorkHistory`);
 
-  if (!modi) {
-    $("#modalModiDate").text("");
-  } else {
-    var [date, time] = modi.split(" ");
-    $("#modalModiDate").text(formatDate(date) + " " + time);
-  }
-
   if (duration > 1) {
     $("#modalDuration").html(
       `<span class="text-[16px] font-semibold" >${duration}</span>
@@ -54,56 +48,55 @@ function fillOpenModal(trID) {
     );
   }
 
-  if (status === null || isNaN(status)) {
+  if (normalizedStatus === "pending" || !modi) {
     $("#modifyFooter").addClass("d-none");
   } else {
     $("#modifyFooter").removeClass("d-none");
+    var [date, time] = modi.split(" ");
+    $("#modalModiDate").text(formatDate(date) + " " + time);
   }
 
-  formatButtons(status);
+  if (normalizedStatus === "pending") {
+    clearDispatchActivityTimeline();
+  } else {
+    renderDispatchActivityHistory(req);
+  }
+
+  formatPresidentButtons(normalizedStatus);
   $("#openModal").modal("show");
 }
 
-function formatButtons(status) {
+function formatPresidentButtons(normalizedStatus) {
   $("#openModal .modal-footer").remove();
 
   if (
-    (status === null || isNaN(status)) &&
+    normalizedStatus === "pending" &&
     presID.includes(parseInt(empDetails["id"]))
   ) {
-    $("#openModal .modal-content")
-      .append(`<div class="flex-nowrap modal-footer  flex gap-2 border-0 ">
+    $("#openModal .modal-content").append(`<div class="modal-footer flex-nowrap flex gap-2 border-0 w-100">
         <button
-          class="statusBtn btn-reject transition w-50 flex overflow-hidden items-center justify-center disabled:pointer-events-none" stat-id="0">Cancel</button>
+          class="statusBtn btn-reject transition w-50 flex overflow-hidden items-center justify-center disabled:pointer-events-none" stat-id="0">Decline Request</button>
         <button
-          class="statusBtn btn-accept w-50 flex overflow-hidden items-center justify-center disabled:pointer-events-none" stat-id="1">Accept</button>
+          class="statusBtn btn-accept w-50 flex overflow-hidden items-center justify-center disabled:pointer-events-none" stat-id="1">Approve Request</button>
       </div>`);
-  } else if (status === 1 && presID.includes(parseInt(empDetails["id"]))) {
-    $("#openModal .modal-content")
-      .append(`<div class="flex-nowrap modal-footer  flex gap-2 border-0 ">
-        <button
-          class="statusBtn btn-reject transition w-50 flex overflow-hidden items-center justify-center disabled:pointer-events-none" stat-id="0">Cancel</button>
-      </div>`);
-  } else {
-    $("#openModal .modal-footer").remove();
   }
 }
 
-function formatStatus(status) {
-  let statusString =
-    isNaN(status) || status === null
-      ? "pending"
-      : status === 1
-        ? "accepted"
-        : "cancelled";
-
+function formatStatus(normalizedStatus) {
+  const statusLabels = {
+    pending: "Pending",
+    approved: "Approved",
+    declined: "Declined",
+    cancelled: "Cancelled",
+    completed: "Completed",
+    unknown: "Unknown",
+  };
+  const statusLabel = statusLabels[normalizedStatus] || statusLabels.unknown;
+  const statusClass =
+    normalizedStatus === "unknown" ? "unknown" : normalizedStatus;
   $("#titleModal").html(
-    `  Dispatch Request<span class="status lg ${statusString} ms-3">${statusString}</span>`,
+    `  Dispatch Request<span class="status lg ${statusClass} ms-3">${statusLabel}</span>`,
   );
-
-  if (!isNaN(status) || status === null) {
-    $("#modiLabel").text(`${statusString}`);
-  }
 }
 
 function formatVisaPassport(visa, passport) {
@@ -135,24 +128,11 @@ function fillTable(sampleData) {
     $.each(sampleData, function (index, item) {
       str = `
     <tr req-id="${item.req_id}">
+      <td>REQ-${String(item.req_id).padStart(5, "0")}</td>
       <td>${item.emp_name}</td>
       <td>${formatDate(item.req_date)}</td>
-      <td>${formatDate(item.from)}</td>
-      <td>${formatDate(item.to)}</td>
-      <td>${item.requester_name}</td>
-      <td>${
-        item.status === null
-          ? ` <span class=" status pending ">
-                        Pending
-                      </span>`
-          : item.status == 1
-            ? `  <span class=" status accepted ">
-                        Accepted
-                      </span>`
-            : `<span class=" status cancelled ">
-                        Cancelled
-                      </span>`
-      }</td>
+      <td>${formatDispatchDateRange(item.from, item.to)}</td>
+      <td>${getRequestListStatusBadgeHtml(item)}</td>
       <td>${
         item.passValid === true
           ? `  <span class="validity "><i class='bx bx-check text-[18px]   font-semibold'></i></span>`
@@ -173,7 +153,7 @@ function fillTable(sampleData) {
       $("#tableBody").append(str);
     });
   } else {
-    str = `<td colspan="12" class="h-[530px]"><div class="flex items-center justify-center flex-col gap-3"><img src="../images/empty.png"   class="w-[150px] h-auto opacity-[0.75]" alt="empty">
+    str = `<td colspan="8" class="h-[530px]"><div class="flex items-center justify-center flex-col gap-3"><img src="../images/empty.png"   class="w-[150px] h-auto opacity-[0.75]" alt="empty">
     <h5 class="font-semibold text-[16px] text-[var(--gray-text)]">No item found.</h5>
     <p class="text-[var(--gray-text)]">Try adjusting your search or filter to find what you're looking for.</p>
     </div></td>`;
@@ -185,23 +165,29 @@ function searchFilter(req_list) {
   const keyword = $("#searchbar").val().toLowerCase().trim();
   const grps = $("#grpSel").val().split(",").map(Number);
   const dateFilter = $("#monthSel").val();
-  const activeTabId = $("button").has("p.active").attr("id");
+  const activeTabId = $("button").has("span.active").attr("id");
   const tabFilters = {
-    "tab-2": null,
-    "tab-3": 1,
-    "tab-4": 0,
+    "tab-2": "pending",
+    "tab-3": "approved",
+    "tab-4": "declined",
+    "tab-5": "cancelled",
+    "tab-6": "completed",
   };
-  const filter =
-    tabFilters[activeTabId] !== undefined ? tabFilters[activeTabId] : undefined;
+  const selectedStatus = tabFilters[activeTabId];
 
   const results = req_list.filter((emp) => {
     const searchMatch =
+      String(emp.req_id).includes(keyword) ||
       emp.emp_name.toLowerCase().includes(keyword) ||
       emp.requester_name.toLowerCase().includes(keyword);
 
     const groupMatch = grps.includes(parseInt(emp.group_id));
     const dateMatch = dateFilter ? emp.req_date.startsWith(dateFilter) : true;
-    const statusMatch = filter !== undefined ? emp.status == filter : true;
+    const normalizedStatus = normalizeDispatchStatus(
+      getRawDispatchStatus(emp),
+    );
+    const statusMatch =
+      selectedStatus === undefined || normalizedStatus === selectedStatus;
 
     return searchMatch && groupMatch && statusMatch && dateMatch;
   });

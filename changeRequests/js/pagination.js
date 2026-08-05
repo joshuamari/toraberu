@@ -69,13 +69,17 @@ function renderPaginationBar($container, state) {
     state.itemsPerPage,
   );
 
+  const isPcsStyle = $container.hasClass("table-pagination--pcs");
+
   $container.find('[data-role="count"]').text(
     `Showing ${pagination.showingFrom} to ${pagination.showingTo} of ${pagination.totalItems} requests`,
   );
 
-  const $perPage = $container.find('[data-role="per-page"]');
-  if ($perPage.val() !== String(state.itemsPerPage)) {
-    $perPage.val(String(state.itemsPerPage));
+  if (!isPcsStyle) {
+    const $perPage = $container.find('[data-role="per-page"]');
+    if ($perPage.length && $perPage.val() !== String(state.itemsPerPage)) {
+      $perPage.val(String(state.itemsPerPage));
+    }
   }
 
   const $prev = $container.find('[data-role="prev"]');
@@ -83,8 +87,14 @@ function renderPaginationBar($container, state) {
   const isFirstPage = pagination.currentPage <= 1;
   const isLastPage = pagination.currentPage >= pagination.totalPages;
 
-  $prev.prop("disabled", isFirstPage).toggleClass("is-disabled", isFirstPage);
-  $next.prop("disabled", isLastPage).toggleClass("is-disabled", isLastPage);
+  $prev
+    .prop("disabled", isFirstPage)
+    .toggleClass("is-disabled", isFirstPage)
+    .attr("aria-disabled", isFirstPage ? "true" : "false");
+  $next
+    .prop("disabled", isLastPage)
+    .toggleClass("is-disabled", isLastPage)
+    .attr("aria-disabled", isLastPage ? "true" : "false");
 
   const pages = getPaginationPages(
     pagination.currentPage,
@@ -100,9 +110,12 @@ function renderPaginationBar($container, state) {
     }
 
     const isActive = page === pagination.currentPage;
+    const pageClass = isPcsStyle
+      ? "request-pagination__page table-pagination__page"
+      : "table-pagination__page";
     const $button = $("<button>", {
       type: "button",
-      class: `table-pagination__page${isActive ? " is-active" : ""}`,
+      class: `${pageClass}${isActive ? " is-active" : ""}`,
       "data-page": page,
       text: String(page),
     });
