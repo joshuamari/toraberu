@@ -42,5 +42,9 @@ let printData = {};
 let sortDateAsc = false;
 let presID = [];
 let reqAccess = false;
+let headerData = null;
+let selectedDispatchRequest = null;
+let changeRequestTriggerElement = null;
+let isChangeRequestSubmitting = false;
 const { jsPDF } = globalThis.jspdf;
 //#endregion

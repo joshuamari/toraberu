@@ -138,4 +138,103 @@ function ajaxJsonErrorMessage(xhr, fallback) {
   }
   return fallback;
 }
+
+function getDeepLinkedChangeRequestParams() {
+  const params = new URLSearchParams(window.location.search);
+  const rawType = String(params.get("type") || "")
+    .trim()
+    .toLowerCase();
+  const openChangeRequestId = String(
+    params.get("openChangeRequestId") || "",
+  ).trim();
+
+  if (!openChangeRequestId) {
+    return null;
+  }
+
+  let type = rawType;
+
+  if (
+    type === "datechange" ||
+    type === "date-change" ||
+    type === "date_change"
+  ) {
+    type = "date_change";
+  }
+
+  if (type !== "cancellation" && type !== "date_change") {
+    return null;
+  }
+
+  return {
+    type,
+    openChangeRequestId,
+  };
+}
+
+function clearDeepLinkChangeRequestParams() {
+  const url = new URL(window.location.href);
+  url.searchParams.delete("type");
+  url.searchParams.delete("openChangeRequestId");
+  const nextUrl = `${url.pathname}${url.search}${url.hash}`;
+  window.history.replaceState({}, "", nextUrl);
+}
+
+function openCancellationRequestById(changeRequestId) {
+  const request = (reqList || []).find(
+    (item) => String(item.req_id) === String(changeRequestId),
+  );
+
+  if (!request) {
+    return false;
+  }
+
+  const section = document.getElementById("cancellationSectionTitle");
+  if (section && typeof section.scrollIntoView === "function") {
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  fillOpenModal(request.req_id);
+  return true;
+}
+
+function openDateChangeRequestById(changeRequestId) {
+  const request = (allDateChangeRequests || []).find(
+    (item) => String(item.req_id) === String(changeRequestId),
+  );
+
+  if (!request) {
+    return false;
+  }
+
+  const section = document.getElementById("dateChangeSectionTitle");
+  if (section && typeof section.scrollIntoView === "function") {
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  openDateChangeRequestModal(request);
+  return true;
+}
+
+function openChangeRequestFromDeepLink() {
+  const deepLink = getDeepLinkedChangeRequestParams();
+
+  if (!deepLink) {
+    return;
+  }
+
+  let opened = false;
+
+  if (deepLink.type === "cancellation") {
+    opened = openCancellationRequestById(deepLink.openChangeRequestId);
+  } else if (deepLink.type === "date_change") {
+    opened = openDateChangeRequestById(deepLink.openChangeRequestId);
+  }
+
+  if (opened) {
+    clearDeepLinkChangeRequestParams();
+  } else {
+    console.warn("Unable to open deep-linked change request:", deepLink);
+  }
+}
 //#endregion

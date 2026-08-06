@@ -37,8 +37,22 @@ const DISPATCH_ACTIVITY_VISIBLE_STATUSES = [
 const DISPATCH_ACTIVITY_MINIMUM_EVENT_TYPES = {
   approved: ["dispatch_submitted", "dispatch_approved"],
   declined: ["dispatch_submitted", "dispatch_declined"],
-  cancelled: ["dispatch_submitted", "dispatch_cancelled"],
+  cancelled: ["dispatch_submitted"],
   completed: ["dispatch_submitted", "dispatch_approved", "dispatch_completed"],
+};
+
+const DISPATCH_ACTIVITY_EVENT_SORT_ORDER = {
+  dispatch_submitted: 10,
+  dispatch_approved: 20,
+  dispatch_declined: 20,
+  date_change_requested: 30,
+  date_change_accepted: 40,
+  date_change_rejected: 40,
+  cancellation_requested: 50,
+  cancellation_accepted: 60,
+  cancellation_rejected: 60,
+  dispatch_cancelled: 70,
+  dispatch_completed: 80,
 };
 
 const DISPATCH_ACTIVITY_MINIMUM_DESCRIPTIONS = {
@@ -46,8 +60,23 @@ const DISPATCH_ACTIVITY_MINIMUM_DESCRIPTIONS = {
   dispatch_approved: "The dispatch request was approved.",
   dispatch_declined: "The dispatch request was declined.",
   dispatch_cancelled: "The dispatch request was cancelled.",
-  dispatch_completed: "The dispatch was marked completed.",
+  dispatch_completed: "The dispatch period has ended.",
 };
+
+function getDispatchApproverDisplayName() {
+  if (
+    typeof headerData !== "undefined" &&
+    headerData &&
+    headerData.president &&
+    headerData.president.name
+  ) {
+    const prefix = String(headerData.president.prefix || "").trim();
+    const name = String(headerData.president.name || "").trim();
+    return prefix ? `${prefix} ${name}` : name;
+  }
+
+  return "KDT President";
+}
 
 function getDispatchActivity(dispatchRequest) {
   const requestId = String(dispatchRequest?.req_id ?? "").trim();
@@ -81,7 +110,10 @@ function normalizeActivityTimestampInput(value, fallbackTime) {
   }
 
   if (/^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}(:\d{2})?$/.test(raw)) {
-    return raw.replace(" ", "T");
+    const withT = raw.replace(" ", "T");
+    return /([zZ]|[+-]\d{2}:?\d{2})$/.test(withT)
+      ? withT
+      : `${withT}+08:00`;
   }
 
   return raw;
@@ -113,6 +145,7 @@ function getDispatchDecisionTimestamp(dispatchRequest) {
 function createMinimumDispatchActivityEvent(dispatchRequest, eventType) {
   const requestId = String(dispatchRequest?.req_id ?? "").trim() || "unknown";
   const requesterName = String(dispatchRequest?.requester_name || "").trim();
+  const approverName = getDispatchApproverDisplayName();
 
   if (eventType === "dispatch_submitted") {
     return {
@@ -131,7 +164,7 @@ function createMinimumDispatchActivityEvent(dispatchRequest, eventType) {
       activityId: `MIN-${requestId}-dispatch_approved`,
       eventType: "dispatch_approved",
       occurredAt: decisionTimestamp,
-      actorName: "KDT President",
+      actorName: approverName,
       description: DISPATCH_ACTIVITY_MINIMUM_DESCRIPTIONS.dispatch_approved,
     };
   }
@@ -141,7 +174,7 @@ function createMinimumDispatchActivityEvent(dispatchRequest, eventType) {
       activityId: `MIN-${requestId}-dispatch_declined`,
       eventType: "dispatch_declined",
       occurredAt: decisionTimestamp,
-      actorName: "KDT President",
+      actorName: approverName,
       description: DISPATCH_ACTIVITY_MINIMUM_DESCRIPTIONS.dispatch_declined,
     };
   }
@@ -151,17 +184,23 @@ function createMinimumDispatchActivityEvent(dispatchRequest, eventType) {
       activityId: `MIN-${requestId}-dispatch_cancelled`,
       eventType: "dispatch_cancelled",
       occurredAt: decisionTimestamp,
-      actorName: "KDT President",
+      actorName: approverName,
       description: DISPATCH_ACTIVITY_MINIMUM_DESCRIPTIONS.dispatch_cancelled,
     };
   }
 
   if (eventType === "dispatch_completed") {
+    const completedTimestamp =
+      normalizeActivityTimestampInput(
+        dispatchRequest?.to,
+        "17:00:00+08:00",
+      ) || decisionTimestamp;
+
     return {
       activityId: `MIN-${requestId}-dispatch_completed`,
       eventType: "dispatch_completed",
-      occurredAt: decisionTimestamp,
-      actorName: "KDT President",
+      occurredAt: completedTimestamp,
+      actorName: "",
       description: DISPATCH_ACTIVITY_MINIMUM_DESCRIPTIONS.dispatch_completed,
     };
   }
@@ -174,10 +213,26 @@ function ensureMinimumDispatchActivity(
   normalizedStatus,
   events,
 ) {
-  const requiredTypes = getMinimumDispatchActivityEventTypes(normalizedStatus);
+  const requiredTypes = [
+    ...getMinimumDispatchActivityEventTypes(normalizedStatus),
+  ];
   const presentTypes = new Set(
     (events || []).map((event) => event?.eventType).filter(Boolean),
   );
+
+  if (normalizedStatus === "cancelled") {
+    const hasDecisionEvent = [
+      "dispatch_approved",
+      "dispatch_declined",
+      "dispatch_cancelled",
+      "cancellation_accepted",
+    ].some((eventType) => presentTypes.has(eventType));
+
+    if (!hasDecisionEvent) {
+      requiredTypes.push("dispatch_approved");
+    }
+  }
+
   const synthesized = [];
 
   requiredTypes.forEach((eventType) => {
@@ -191,6 +246,7 @@ function ensureMinimumDispatchActivity(
     );
 
     if (minimumEvent) {
+      presentTypes.add(eventType);
       synthesized.push(minimumEvent);
     }
   });
@@ -199,9 +255,7 @@ function ensureMinimumDispatchActivity(
 }
 
 function resolveDispatchActivity(dispatchRequest) {
-  const normalizedStatus = normalizeDispatchStatus(
-    getRawDispatchStatus(dispatchRequest),
-  );
+  const normalizedStatus = resolveDispatchDisplayStatus(dispatchRequest);
 
   if (!shouldShowDispatchActivity(normalizedStatus)) {
     return [];
@@ -230,13 +284,20 @@ function parseActivityTimestamp(value) {
   return date;
 }
 
+function getActivityEventSortOrder(eventType) {
+  return DISPATCH_ACTIVITY_EVENT_SORT_ORDER[eventType] || 100;
+}
+
 function sortDispatchActivity(events) {
   return [...events].sort((a, b) => {
     const dateA = parseActivityTimestamp(a?.occurredAt);
     const dateB = parseActivityTimestamp(b?.occurredAt);
 
     if (!dateA && !dateB) {
-      return 0;
+      return (
+        getActivityEventSortOrder(a?.eventType) -
+        getActivityEventSortOrder(b?.eventType)
+      );
     }
 
     if (!dateA) {
@@ -247,7 +308,15 @@ function sortDispatchActivity(events) {
       return -1;
     }
 
-    return dateA - dateB;
+    const timeDiff = dateA - dateB;
+    if (timeDiff !== 0) {
+      return timeDiff;
+    }
+
+    return (
+      getActivityEventSortOrder(a?.eventType) -
+      getActivityEventSortOrder(b?.eventType)
+    );
   });
 }
 

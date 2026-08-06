@@ -87,6 +87,84 @@ function normalizeDispatchStatus(rawStatus) {
   return map[status] || "unknown";
 }
 
+function getLocalTodayDateString() {
+  try {
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Manila",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
+  } catch (e) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+}
+
+function requestHasApprovedCancellation(request) {
+  if (!request || typeof request !== "object") {
+    return false;
+  }
+
+  if (request.has_approved_cancellation === true) {
+    return true;
+  }
+
+  if (Array.isArray(request.activityLog)) {
+    return request.activityLog.some((event) => {
+      const type = String(event?.eventType || "").trim();
+      return (
+        type === "cancellation_accepted" || type === "dispatch_cancelled"
+      );
+    });
+  }
+
+  return false;
+}
+
+function getDispatchEndDateString(request) {
+  if (!request || typeof request !== "object") {
+    return null;
+  }
+
+  const raw =
+    request.to !== undefined && request.to !== null && request.to !== ""
+      ? request.to
+      : request.dispatch_to;
+
+  if (raw === undefined || raw === null || raw === "") {
+    return null;
+  }
+
+  const dateOnly = String(raw).trim().split(/[\sT]/)[0];
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateOnly)) {
+    return null;
+  }
+
+  return dateOnly;
+}
+
+function resolveDispatchDisplayStatus(request) {
+  const status = normalizeDispatchStatus(getRawDispatchStatus(request));
+
+  if (status === "cancelled") {
+    return requestHasApprovedCancellation(request) ? "cancelled" : "declined";
+  }
+
+  if (status === "approved") {
+    const endDate = getDispatchEndDateString(request);
+    if (endDate && endDate < getLocalTodayDateString()) {
+      return "completed";
+    }
+  }
+
+  return status;
+}
+
 function getStatusBadgeHtml(normalizedStatus) {
   const statusConfig = {
     pending: { label: "Pending", className: "pending" },
@@ -116,10 +194,10 @@ function getDispatchStatusCounts(requests) {
     todayaccept: 0,
   };
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getLocalTodayDateString();
 
   requests.forEach((request) => {
-    const status = normalizeDispatchStatus(getRawDispatchStatus(request));
+    const status = resolveDispatchDisplayStatus(request);
 
     if (Object.prototype.hasOwnProperty.call(counts, status)) {
       counts[status] += 1;
@@ -157,10 +235,7 @@ function getRequestListStatusCode(rawStatus) {
 }
 
 function getRequestListStatusBadgeHtml(request) {
-  const normalizedStatus = normalizeDispatchStatus(
-    getRawDispatchStatus(request),
-  );
-  return getStatusBadgeHtml(normalizedStatus);
+  return getStatusBadgeHtml(resolveDispatchDisplayStatus(request));
 }
 
 function syncRequestListStatusFields(requests) {
@@ -229,7 +304,7 @@ function ajaxJsonErrorMessage(xhr, fallback) {
 
 function openRequestFromUrl() {
   const params = new URLSearchParams(window.location.search);
-  const requestId = params.get("open_request");
+  const requestId = params.get("open_request") || params.get("request_id");
 
   if (!requestId || requestId === "undefined") return;
 

@@ -51,6 +51,7 @@ function initApp() {
       fillCards();
       initDateChangeRequestsTable();
       initCancellationRequestsTable();
+      openChangeRequestFromDeepLink();
     })
     .catch((error) => {
       if (error !== "Access Denied") {

@@ -1,5 +1,7 @@
 //#region EVENTS
 function bindEvents() {
+  bindChangeRequestEvents();
+
   $(document).on("input", "#search-bar", function () {
     searchEmployee();
   });

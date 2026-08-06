@@ -9,8 +9,7 @@ function fillOpenModal(trID) {
   const endDate = req.to;
   const reqName = req.requester_name;
   const reqDate = req.req_date;
-  const rawStatus = getRawDispatchStatus(req);
-  const normalizedStatus = normalizeDispatchStatus(rawStatus);
+  const normalizedStatus = resolveDispatchDisplayStatus(req);
   const location = req.specific_loc;
   const country = req.location;
   const duration = req.duration;
@@ -62,18 +61,23 @@ function fillOpenModal(trID) {
     renderDispatchActivityHistory(req);
   }
 
+  selectedDispatchRequest = req;
+  if (typeof updateChangeRequestActionsVisibility === "function") {
+    updateChangeRequestActionsVisibility(req);
+  }
+
   formatPresidentButtons(normalizedStatus);
   $("#openModal").modal("show");
 }
 
 function formatPresidentButtons(normalizedStatus) {
-  $("#openModal .modal-footer").remove();
+  $("#openModal .modal-footer.president-status-footer").remove();
 
   if (
     normalizedStatus === "pending" &&
     presID.includes(parseInt(empDetails["id"]))
   ) {
-    $("#openModal .modal-content").append(`<div class="modal-footer flex-nowrap flex gap-2 border-0 w-100">
+    $("#openModal .modal-content").append(`<div class="modal-footer president-status-footer flex-nowrap flex gap-2 border-0 w-100">
         <button
           class="statusBtn btn-reject transition w-50 flex overflow-hidden items-center justify-center disabled:pointer-events-none" stat-id="0">Decline Request</button>
         <button
@@ -183,9 +187,7 @@ function searchFilter(req_list) {
 
     const groupMatch = grps.includes(parseInt(emp.group_id));
     const dateMatch = dateFilter ? emp.req_date.startsWith(dateFilter) : true;
-    const normalizedStatus = normalizeDispatchStatus(
-      getRawDispatchStatus(emp),
-    );
+    const normalizedStatus = resolveDispatchDisplayStatus(emp);
     const statusMatch =
       selectedStatus === undefined || normalizedStatus === selectedStatus;
 

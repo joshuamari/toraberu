@@ -36,6 +36,7 @@ function initApp() {
       reqList = syncRequestListStatusFields(reqs["data"]);
       cardData = counts["data"];
       presID = pres["data"];
+      headerData = header["data"] || null;
       fillCards();
       openRequestFromUrl();
       renderHeader(header["data"]);

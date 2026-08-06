@@ -8,7 +8,7 @@ function bindEvents() {
   $(document).on("change", "#grpSel", function () {
     getEmployees()
       .then((emps) => {
-        empList = emps;
+        empList = emps.data || [];
         searchEmployee(empList);
       })
       .catch((error) => {

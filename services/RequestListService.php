@@ -95,6 +95,433 @@ function countInclusiveDays(string $from, string $to): int
     return (int)$diff->format('%a') + 1;
 }
 
+function formatActivityTimestamp(?string $datetime): string
+{
+    $raw = trim((string)$datetime);
+    if ($raw === '') {
+        return '';
+    }
+
+    $ts = strtotime($raw);
+    if ($ts === false) {
+        return '';
+    }
+
+    return date('Y-m-d\TH:i:s', $ts) . '+08:00';
+}
+
+function formatActivityDisplayDate(?string $date): string
+{
+    $raw = trim((string)$date);
+    if ($raw === '') {
+        return '';
+    }
+
+    $ts = strtotime($raw);
+    if ($ts === false) {
+        return $raw;
+    }
+
+    return date('d M Y', $ts);
+}
+
+function formatChangeRequestDisplayId(string $changeType, int $changeRequestId, string $requestedAt): string
+{
+    $year = date('Y', strtotime($requestedAt) ?: time());
+    $paddedId = str_pad((string)$changeRequestId, 3, '0', STR_PAD_LEFT);
+    $prefix = $changeType === 'cancellation' ? 'CR' : 'DCR';
+
+    return "{$prefix}-{$year}-{$paddedId}";
+}
+
+function normalizeChangeRequestStatus(?string $status): string
+{
+    $normalized = strtolower(trim((string)$status));
+
+    return match ($normalized) {
+        'approved', 'accepted' => 'approved',
+        'declined', 'rejected', 'denied' => 'declined',
+        'withdrawn' => 'withdrawn',
+        'pending' => 'pending',
+        default => $normalized !== '' ? $normalized : 'pending',
+    };
+}
+
+/**
+ * Prefer request_list.date_modified, but if that timestamp matches a change-request
+ * decision it was overwritten — fall back to the earliest change request time.
+ *
+ * @param array<int, array<string, mixed>> $changeRows
+ */
+function resolveDispatchApprovalTimestamp(
+    ?string $dateRequested,
+    ?string $dateModified,
+    array $changeRows
+): string {
+    $submittedAt = formatActivityTimestamp($dateRequested);
+    $modifiedAt = formatActivityTimestamp($dateModified);
+    $changeDecisionTimes = [];
+    $earliestChangeRequestedAt = '';
+
+    foreach ($changeRows as $change) {
+        $requestedAt = formatActivityTimestamp($change['requested_at'] ?? null);
+        $decisionAt = formatActivityTimestamp($change['date_modified'] ?? null);
+
+        if ($requestedAt !== '' && ($earliestChangeRequestedAt === '' || $requestedAt < $earliestChangeRequestedAt)) {
+            $earliestChangeRequestedAt = $requestedAt;
+        }
+
+        if ($decisionAt !== '') {
+            $changeDecisionTimes[] = $decisionAt;
+        }
+    }
+
+    if ($modifiedAt !== '' && in_array($modifiedAt, $changeDecisionTimes, true)) {
+        if ($earliestChangeRequestedAt !== '') {
+            return $earliestChangeRequestedAt;
+        }
+
+        if ($submittedAt !== '') {
+            return $submittedAt;
+        }
+    }
+
+    if ($modifiedAt !== '') {
+        return $modifiedAt;
+    }
+
+    return $submittedAt;
+}
+
+function getActivityEventSortOrder(string $eventType): int
+{
+    $order = [
+        'dispatch_submitted' => 10,
+        'dispatch_approved' => 20,
+        'dispatch_declined' => 20,
+        'date_change_requested' => 30,
+        'date_change_accepted' => 40,
+        'date_change_rejected' => 40,
+        'cancellation_requested' => 50,
+        'cancellation_accepted' => 60,
+        'cancellation_rejected' => 60,
+        'dispatch_cancelled' => 70,
+        'dispatch_completed' => 80,
+    ];
+
+    return $order[$eventType] ?? 100;
+}
+
+/**
+ * @param array<int, array<string, mixed>> $events
+ * @return array<int, array<string, mixed>>
+ */
+function sortRequestActivityLog(array $events): array
+{
+    usort($events, static function (array $a, array $b): int {
+        $timeA = (string)($a['occurredAt'] ?? '');
+        $timeB = (string)($b['occurredAt'] ?? '');
+
+        if ($timeA !== $timeB) {
+            return $timeA <=> $timeB;
+        }
+
+        return getActivityEventSortOrder((string)($a['eventType'] ?? ''))
+            <=> getActivityEventSortOrder((string)($b['eventType'] ?? ''));
+    });
+
+    return array_values($events);
+}
+
+function resolveApproverDisplayName(PDO $connnew): string
+{
+    $president = getPresidentDisplayData($connnew);
+    $name = trim((string)($president['name'] ?? ''));
+
+    if ($name !== '') {
+        $prefix = trim((string)($president['prefix'] ?? ''));
+        return $prefix !== '' ? trim($prefix . ' ' . $name) : $name;
+    }
+
+    return 'KDT President';
+}
+
+/**
+ * @param array<int, array<string, mixed>> $changeRows
+ * @return array<int, array<string, mixed>>
+ */
+function buildRequestActivityLog(
+    int $requestId,
+    ?string $dateRequested,
+    $requestStatus,
+    ?string $dateModified,
+    string $requesterName,
+    array $changeRows,
+    string $approverName
+): array {
+    $events = [];
+    $hasApprovedCancellation = false;
+
+    $submittedAt = formatActivityTimestamp($dateRequested);
+    if ($submittedAt !== '') {
+        $events[] = [
+            'activityId' => "ACT-{$requestId}-submitted",
+            'eventType' => 'dispatch_submitted',
+            'occurredAt' => $submittedAt,
+            'actorName' => $requesterName,
+            'description' => 'The dispatch request was submitted.',
+        ];
+    }
+
+    foreach ($changeRows as $change) {
+        $changeType = strtolower(trim((string)($change['change_type'] ?? '')));
+        $changeStatus = normalizeChangeRequestStatus($change['status'] ?? null);
+        $changeRequestId = (int)($change['change_request_id'] ?? 0);
+        $requestedAtRaw = (string)($change['requested_at'] ?? '');
+        $decisionAtRaw = (string)($change['date_modified'] ?? '');
+        $requestedByName = trim((string)($change['requested_by_name'] ?? ''));
+        $displayId = formatChangeRequestDisplayId(
+            $changeType,
+            $changeRequestId,
+            $requestedAtRaw
+        );
+        $requestedAt = formatActivityTimestamp($requestedAtRaw);
+        $decisionAt = formatActivityTimestamp($decisionAtRaw);
+
+        if ($changeType === 'date_change') {
+            $originalStart = formatActivityDisplayDate($change['original_start_date'] ?? null);
+            $originalEnd = formatActivityDisplayDate($change['original_end_date'] ?? null);
+            $requestedStart = formatActivityDisplayDate($change['requested_start_date'] ?? null);
+            $requestedEnd = formatActivityDisplayDate($change['requested_end_date'] ?? null);
+            $periodText = '';
+            if ($originalStart !== '' && $originalEnd !== '' && $requestedStart !== '' && $requestedEnd !== '') {
+                $periodText = " from {$originalStart} – {$originalEnd} to {$requestedStart} – {$requestedEnd}";
+            }
+
+            $requestDescription = "A date-change request was submitted{$periodText}.";
+            if ($changeStatus === 'withdrawn') {
+                $requestDescription = "A date-change request was submitted{$periodText} (later withdrawn).";
+            }
+
+            if ($requestedAt !== '') {
+                $events[] = [
+                    'activityId' => "ACT-{$requestId}-dcr-{$changeRequestId}-requested",
+                    'eventType' => 'date_change_requested',
+                    'occurredAt' => $requestedAt,
+                    'actorName' => $requestedByName,
+                    'description' => $requestDescription,
+                    'changeRequestType' => 'date_change',
+                    'changeRequestId' => (string)$changeRequestId,
+                    'changeRequestReference' => $displayId,
+                ];
+            }
+
+            if ($changeStatus === 'approved' && $decisionAt !== '') {
+                $events[] = [
+                    'activityId' => "ACT-{$requestId}-dcr-{$changeRequestId}-accepted",
+                    'eventType' => 'date_change_accepted',
+                    'occurredAt' => $decisionAt,
+                    'actorName' => $approverName,
+                    'description' => 'The proposed dispatch dates were accepted.',
+                    'changeRequestType' => 'date_change',
+                    'changeRequestId' => (string)$changeRequestId,
+                    'changeRequestReference' => $displayId,
+                ];
+            } elseif ($changeStatus === 'declined' && $decisionAt !== '') {
+                $events[] = [
+                    'activityId' => "ACT-{$requestId}-dcr-{$changeRequestId}-rejected",
+                    'eventType' => 'date_change_rejected',
+                    'occurredAt' => $decisionAt,
+                    'actorName' => $approverName,
+                    'description' => 'The proposed dispatch dates were rejected.',
+                    'changeRequestType' => 'date_change',
+                    'changeRequestId' => (string)$changeRequestId,
+                    'changeRequestReference' => $displayId,
+                ];
+            }
+
+            continue;
+        }
+
+        if ($changeType === 'cancellation') {
+            $requestDescription = 'A cancellation request was submitted.';
+            if ($changeStatus === 'withdrawn') {
+                $requestDescription = 'A cancellation request was submitted (later withdrawn).';
+            }
+
+            if ($requestedAt !== '') {
+                $events[] = [
+                    'activityId' => "ACT-{$requestId}-cr-{$changeRequestId}-requested",
+                    'eventType' => 'cancellation_requested',
+                    'occurredAt' => $requestedAt,
+                    'actorName' => $requestedByName,
+                    'description' => $requestDescription,
+                    'changeRequestType' => 'cancellation',
+                    'changeRequestId' => (string)$changeRequestId,
+                    'changeRequestReference' => $displayId,
+                ];
+            }
+
+            if ($changeStatus === 'approved' && $decisionAt !== '') {
+                $hasApprovedCancellation = true;
+                $events[] = [
+                    'activityId' => "ACT-{$requestId}-cr-{$changeRequestId}-accepted",
+                    'eventType' => 'cancellation_accepted',
+                    'occurredAt' => $decisionAt,
+                    'actorName' => $approverName,
+                    'description' => 'The cancellation request was accepted.',
+                    'changeRequestType' => 'cancellation',
+                    'changeRequestId' => (string)$changeRequestId,
+                    'changeRequestReference' => $displayId,
+                ];
+                $events[] = [
+                    'activityId' => "ACT-{$requestId}-cancelled-{$changeRequestId}",
+                    'eventType' => 'dispatch_cancelled',
+                    'occurredAt' => $decisionAt,
+                    'actorName' => $approverName,
+                    'description' => 'The dispatch request was cancelled.',
+                ];
+            } elseif ($changeStatus === 'declined' && $decisionAt !== '') {
+                $events[] = [
+                    'activityId' => "ACT-{$requestId}-cr-{$changeRequestId}-rejected",
+                    'eventType' => 'cancellation_rejected',
+                    'occurredAt' => $decisionAt,
+                    'actorName' => $approverName,
+                    'description' => 'The cancellation request was rejected.',
+                    'changeRequestType' => 'cancellation',
+                    'changeRequestId' => (string)$changeRequestId,
+                    'changeRequestReference' => $displayId,
+                ];
+            }
+        }
+    }
+
+    $approvalAt = resolveDispatchApprovalTimestamp(
+        $dateRequested,
+        $dateModified,
+        $changeRows
+    );
+    $decisionAt = formatActivityTimestamp($dateModified);
+    if ($decisionAt === '') {
+        $decisionAt = $submittedAt;
+    }
+
+    if ($requestStatus === null || $requestStatus === '') {
+        // Pending — submission (+ any change events) only.
+    } elseif ((int)$requestStatus === 1) {
+        if ($approvalAt !== '') {
+            $events[] = [
+                'activityId' => "ACT-{$requestId}-approved",
+                'eventType' => 'dispatch_approved',
+                'occurredAt' => $approvalAt,
+                'actorName' => $approverName,
+                'description' => 'The dispatch request was approved.',
+            ];
+        }
+    } elseif ((int)$requestStatus === 0) {
+        if ($hasApprovedCancellation) {
+            if ($approvalAt !== '') {
+                $events[] = [
+                    'activityId' => "ACT-{$requestId}-approved",
+                    'eventType' => 'dispatch_approved',
+                    'occurredAt' => $approvalAt,
+                    'actorName' => $approverName,
+                    'description' => 'The dispatch request was approved.',
+                ];
+            }
+        } elseif ($decisionAt !== '') {
+            $events[] = [
+                'activityId' => "ACT-{$requestId}-declined",
+                'eventType' => 'dispatch_declined',
+                'occurredAt' => $decisionAt,
+                'actorName' => $approverName,
+                'description' => 'The dispatch request was declined.',
+            ];
+        }
+    }
+
+    return sortRequestActivityLog($events);
+}
+
+/**
+ * @param array<int> $requestIds
+ * @return array<int, array<int, array<string, mixed>>>
+ */
+function fetchChangeRequestsByRequestId(PDO $connpcs, PDO $connnew, array $requestIds): array
+{
+    $grouped = [];
+    if (count($requestIds) === 0) {
+        return $grouped;
+    }
+
+    $placeholders = implode(',', array_fill(0, count($requestIds), '?'));
+    $changeQ = "
+        SELECT
+            rcl.change_request_id,
+            rcl.request_id,
+            rcl.change_type,
+            rcl.status,
+            rcl.original_start_date,
+            rcl.original_end_date,
+            rcl.requested_start_date,
+            rcl.requested_end_date,
+            rcl.reason,
+            rcl.requested_by,
+            rcl.requested_at,
+            rcl.date_modified
+        FROM pcosdb.request_change_list rcl
+        WHERE rcl.request_id IN ({$placeholders})
+        ORDER BY rcl.requested_at ASC, rcl.change_request_id ASC
+    ";
+    $changeStmt = $connpcs->prepare($changeQ);
+    $changeStmt->execute(array_values($requestIds));
+    $rows = $changeStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($rows as $row) {
+        $requestId = (int)$row['request_id'];
+        $row['requested_by_name'] = getEmployeeDisplayName(
+            $connnew,
+            $connpcs,
+            (int)$row['requested_by']
+        );
+        $grouped[$requestId][] = $row;
+    }
+
+    return $grouped;
+}
+
+/**
+ * @param array<int, array<string, mixed>> $changeRows
+ * @return array{pending_date_change_request: bool, pending_cancellation_request: bool, has_approved_cancellation: bool}
+ */
+function summarizeChangeRequestFlags(array $changeRows): array
+{
+    $flags = [
+        'pending_date_change_request' => false,
+        'pending_cancellation_request' => false,
+        'has_approved_cancellation' => false,
+    ];
+
+    foreach ($changeRows as $change) {
+        $changeType = strtolower(trim((string)($change['change_type'] ?? '')));
+        $changeStatus = normalizeChangeRequestStatus($change['status'] ?? null);
+
+        if ($changeType === 'date_change' && $changeStatus === 'pending') {
+            $flags['pending_date_change_request'] = true;
+        }
+
+        if ($changeType === 'cancellation' && $changeStatus === 'pending') {
+            $flags['pending_cancellation_request'] = true;
+        }
+
+        if ($changeType === 'cancellation' && $changeStatus === 'approved') {
+            $flags['has_approved_cancellation'] = true;
+        }
+    }
+
+    return $flags;
+}
+
 function getRequestDetails(PDO $connpcs, PDO $connnew, int $requestId): ?array
 {
     $sql = "SELECT * FROM request_list WHERE request_id = :request_id LIMIT 1";
@@ -191,6 +618,12 @@ function getRequestList(PDO $connpcs, PDO $connnew, PDO $connkdt, string $employ
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $result = [];
 
+    $requestIds = array_map(static function (array $row): int {
+        return (int)$row['request_id'];
+    }, $rows);
+    $changesByRequestId = fetchChangeRequestsByRequestId($connpcs, $connnew, $requestIds);
+    $approverName = resolveApproverDisplayName($connnew);
+
     foreach ($rows as $row) {
         $to = $row['dispatch_to'];
         $passExp = $row['passport_expiry'];
@@ -199,11 +632,15 @@ function getRequestList(PDO $connpcs, PDO $connnew, PDO $connkdt, string $employ
         $passValidity = $passExp && strtotime($passExp) >= strtotime($to);
         $visaValidity = $visaExp && strtotime($visaExp) >= strtotime($to);
 
+        $requestId = (int)$row['request_id'];
         $empNumber = (int)$row['emp_number'];
         $requesterId = (int)$row['requester_id'];
+        $requesterName = getEmployeeDisplayName($connnew, $connpcs, $requesterId);
+        $changeRows = $changesByRequestId[$requestId] ?? [];
+        $changeFlags = summarizeChangeRequestFlags($changeRows);
 
-        $result[] = [
-            'req_id' => (int)$row['request_id'],
+        $result[] = array_merge([
+            'req_id' => $requestId,
             'emp_name' => getEmployeeDisplayName($connnew, $connpcs, $empNumber),
             'emp_number' => $empNumber,
             'group_id' => (int)$row['group_id'],
@@ -211,7 +648,7 @@ function getRequestList(PDO $connpcs, PDO $connnew, PDO $connkdt, string $employ
             'location' => $row['location_name'],
             'location_id' => (int)$row['location_id'],
             'group_name' => $row['name'],
-            'requester_name' => getEmployeeDisplayName($connnew, $connpcs, $requesterId),
+            'requester_name' => $requesterName,
             'requester_group' => $row['requester_group'],
             'from' => $row['dispatch_from'],
             'to' => $to,
@@ -221,7 +658,16 @@ function getRequestList(PDO $connpcs, PDO $connnew, PDO $connkdt, string $employ
             'visaValid' => (bool)$visaValidity,
             'status' => $row['request_status'],
             'modified' => $row['date_modified'],
-        ];
+            'activityLog' => buildRequestActivityLog(
+                $requestId,
+                $row['date_requested'] ?? null,
+                $row['request_status'],
+                $row['date_modified'] ?? null,
+                $requesterName,
+                $changeRows,
+                $approverName
+            ),
+        ], $changeFlags);
     }
 
     return $result;
