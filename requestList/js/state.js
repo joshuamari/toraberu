@@ -37,6 +37,9 @@ let monthNames2 = [
   "Dec",
 ];
 let reqList = [];
+let filteredRequestList = [];
+let requestCurrentPage = 1;
+const REQUEST_ITEMS_PER_PAGE = 10;
 let cardData = [];
 let printData = {};
 let sortDateAsc = false;

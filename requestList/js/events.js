@@ -75,7 +75,7 @@ function bindEvents() {
     window.location.href = `${rootFolder}`;
   });
 
-  $(document).on("click", ".tabs[role='tablist'] .tab", function () {
+  $(document).on("click", "#dispatch-status-filter .tab", function () {
     setActiveDispatchStatusTab($(this));
     searchFilter(reqList);
   });
@@ -185,6 +185,134 @@ function bindEvents() {
 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 </svg>
 Approving...`);
+  });
+
+  bindStatusGuideEvents();
+  bindRequestListPaginationEvents();
+}
+
+function bindRequestListPaginationEvents() {
+  $(document)
+    .off("click.requestPagination", '[data-pagination="requests"] [data-role="prev"]')
+    .on(
+      "click.requestPagination",
+      '[data-pagination="requests"] [data-role="prev"]',
+      function () {
+        if ($(this).prop("disabled") || requestCurrentPage <= 1) {
+          return;
+        }
+        requestCurrentPage -= 1;
+        renderRequestListPage();
+      },
+    );
+
+  $(document)
+    .off("click.requestPagination", '[data-pagination="requests"] [data-role="next"]')
+    .on(
+      "click.requestPagination",
+      '[data-pagination="requests"] [data-role="next"]',
+      function () {
+        if ($(this).prop("disabled")) {
+          return;
+        }
+
+        const totalPages = Math.max(
+          1,
+          Math.ceil(filteredRequestList.length / REQUEST_ITEMS_PER_PAGE),
+        );
+
+        if (requestCurrentPage < totalPages) {
+          requestCurrentPage += 1;
+          renderRequestListPage();
+        }
+      },
+    );
+
+  $(document)
+    .off(
+      "click.requestPagination",
+      '[data-pagination="requests"] [data-role="pages"] .table-pagination__page',
+    )
+    .on(
+      "click.requestPagination",
+      '[data-pagination="requests"] [data-role="pages"] .table-pagination__page',
+      function () {
+        const page = Number($(this).data("page"));
+        if (!page || $(this).hasClass("is-active")) {
+          return;
+        }
+        requestCurrentPage = page;
+        renderRequestListPage();
+      },
+    );
+}
+
+function isStatusGuideOpen() {
+  const popover = document.getElementById("statusGuidePopover");
+  return Boolean(popover && !popover.classList.contains("d-none"));
+}
+
+function setStatusGuideOpen(isOpen) {
+  const button = document.getElementById("dispatch-status-guide-trigger");
+  const popover = document.getElementById("statusGuidePopover");
+
+  if (!button || !popover) {
+    return;
+  }
+
+  button.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  popover.classList.toggle("d-none", !isOpen);
+  popover.hidden = !isOpen;
+}
+
+function toggleStatusGuide(forceOpen) {
+  const shouldOpen =
+    typeof forceOpen === "boolean" ? forceOpen : !isStatusGuideOpen();
+  setStatusGuideOpen(shouldOpen);
+
+  if (shouldOpen) {
+    renderStatusGuideIcons();
+  }
+}
+
+function renderStatusGuideIcons() {
+  if (!window.lucide || typeof window.lucide.createIcons !== "function") {
+    return;
+  }
+
+  window.lucide.createIcons({
+    attrs: {
+      width: 14,
+      height: 14,
+      "stroke-width": 2,
+    },
+  });
+}
+
+function bindStatusGuideEvents() {
+  $(document).on("click", "#dispatch-status-guide-trigger", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleStatusGuide();
+  });
+
+  $(document).on("click", function (event) {
+    if (!isStatusGuideOpen()) {
+      return;
+    }
+
+    const wrap = document.getElementById("request-status-group");
+    if (wrap && wrap.contains(event.target)) {
+      return;
+    }
+
+    setStatusGuideOpen(false);
+  });
+
+  $(document).on("keydown", function (event) {
+    if (event.key === "Escape" && isStatusGuideOpen()) {
+      setStatusGuideOpen(false);
+    }
   });
 }
 //#endregion

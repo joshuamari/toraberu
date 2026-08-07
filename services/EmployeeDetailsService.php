@@ -1228,25 +1228,7 @@ function getEmployeeReentryPermit(
         return [];
     }
 
-    $status = 'invalid';
-
-    if ((int)$permit['on_process'] === 1) {
-        $status = 'on_process';
-    } elseif (!empty($permit['expiry'])) {
-        $expiryTs = strtotime($permit['expiry']);
-        $todayTs = strtotime(date('Y-m-d'));
-
-        if ($expiryTs >= $todayTs) {
-            $warningMonths = envInt('REENTRY_PERMIT_EXPIRY_WARNING_MONTHS', 6);
-            if ($warningMonths < 1) $warningMonths = 6;
-
-            $warningCutoff = strtotime('+' . $warningMonths . ' months');
-
-            $status = ($expiryTs <= $warningCutoff)
-                ? 'valid_expiring'
-                : 'valid';
-        }
-    }
+    $status = resolveReentryPermitStatus(true, $permit['on_process'] ?? 0, $permit['expiry'] ?? null);
 
     if ($isDetails && !empty($permit['expiry'])) {
         $permit['expiry'] = date('d M Y', strtotime($permit['expiry']));

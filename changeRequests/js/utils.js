@@ -23,6 +23,54 @@ function formatDate(date) {
   return day + " " + monthName + " " + year;
 }
 
+function formatDispatchRequestId(reqId) {
+  if (reqId === null || reqId === undefined || reqId === "") {
+    return "";
+  }
+  return `REQ-${String(reqId).padStart(5, "0")}`;
+}
+
+/**
+ * Apply the shared clickable dispatch-request ID badge to a button.
+ * Preserves data-request-id for existing open_request navigation.
+ */
+function setOriginalDispatchRequestIdBadge($btn, originalRequestId) {
+  if (!$btn || !$btn.length) {
+    return;
+  }
+
+  const id =
+    originalRequestId === null || originalRequestId === undefined
+      ? ""
+      : String(originalRequestId).trim();
+
+  $btn.attr("data-request-id", id);
+
+  if (id) {
+    $btn
+      .addClass("activity-id-badge dispatch")
+      .removeClass("is-unavailable")
+      .prop("disabled", false)
+      .attr("aria-disabled", "false")
+      .text(formatDispatchRequestId(id));
+    return;
+  }
+
+  $btn
+    .addClass("activity-id-badge is-unavailable")
+    .removeClass("dispatch")
+    .prop("disabled", true)
+    .attr("aria-disabled", "true")
+    .text("Not available");
+}
+
+function syncOriginalDispatchRequestIdBadge($targetBtn, $sourceBtn) {
+  setOriginalDispatchRequestIdBadge(
+    $targetBtn,
+    $sourceBtn.attr("data-request-id") || "",
+  );
+}
+
 function isValidIsoDate(value) {
   if (!value || typeof value !== "string") {
     return false;

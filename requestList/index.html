@@ -23,12 +23,14 @@
   <script src="../js/jspdf.js"></script>
   <script src="../js/chart.min.js"></script>
   <script src="../js/tableToExcel.js"></script>
+  <script src="../node_modules/lucide/dist/umd/lucide.min.js"></script>
 
   <!-- Page JS -->
   <!-- <script defer src="js/individual.js"></script> -->
 
   <script src="js/state.js"></script>
   <script src="js/utils.js"></script>
+  <script src="../js/pagination.js"></script>
   <script src="js/api.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/dispatchActivity.js"></script>
@@ -47,7 +49,12 @@
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header border-0">
-        <h1 class="modal-title text-[18px]" id="titleModal"></h1>
+        <div class="d-flex flex-column gap-1 w-100 pe-3">
+          <h1 class="modal-title text-[18px] d-flex align-items-center gap-2 flex-wrap m-0" id="titleModal"></h1>
+          <div class="dispatch-detail-request-id " >
+            <span class=" activity-id-badge dispatch" id="openModalRequestId"></span>
+          </div>
+        </div>
         <button type="button" class="btn-close text-[14px] m-1 w-0 h-0 w-auto h-auto" data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>
@@ -1030,106 +1037,153 @@
           </div>
           <div class="w-100 flex-1 min-h-0 bg-white rounded-lg border flex flex-col">
 
-            <div class="flex lg:flex-row flex-col justify-content-between p-3 gap-2 lg:gap-0 border-b-[1px]">
-              <div class="flex gap-3 w-100 min-w-0">
-                <div class="w-full overflow-x-auto lg:w-auto">
-                <div
-                  class="tabs relative flex min-w-max flex-nowrap items-center gap-2 overflow-hidden bg-[var(--white)] border px-[3px] rounded-lg transition lg:grid lg:min-w-0 lg:grid-cols-6"
-                  role="tablist" aria-label="tabs">
-                  <div class="indicator absolute top-0 my-[0.25rem] left-0 rounded-md  bg-[var(--secondary)]">
-                  </div>
-                  <button type="button" role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" data-dispatch-status="all" tabindex="0"
-                    class="relative h-10 min-w-24 shrink-0 block p-2 tab rounded-full flex gap-1 items-center justify-content-center lg:min-w-0">
-                    <span class="text-[12px] text-[var(--gray-text)] font-semibold text-[var(--dark)] active">All</span>
-
+            <div id="request-list-toolbar">
+              <div id="request-status-group">
+                <div id="dispatch-status-filter" class="tabs" role="tablist" aria-label="tabs">
+                  <div class="indicator absolute top-0 my-[0.25rem] left-0 rounded-md bg-[var(--secondary)]"></div>
+                  <button type="button" role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1"
+                    data-dispatch-status="all" tabindex="0" class="tab">
+                    <span class="font-semibold text-[var(--dark)] active">All</span>
                   </button>
-                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" data-dispatch-status="pending" tabindex="-1"
-                    class="relative h-10 min-w-24 shrink-0 block p-2 tab rounded-full flex gap-1 items-center justify-content-center lg:min-w-0">
-                    <span class="text-[12px] text-[var(--gray-text)]">Pending</span>
-                 
+                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2"
+                    data-dispatch-status="pending" tabindex="-1" class="tab">
+                    <span>Pending</span>
                   </button>
-                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" data-dispatch-status="approved" tabindex="-2"
-                    class="relative h-10 min-w-24 shrink-0 block p-2 tab rounded-full flex gap-1 items-center justify-content-center lg:min-w-0">
-                    <span class="text-[12px] text-[var(--gray-text)]">Approved</span>
+                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3"
+                    data-dispatch-status="approved" tabindex="-2" class="tab">
+                    <span>Approved</span>
                   </button>
-                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4" data-dispatch-status="declined" tabindex="-3"
-                    class="relative h-10 min-w-24 shrink-0 block p-2 tab rounded-full flex gap-1 items-center justify-content-center lg:min-w-0">
-                    <span class="text-[12px] text-[var(--gray-text)]">Declined</span>
+                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4"
+                    data-dispatch-status="declined" tabindex="-3" class="tab">
+                    <span>Declined</span>
                   </button>
-                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-5" id="tab-5" data-dispatch-status="cancelled" tabindex="-4"
-                    class="relative h-10 min-w-24 shrink-0 block p-2 tab rounded-full flex gap-1 items-center justify-content-center lg:min-w-0">
-                    <span class="text-[12px] text-[var(--gray-text)]">Cancelled</span>
+                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-5" id="tab-5"
+                    data-dispatch-status="cancelled" tabindex="-4" class="tab">
+                    <span>Cancelled</span>
                   </button>
-                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-6" id="tab-6" data-dispatch-status="completed" tabindex="-5"
-                    class="relative h-10 min-w-24 shrink-0 block p-2 tab rounded-full flex gap-1 items-center justify-content-center lg:min-w-0">
-                    <span class="text-[12px] text-[var(--gray-text)]">Completed</span>
+                  <button type="button" role="tab" aria-selected="false" aria-controls="panel-6" id="tab-6"
+                    data-dispatch-status="completed" tabindex="-5" class="tab">
+                    <span>Completed</span>
                   </button>
-
                 </div>
+
+                <button type="button" id="dispatch-status-guide-trigger" class="status-guide-btn"
+                  aria-expanded="false" aria-controls="statusGuidePopover" aria-haspopup="dialog"
+                  aria-label="Open status guide">
+                  <i data-lucide="circle-help" class="status-guide-btn-icon" aria-hidden="true"></i>
+                </button>
+
+                <div id="statusGuidePopover" class="status-guide-popover d-none" role="dialog"
+                  aria-labelledby="statusGuidePopoverTitle" hidden>
+                  <h3 class="status-guide-popover-title" id="statusGuidePopoverTitle">Dispatch Status Guide</h3>
+                  <div class="status-guide-list">
+                    <div class="status-guide-item">
+                      <p class="status-guide-label">All</p>
+                      <p class="status-guide-en">Shows requests of every status.</p>
+                      <p class="status-guide-ja" lang="ja">すべてのステータスの申請を表示します。</p>
+                    </div>
+                    <div class="status-guide-item">
+                      <p class="status-guide-label">Pending</p>
+                      <p class="status-guide-en">Waiting for approval or decline by the KDT President.</p>
+                      <p class="status-guide-ja" lang="ja">KDT社長による承認または却下待ちです。</p>
+                    </div>
+                    <div class="status-guide-item">
+                      <p class="status-guide-label">Approved</p>
+                      <p class="status-guide-en">Approved for dispatch. The approved dispatch period has not yet ended.
+                      </p>
+                      <p class="status-guide-ja" lang="ja">派遣が承認されています。承認された派遣期間はまだ終了していません。</p>
+                    </div>
+                    <div class="status-guide-item">
+                      <p class="status-guide-label">Declined</p>
+                      <p class="status-guide-en">The original dispatch request was not approved.</p>
+                      <p class="status-guide-ja" lang="ja">元の派遣申請は承認されませんでした。</p>
+                    </div>
+                    <div class="status-guide-item">
+                      <p class="status-guide-label">Cancelled</p>
+                      <p class="status-guide-en">The dispatch was approved previously, but a cancellation request was
+                        later accepted.</p>
+                      <p class="status-guide-ja" lang="ja">派遣は一度承認されましたが、その後のキャンセル申請が承認されました。</p>
+                    </div>
+                    <div class="status-guide-item">
+                      <p class="status-guide-label">Completed</p>
+                      <p class="status-guide-en">The approved dispatch period has already ended.</p>
+                      <p class="status-guide-ja" lang="ja">承認された派遣期間はすでに終了しています。</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="  flex gap-2 items-center w-100">
 
-                <div class="filters  w-100 flex  gap-2 ">
-                  <div class="flex gap-2 w-full justify-content-end">
-                    <div class="relative lg:w-auto w-full">
-                      <input type="search" id="searchbar" class="input search " placeholder="Search here . . .">
-                      <i class='bx bx-search absolute top-[8px] text-[18px] left-[8px] text-[var(--gray-text)]'></i>
-                    </div>
-                    <div class="relative">
-
-                      <input type="month" id="monthSel" class="opacity-0  h-full w-full absolute cursor-pointer">
-
-
-                      <div
-                        class="mobtn rounded-md border flex gap-1 pl-2 pr-1 py-2 items-center justify-content-center hover:bg-[var(--white)] monthCont"
-                        role="button">
-                        <i class='bx bx-calendar'></i>
-                        <span class="" id="monthLabel">Requested Month</span>
-                        <i class='bx bx-chevron-down text-[18px] ml-3'></i>
-                      </div>
-                    </div>
-                    <div class="relative">
-                      <select name="grp select" id="grpSel" class="opacity-0  h-full w-full absolute cursor-pointer">
-
-                      </select>
-                      <div
-                        class="grpbtn rounded-md border transition flex gap-1 pl-2 pr-1   py-2 items-center justify-content-center hover:b [var  (--white)] grpCont"
-                        role="button">
-                        <i class='bx bx-group'></i>
-                        <span id="lblGrp">All Groups</span>
-                        <i class='bx bx-chevron-down text-[18px] ml-3'></i>
-
-                      </div>
-                    </div>
-                  </div>
-
+              <div id="request-additional-filters" class="filters">
+                <div class="request-list-search-wrap relative">
+                  <input type="search" id="searchbar" class="input search" placeholder="Search here . . .">
+                  <i class='bx bx-search absolute top-[8px] text-[18px] left-[8px] text-[var(--gray-text)]'></i>
                 </div>
-
+                <div class="relative request-list-filter-stable">
+                  <input type="month" id="monthSel" class="opacity-0 h-full w-full absolute cursor-pointer">
+                  <div
+                    class="mobtn rounded-md border flex gap-1 pl-2 pr-1 py-2 items-center justify-content-center hover:bg-[var(--white)] monthCont"
+                    role="button">
+                    <i class='bx bx-calendar'></i>
+                    <span id="monthLabel">Requested Month</span>
+                    <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+                  </div>
+                </div>
+                <div class="relative request-list-filter-stable">
+                  <select name="grp select" id="grpSel" class="opacity-0 h-full w-full absolute cursor-pointer"></select>
+                  <div
+                    class="grpbtn rounded-md border transition flex gap-1 pl-2 pr-1 py-2 items-center justify-content-center hover:bg-[var(--white)] grpCont"
+                    role="button">
+                    <i class='bx bx-group'></i>
+                    <span id="lblGrp">All Groups</span>
+                    <i class='bx bx-chevron-down text-[18px] ml-3'></i>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class=" relative h-[calc(100%-104px)] lg:h-[calc(100%-93px)]  p-3 pt-0 mt-3 overflow-auto">
-              <table class="mainTable">
-                <thead>
-                  <tr>
-                    <th>Request ID</th>
-                    <th>Employee</th>
-                    <th><div class="flex gap-2 items-center text-[12px] text-[var(--text-color)]">Date requested<i id="sortDate" class='bx bx-sort cursor-pointer'></i></div></th>
-                    <th>Dispatch Dates</th>
-                    <th>Status</th>
-                    <th>Passport</th>
-                    <th>Visa</th>
-                    <th></th>
-                  </tr>
+            <div class="request-list-table-panel relative flex-1 min-h-0 flex flex-col mt-3">
+              <div class="request-list-table-scroll flex-1 min-h-0 p-3 pt-0 overflow-x-auto">
+                <table class="mainTable">
+                  <thead>
+                    <tr>
+                      <th>Request ID</th>
+                      <th>Employee</th>
+                      <th><div class="flex gap-2 items-center text-[12px] text-[var(--text-color)]">Date requested<i id="sortDate" class='bx bx-sort cursor-pointer'></i></div></th>
+                      <th>Dispatch Dates</th>
+                      <th>Status</th>
+                      <th>Passport</th>
+                      <th>Visa</th>
+                      <th></th>
+                    </tr>
 
-                </thead>
-                <tbody id="tableBody">
+                  </thead>
+                  <tbody id="tableBody">
 
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
 
-
+              <div data-pagination="requests"
+                class="request-pagination table-pagination table-pagination--pcs d-flex flex-column flex-lg-row justify-content-lg-between align-items-lg-center gap-3 border-t border-[#ebebeb] p-3">
+                <p data-role="count" class="table-pagination__count text-[12px] text-[var(--gray-text)] m-0">
+                  Showing 0 to 0 of 0 requests
+                </p>
+                <div class="table-pagination__controls d-flex flex-wrap align-items-center gap-2 justify-content-end">
+                  <div class="table-pagination__nav-wrap d-flex align-items-center gap-1">
+                    <button type="button" data-role="prev" class="request-pagination__nav table-pagination__nav"
+                      aria-label="Previous page">
+                      <i class="bx bx-chevron-left text-[16px]" aria-hidden="true"></i>
+                      <span>Previous</span>
+                    </button>
+                    <div data-role="pages" class="table-pagination__pages d-flex align-items-center gap-1"></div>
+                    <button type="button" data-role="next" class="request-pagination__nav table-pagination__nav"
+                      aria-label="Next page">
+                      <span>Next</span>
+                      <i class="bx bx-chevron-right text-[16px]" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
           </div>

@@ -9,7 +9,8 @@ try {
         jsonError('Access denied.', 403);
     }
 
-    $summary = getDashboardSummary($connpcs);
+    $year = isset($_GET['year']) ? (int) $_GET['year'] : (int) date('Y');
+    $summary = getDashboardSummary($connpcs, $year);
 
     jsonSuccess($summary, 'Summary loaded successfully.');
 } catch (RuntimeException $e) {

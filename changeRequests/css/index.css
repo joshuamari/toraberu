@@ -982,6 +982,77 @@ span.active {
   border: 0;
 }
 
+.activity-id-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 10px;
+  border-radius: 0.375rem;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  vertical-align: middle;
+  text-decoration: none;
+}
+
+.activity-id-badge.dispatch {
+  background-color: var(--secondary);
+  color: var(--dark);
+}
+
+.activity-id-badge.cancellation {
+  background-color: #f6339a;
+  color: #fff;
+}
+
+.activity-id-badge.date-change {
+  background-color: #4f39f6;
+  color: #fff;
+}
+
+.activity-id-badge.date-change *,
+.activity-id-badge.cancellation * {
+  color: #fff;
+}
+
+/* Clickable request-ID badges (Original Dispatch Request ID links) */
+button.activity-id-badge {
+  border: 0;
+  margin: 0;
+  font-family: inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: opacity 0.15s ease, box-shadow 0.15s ease;
+}
+
+button.activity-id-badge:hover:not(:disabled):not(.is-unavailable) {
+  opacity: 0.88;
+  text-decoration: none;
+  box-shadow: 0 0 0 2px rgba(33, 33, 33, 0.08);
+}
+
+button.activity-id-badge.dispatch:hover:not(:disabled):not(.is-unavailable),
+button.activity-id-badge.dispatch:focus-visible {
+  color: var(--dark);
+  text-decoration: none;
+}
+
+button.activity-id-badge:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.45);
+}
+
+button.activity-id-badge.is-unavailable,
+button.activity-id-badge:disabled {
+  cursor: default;
+  opacity: 0.7;
+  box-shadow: none;
+  background-color: #f4f4f4;
+  color: var(--gray-text2);
+}
+
 @media (max-width: 768px) {
   #openModal .cancellation-modal-summary-grid,
   #openModal .change-request-summary-grid,

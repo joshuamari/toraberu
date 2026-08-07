@@ -22,6 +22,11 @@ function fillOpenModal(trID) {
 
 
   formatStatus(normalizedStatus);
+  $("#openModalRequestId").text(
+    req?.req_id != null
+      ? `REQ-${String(req.req_id).padStart(5, "0")}`
+      : "—",
+  );
   formatVisaPassport(visaValidity, passValidity);
   $("#modalEmpName").text(name);
   $("#modalGroup").text(grp);
@@ -99,7 +104,7 @@ function formatStatus(normalizedStatus) {
   const statusClass =
     normalizedStatus === "unknown" ? "unknown" : normalizedStatus;
   $("#titleModal").html(
-    `  Dispatch Request<span class="status lg ${statusClass} ms-3">${statusLabel}</span>`,
+    `Dispatch Request<span class="status lg ${statusClass} ms-3">${statusLabel}</span>`,
   );
 }
 
@@ -132,7 +137,7 @@ function fillTable(sampleData) {
     $.each(sampleData, function (index, item) {
       str = `
     <tr req-id="${item.req_id}">
-      <td>REQ-${String(item.req_id).padStart(5, "0")}</td>
+      <td><span class="activity-id-badge dispatch">REQ-${String(item.req_id).padStart(5, "0")}</span></td>
       <td>${item.emp_name}</td>
       <td>${formatDate(item.req_date)}</td>
       <td>${formatDispatchDateRange(item.from, item.to)}</td>
@@ -157,12 +162,39 @@ function fillTable(sampleData) {
       $("#tableBody").append(str);
     });
   } else {
-    str = `<td colspan="8" class="h-[530px]"><div class="flex items-center justify-center flex-col gap-3"><img src="../images/empty.png"   class="w-[150px] h-auto opacity-[0.75]" alt="empty">
+    str = `<tr><td colspan="8"><div class="request-list-empty flex items-center justify-center flex-col gap-3 py-5"><img src="../images/empty.png"   class="w-[150px] h-auto opacity-[0.75]" alt="empty">
     <h5 class="font-semibold text-[16px] text-[var(--gray-text)]">No item found.</h5>
     <p class="text-[var(--gray-text)]">Try adjusting your search or filter to find what you're looking for.</p>
-    </div></td>`;
+    </div></td></tr>`;
     $("#tableBody").append(str);
   }
+}
+
+function renderRequestListPage() {
+  const totalItems = filteredRequestList.length;
+  const pagination = calculatePagination(
+    totalItems,
+    requestCurrentPage,
+    REQUEST_ITEMS_PER_PAGE,
+  );
+
+  requestCurrentPage = pagination.currentPage;
+
+  const pageRecords = filteredRequestList.slice(
+    pagination.startIndex,
+    pagination.endIndex,
+  );
+
+  fillTable(pageRecords);
+  renderPaginationBar(
+    $('[data-pagination="requests"]'),
+    {
+      currentPage: requestCurrentPage,
+      itemsPerPage: REQUEST_ITEMS_PER_PAGE,
+      totalItems,
+    },
+    "requests",
+  );
 }
 
 function searchFilter(req_list) {
@@ -199,7 +231,10 @@ function searchFilter(req_list) {
       ? new Date(a.req_date) - new Date(b.req_date)
       : new Date(b.req_date) - new Date(a.req_date);
   });
-  fillTable(results);
+
+  filteredRequestList = results;
+  requestCurrentPage = 1;
+  renderRequestListPage();
 }
 
 function fillGroups(grps) {

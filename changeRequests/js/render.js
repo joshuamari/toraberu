@@ -42,9 +42,10 @@ function fillOpenModal(trID) {
   $("#modalReqName").text(reqName);
   $("#modalReqDate").text(formattedReqDate);
   $("#modalCancelReason").text(req.reason || "");
-  $("#cancelModalRequestIdBtn")
-    .text(originalRequestId ? `REQ# ${originalRequestId}` : "Not available")
-    .attr("data-request-id", originalRequestId || "");
+  setOriginalDispatchRequestIdBadge(
+    $("#cancelModalRequestIdBtn"),
+    originalRequestId,
+  );
 
   $("#openModal").data("active-request-id", req.req_id);
   $("#openModal").modal("show");
@@ -289,9 +290,10 @@ function openDateChangeRequestModal(request) {
   $("#modalSymbol").text(symbol);
   $("#modalTotalDiff").text(totalDiffValue);
 
-  $("#changeModalRequestIdBtn")
-    .text(originalRequestId ? `REQ# ${originalRequestId}` : "Not available")
-    .attr("data-request-id", originalRequestId);
+  setOriginalDispatchRequestIdBadge(
+    $("#changeModalRequestIdBtn"),
+    originalRequestId,
+  );
 
   $("#dateChangeModal").data("active-request-id", request.req_id);
   $("#dateChangeModal").modal("show");
@@ -308,9 +310,10 @@ function syncConfirmDateChangeModalFields() {
   $("#confirmDateChangeReason").text($("#modalReason").text());
   $("#confirmDateChangeCurrentDays").text($("#modalDCCurrentTotalDays").text());
   $("#confirmDateChangeProposedDays").text($("#modalDCProposedTotalDays").text());
-  $("#confirmDateChangeOriginalDispatchIdBtn")
-    .text($("#changeModalRequestIdBtn").text() || "Not available")
-    .attr("data-request-id", $("#changeModalRequestIdBtn").attr("data-request-id") || "");
+  syncOriginalDispatchRequestIdBadge(
+    $("#confirmDateChangeOriginalDispatchIdBtn"),
+    $("#changeModalRequestIdBtn"),
+  );
 }
 
 function fillCancellationConfirmModal(action) {
@@ -349,9 +352,10 @@ function fillCancellationConfirmModal(action) {
   $("#confirmCancelGroup").text($("#modalGroup").text());
   $("#confirmCancelDates").text($("#modalDispatchDates").text());
   $("#confirmCancelReason").text($("#modalCancelReason").text());
-  $("#confirmCancelOriginalDispatchIdBtn")
-    .text($("#cancelModalRequestIdBtn").text() || "Not available")
-    .attr("data-request-id", $("#cancelModalRequestIdBtn").attr("data-request-id") || "");
+  syncOriginalDispatchRequestIdBadge(
+    $("#confirmCancelOriginalDispatchIdBtn"),
+    $("#cancelModalRequestIdBtn"),
+  );
 }
 
 function openCancellationConfirmModal(action) {
@@ -399,7 +403,7 @@ function fillTable(sampleData) {
 
       str = `
     <tr req-id="${item.req_id}">
-      <td>${displayId}</td>
+      <td><span class="activity-id-badge cancellation">${displayId}</span></td>
       <td>${item.emp_name || ""}</td>
       <td>${dispatchDates}</td>
       <td>${dateRequested}</td>
@@ -442,7 +446,7 @@ function fillTableDateChange(sampleData) {
           role="button"
           aria-label="View Date Change Request details"
         >
-          <td>${displayId}</td>
+          <td><span class="activity-id-badge date-change">${displayId}</span></td>
 
           <td>${item.emp_name || ""}</td>
 

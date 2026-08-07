@@ -10,6 +10,7 @@ $dotenv->safeLoad();
 require_once __DIR__ . '/helpers/env.php';
 require_once __DIR__ . '/helpers/response.php';
 require_once __DIR__ . '/helpers/mailer.php';
+require_once __DIR__ . '/helpers/reentry_permit.php';
 
 require_once __DIR__ . '/config/app.php';
 require_once __DIR__ . '/config/permissions.php';

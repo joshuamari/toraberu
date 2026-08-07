@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../css/font-awesome.css">
   <link rel="stylesheet" href="../css/boxicons.css">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/index.css?v=20260807a">
   <link rel="stylesheet" href="../tailwindcss/output.css">
 
   <!-- JS libs -->
@@ -27,11 +27,11 @@
 
   <!-- Page JS -->
   <script src="js/state.js?v=20260804d"></script>
-  <script src="js/utils.js?v=20260804d"></script>
+  <script src="js/utils.js?v=20260807a"></script>
   <script src="js/api.js?v=20260804d"></script>
   <script src="js/pagination.js?v=20260804d"></script>
   <script src="js/ui.js?v=20260804d"></script>
-  <script src="js/render.js?v=20260804d"></script>
+  <script src="js/render.js?v=20260807a"></script>
   <script src="../js/sidebar.js"></script>
   <script src="js/events.js?v=20260804d"></script>
   <script src="js/app.js?v=20260804d"></script>
@@ -50,7 +50,10 @@
             Cancellation Request
             <span class="status lg" id="cancelModalStatus">Pending</span>
           </h1>
-          <span class="cr-detail-request-id" id="cancelModalDisplayId">CR-00001</span>
+          <div class="cr-detail-request-id">
+            <span class="activity-id-badge cancellation" id="cancelModalDisplayId">CR-00001</span>
+          </div>
+          
           <p class="change-request-modal-subtitle mb-0">
             Cancellation request submitted to KDT for review.
           </p>
@@ -90,8 +93,9 @@
                   <span class="change-request-summary-label">Original Dispatch Request ID</span>
                   <span class="change-request-summary-value">
                     <button type="button" id="cancelModalRequestIdBtn"
-                      class="underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition bg-transparent border-0 p-0 font-inherit">
-                      REQ# 0000
+                      class="activity-id-badge dispatch"
+                      aria-label="Open original dispatch request">
+                      REQ-00000
                     </button>
                   </span>
                 </div>
@@ -227,8 +231,9 @@
                   <span class="change-request-summary-label">Original Dispatch Request ID</span>
                   <span class="change-request-summary-value">
                     <button type="button" id="confirmCancelOriginalDispatchIdBtn"
-                      class="underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition bg-transparent border-0 p-0 font-inherit">
-                      REQ# 0000
+                      class="activity-id-badge dispatch"
+                      aria-label="Open original dispatch request">
+                      REQ-00000
                     </button>
                   </span>
                 </div>
@@ -276,9 +281,7 @@
               </button>
             </div>
           </div>
-       
       </div>
-
     </div>
   </div>
 </div>
@@ -294,7 +297,10 @@
             Date Change Request
             <span class="status lg pending" id="modalChangeStatus">Pending</span>
           </h1>
-          <span class="cr-detail-request-id" id="dateChangeModalDisplayId">DC-00001</span>
+          <div class="cr-detail-request-id">
+              <span class="activity-id-badge date-change" id="dateChangeModalDisplayId">DC-00001</span> 
+          </div>
+    
           <p class="change-request-modal-subtitle mb-0">
             Date change request submitted to KDT for review.
           </p>
@@ -342,8 +348,9 @@
                   <span class="change-request-summary-label">Original Dispatch Request ID</span>
                   <span class="change-request-summary-value">
                     <button type="button" id="changeModalRequestIdBtn"
-                      class="underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition bg-transparent border-0 p-0 font-inherit">
-                      REQ# 0000
+                      class="activity-id-badge dispatch"
+                      aria-label="Open original dispatch request">
+                      REQ-00000
                     </button>
                   </span>
                 </div>
@@ -490,8 +497,9 @@
                   <span class="change-request-summary-label">Original Dispatch Request ID</span>
                   <span class="change-request-summary-value">
                     <button type="button" id="confirmDateChangeOriginalDispatchIdBtn"
-                      class="underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition bg-transparent border-0 p-0 font-inherit">
-                      REQ# 0000
+                      class="activity-id-badge dispatch"
+                      aria-label="Open original dispatch request">
+                      REQ-00000
                     </button>
                   </span>
                 </div>
@@ -628,7 +636,7 @@
                 </div>
               </li>
             </a>
-            <a href="./changeRequests/">
+            <a href="./">
               <li class="active">
                 <div class="d-flex align-items-center gap-2">
                   <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center" aria-hidden="true">

@@ -282,7 +282,7 @@ function setActiveDispatchStatusTab($tab) {
 }
 
 function initDispatchStatusFilter() {
-  const $allTab = $('.tabs[role="tablist"] [data-dispatch-status="all"]');
+  const $allTab = $('#dispatch-status-filter [data-dispatch-status="all"]');
   setActiveDispatchStatusTab($allTab);
   requestAnimationFrame(function () {
     setActiveDispatchStatusTab($allTab);

@@ -590,6 +590,9 @@ function getRequestList(PDO $connpcs, PDO $connnew, PDO $connkdt, string $employ
             gl.name,
             pd.passport_expiry,
             vd.visa_expiry,
+            rd.emp_number AS reentry_emp_id,
+            rd.permit_expiry,
+            rd.on_process AS reentry_on_process,
             rl.request_status,
             rl.date_modified
         FROM pcosdb.request_list rl
@@ -607,6 +610,8 @@ function getRequestList(PDO $connpcs, PDO $connnew, PDO $connkdt, string $employ
             ON rl.location_id = ll.location_id
         LEFT JOIN visa_details vd
             ON vd.emp_number = el.id
+        LEFT JOIN reentry_permit_details rd
+            ON rd.emp_number = el.id
         WHERE rl.emp_number != 0
           AND rl.emp_number IN ($placeholders)
         ORDER BY rl.date_requested DESC
@@ -631,6 +636,11 @@ function getRequestList(PDO $connpcs, PDO $connnew, PDO $connkdt, string $employ
 
         $passValidity = $passExp && strtotime($passExp) >= strtotime($to);
         $visaValidity = $visaExp && strtotime($visaExp) >= strtotime($to);
+        $reentryStatus = resolveReentryPermitStatus(
+            $row['reentry_emp_id'] !== null && $row['reentry_emp_id'] !== '',
+            $row['reentry_on_process'] ?? 0,
+            $row['permit_expiry'] ?? null
+        );
 
         $requestId = (int)$row['request_id'];
         $empNumber = (int)$row['emp_number'];
@@ -656,6 +666,7 @@ function getRequestList(PDO $connpcs, PDO $connnew, PDO $connkdt, string $employ
             'req_date' => date('Y-m-d', strtotime($row['date_requested'])),
             'passValid' => (bool)$passValidity,
             'visaValid' => (bool)$visaValidity,
+            'reentryStatus' => $reentryStatus,
             'status' => $row['request_status'],
             'modified' => $row['date_modified'],
             'activityLog' => buildRequestActivityLog(

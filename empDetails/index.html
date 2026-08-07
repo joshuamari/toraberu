@@ -1,571 +1,355 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <title>トラベる - KDT</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta charset="UTF-8" />
 
-    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+<head>
+  <title>トラベる - KDT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
 
-    <!-- CSS FIRST (no delay) -->
-    <link rel="stylesheet" href="../global.css" />
-    <link rel="stylesheet" href="../tailwindcss/output.css" />
-    <link rel="stylesheet" href="../css/font-awesome.css" />
-    <link rel="stylesheet" href="../css/boxicons.css" />
-    <link rel="stylesheet" href="../css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/index.css" />
+  <link rel="icon" href="../favicon.ico" type="image/x-icon" />
 
-    <!-- JS libs -->
-    <script src="../js/jquery.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/html2canvas.js"></script>
-    <script src="../js/jquery.inview.min.js"></script>
-    <script src="../js/tableToExcel.js"></script>
+  <!-- CSS FIRST (no delay) -->
+  <link rel="stylesheet" href="../global.css" />
+  <link rel="stylesheet" href="../tailwindcss/output.css" />
+  <link rel="stylesheet" href="../css/font-awesome.css" />
+  <link rel="stylesheet" href="../css/boxicons.css" />
+  <link rel="stylesheet" href="../css/bootstrap.min.css" />
+  <link rel="stylesheet" href="css/index.css" />
 
-    <!-- Page JS -->
-    <!-- <script defer src="js/individual.js"></script> -->
-    <script src="js/state.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/render.js"></script>
-    <script src="js/export.js"></script>
-    <script src="js/sidebar.js"></script>
-    <script src="js/events.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/main.js"></script>
-  </head>
+  <!-- JS libs -->
+  <script src="../js/jquery.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/html2canvas.js"></script>
+  <script src="../js/jquery.inview.min.js"></script>
+  <script src="../js/tableToExcel.js"></script>
 
-  <!-- #region modal -->
-  <div
-    class="modal fade"
-    id="updatePass"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    tabindex="-1"
-    aria-labelledby="staticBackdropLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">
-            Update Passport
-          </h1>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body d-flex gap-3 flex-lg-row flex-column">
-          <div style="width: 350px" class="kaliwa">
-            <div class="row mb-2">
-              <label for="upPassNo" class="col-4 col-form-label"
-                >Passport No.</label
-              >
-              <div class="col-8">
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  id="upPassNo"
-                  disabled
-                />
-              </div>
-            </div>
-            <div class="row mb-2">
-              <label for="upPassBday" class="col-4 col-form-label"
-                >Birth date</label
-              >
-              <div class="col-8">
-                <input
-                  type="date"
-                  class="form-control form-control-sm"
-                  id="upPassBday"
-                  disabled
-                />
-              </div>
-            </div>
-            <div class="row mb-2">
-              <label for="upPassIssue" class="col-4 col-form-label"
-                >Date Issue</label
-              >
-              <div class="col-8">
-                <input
-                  type="date"
-                  class="form-control form-control-sm ddates pass"
-                  id="upPassIssue"
-                  disabled
-                />
-              </div>
-            </div>
-            <div class="row mb-2">
-              <label for="upPassExp" class="col-4 col-form-label"
-                >Valid Until</label
-              >
-              <div class="col-8">
-                <input
-                  type="date"
-                  class="form-control form-control-sm ddates pass"
-                  id="upPassExp"
-                  disabled
-                />
-              </div>
-            </div>
+  <!-- Page JS -->
+  <!-- <script defer src="js/individual.js"></script> -->
+  <script src="js/state.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/main.js"></script>
+</head>
 
-            <div class="row mb-2">
-              <label for="upPassOnProcess" class="col-4 col-form-label"
-                >Status</label
-              >
-              <div class="col-8 d-flex align-items-center">
-                <input
-                  type="checkbox"
-                  class="form-check-input me-2"
-                  id="upPassOnProcess"
-                  disabled
-                />
-                <label for="upPassOnProcess" class="form-check-label mb-0">
-                  On Process
-                </label>
-              </div>
-            </div>
-
-            <div class="row attach d-none">
-              <label for="upPassAttach" class="col-4 col-form-label"
-                >Attachment</label
-              >
-              <div class="col-8">
-                <input
-                  type="file"
-                  class="form-control form-control-sm"
-                  id="upPassAttach"
-                  disabled
-                />
-              </div>
+<!-- #region modal -->
+<div class="modal fade" id="updatePass" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">
+          Update Passport
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex gap-3 flex-lg-row flex-column">
+        <div style="width: 350px" class="kaliwa">
+          <div class="row mb-2">
+            <label for="upPassNo" class="col-4 col-form-label">Passport No.</label>
+            <div class="col-8">
+              <input type="text" class="form-control form-control-sm" id="upPassNo" disabled />
             </div>
           </div>
-          <div
-            class="kanan"
-            style="
+          <div class="row mb-2">
+            <label for="upPassBday" class="col-4 col-form-label">Birth date</label>
+            <div class="col-8">
+              <input type="date" class="form-control form-control-sm" id="upPassBday" disabled />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label for="upPassIssue" class="col-4 col-form-label">Date Issue</label>
+            <div class="col-8">
+              <input type="date" class="form-control form-control-sm ddates pass" id="upPassIssue" disabled />
+            </div>
+          </div>
+          <div class="row mb-2">
+            <label for="upPassExp" class="col-4 col-form-label">Valid Until</label>
+            <div class="col-8">
+              <input type="date" class="form-control form-control-sm ddates pass" id="upPassExp" disabled />
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <label for="upPassOnProcess" class="col-4 col-form-label">Status</label>
+            <div class="col-8 d-flex align-items-center">
+              <input type="checkbox" class="form-check-input me-2" id="upPassOnProcess" disabled />
+              <label for="upPassOnProcess" class="form-check-label mb-0">
+                On Process
+              </label>
+            </div>
+          </div>
+
+          <div class="row attach d-none">
+            <label for="upPassAttach" class="col-4 col-form-label">Attachment</label>
+            <div class="col-8">
+              <input type="file" class="form-control form-control-sm" id="upPassAttach" disabled />
+            </div>
+          </div>
+        </div>
+        <div class="kanan" style="
               width: calc(100% - 350px);
               background-color: whitesmoke;
               border-radius: 6px;
-            "
-          >
-            <label id="pAttach" class="p-2">Attachment</label>
-            <div style="height: 300px; width: 100%">
-              <div
-                class="d-flex w-100 h-100 flex-column gap-3 justify-content-center align-items-center d-none"
-                style="opacity: 0.75"
-                id="noAttachPass"
-              >
-                <i class="bx bxs-inbox" style="font-size: 80px"></i>
-                <span>No attachment found.</span>
-              </div>
-              <div id="wAttachPass" class="w-100 h-100">
-                <iframe
-                  src=""
-                  width="100%"
-                  height="100%"
-                  id="passAttachView"
-                ></iframe>
-              </div>
+            ">
+          <label id="pAttach" class="p-2">Attachment</label>
+          <div style="height: 300px; width: 100%">
+            <div class="d-flex w-100 h-100 flex-column gap-3 justify-content-center align-items-center d-none"
+              style="opacity: 0.75" id="noAttachPass">
+              <i class="bx bxs-inbox" style="font-size: 80px"></i>
+              <span>No attachment found.</span>
+            </div>
+            <div id="wAttachPass" class="w-100 h-100">
+              <iframe src="" width="100%" height="100%" id="passAttachView"></iframe>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-cancel btn-secondary">
-            Cancel
-          </button>
-          <button type="button" class="btn btn-update" id="btn-updatePass">
-            Update Passport
-          </button>
-        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-cancel btn-secondary">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-update" id="btn-updatePass">
+          Update Passport
+        </button>
       </div>
     </div>
   </div>
+</div>
 
-  <div
-    class="modal fade"
-    id="updateVisa"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    tabindex="-1"
-    aria-labelledby="staticBackdropLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Update Visa</h1>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body d-flex gap-3 flex-lg-row flex-column">
-          <div style="width: 350px" class="kaliwa">
-            <div class="row mb-2">
-              <label for="upVisaNo" class="col-4 col-form-label"
-                >Visa No.</label
-              >
-              <div class="col-8">
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  id="upVisaNo"
-                  disabled
-                />
-              </div>
-            </div>
-
-            <div class="row mb-2">
-              <label for="upVisaIssue" class="col-4 col-form-label">
-                Date Issue
-              </label>
-              <div class="col-8">
-                <input
-                  type="date"
-                  class="form-control form-control-sm ddates vsa"
-                  id="upVisaIssue"
-                  disabled
-                />
-              </div>
-            </div>
-
-            <div class="row mb-2">
-              <label for="upVisaExp" class="col-4 col-form-label"
-                >Valid Until</label
-              >
-              <div class="col-8">
-                <input
-                  type="date"
-                  class="form-control form-control-sm ddates vsa"
-                  id="upVisaExp"
-                  disabled
-                />
-              </div>
-            </div>
-
-            <div class="row mb-2">
-              <label for="upVisaOnProcess" class="col-4 col-form-label"
-                >Status</label
-              >
-              <div class="col-8 d-flex align-items-center">
-                <input
-                  type="checkbox"
-                  class="form-check-input me-2"
-                  id="upVisaOnProcess"
-                  disabled
-                />
-                <label for="upVisaOnProcess" class="form-check-label mb-0">
-                  On Process
-                </label>
-              </div>
-            </div>
-
-            <div class="row attach d-none">
-              <label for="upVisaAttach" class="col-4 col-form-label"
-                >Change Attachment</label
-              >
-              <div class="col-8">
-                <input
-                  type="file"
-                  class="form-control form-control-sm"
-                  id="upVisaAttach"
-                  disabled
-                />
-              </div>
+<div class="modal fade" id="updateVisa" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Update Visa</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex gap-3 flex-lg-row flex-column">
+        <div style="width: 350px" class="kaliwa">
+          <div class="row mb-2">
+            <label for="upVisaNo" class="col-4 col-form-label">Visa No.</label>
+            <div class="col-8">
+              <input type="text" class="form-control form-control-sm" id="upVisaNo" disabled />
             </div>
           </div>
 
-          <div
-            class="kanan"
-            style="
+          <div class="row mb-2">
+            <label for="upVisaIssue" class="col-4 col-form-label">
+              Date Issue
+            </label>
+            <div class="col-8">
+              <input type="date" class="form-control form-control-sm ddates vsa" id="upVisaIssue" disabled />
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <label for="upVisaExp" class="col-4 col-form-label">Valid Until</label>
+            <div class="col-8">
+              <input type="date" class="form-control form-control-sm ddates vsa" id="upVisaExp" disabled />
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <label for="upVisaOnProcess" class="col-4 col-form-label">Status</label>
+            <div class="col-8 d-flex align-items-center">
+              <input type="checkbox" class="form-check-input me-2" id="upVisaOnProcess" disabled />
+              <label for="upVisaOnProcess" class="form-check-label mb-0">
+                On Process
+              </label>
+            </div>
+          </div>
+
+          <div class="row attach d-none">
+            <label for="upVisaAttach" class="col-4 col-form-label">Change Attachment</label>
+            <div class="col-8">
+              <input type="file" class="form-control form-control-sm" id="upVisaAttach" disabled />
+            </div>
+          </div>
+        </div>
+
+        <div class="kanan" style="
               width: calc(100% - 350px);
               background-color: whitesmoke;
               border-radius: 6px;
-            "
-          >
-            <label id="vAttach" class="p-2">Attachment</label>
-            <div style="height: 300px; width: 100%">
-              <div
-                class="d-flex w-100 h-100 flex-column gap-3 justify-content-center align-items-center d-none"
-                style="opacity: 0.75"
-                id="noAttachVisa"
-              >
-                <i class="bx bxs-inbox" style="font-size: 80px"></i>
-                <span>No attachment found.</span>
-              </div>
-              <div id="wAttachVisa" class="w-100 h-100">
-                <iframe
-                  src=""
-                  width="100%"
-                  height="100%"
-                  id="visaAttachView"
-                ></iframe>
-              </div>
+            ">
+          <label id="vAttach" class="p-2">Attachment</label>
+          <div style="height: 300px; width: 100%">
+            <div class="d-flex w-100 h-100 flex-column gap-3 justify-content-center align-items-center d-none"
+              style="opacity: 0.75" id="noAttachVisa">
+              <i class="bx bxs-inbox" style="font-size: 80px"></i>
+              <span>No attachment found.</span>
+            </div>
+            <div id="wAttachVisa" class="w-100 h-100">
+              <iframe src="" width="100%" height="100%" id="visaAttachView"></iframe>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-cancel btn-secondary">
-            Cancel
-          </button>
-          <button type="button" class="btn btn-update" id="btn-updateVisa">
-            Update Visa
-          </button>
-        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-cancel btn-secondary">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-update" id="btn-updateVisa">
+          Update Visa
+        </button>
       </div>
     </div>
   </div>
+</div>
 
-  <div
-    class="modal fade"
-    id="updateReentryPermit"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    tabindex="-1"
-    aria-labelledby="updateReentryPermitLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="updateReentryPermitLabel">
-            Update Re-entry Permit
-          </h1>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
+<div class="modal fade" id="updateReentryPermit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="updateReentryPermitLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="updateReentryPermitLabel">
+          Update Re-entry Permit
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
 
-        <div class="modal-body d-flex gap-3 flex-lg-row flex-column">
-          <div style="width: 350px" class="kaliwa">
-            <div class="row mb-2">
-              <label for="upReentryExp" class="col-4 col-form-label">
-                Valid Until
-              </label>
-              <div class="col-8">
-                <input
-                  type="date"
-                  class="form-control form-control-sm ddates reentry"
-                  id="upReentryExp"
-                  disabled
-                />
-              </div>
-            </div>
-
-            <div class="row mb-2">
-              <label for="upReentryOnProcess" class="col-4 col-form-label">
-                Status
-              </label>
-              <div class="col-8 d-flex align-items-center">
-                <input
-                  type="checkbox"
-                  class="form-check-input me-2"
-                  id="upReentryOnProcess"
-                  disabled
-                />
-                <label for="upReentryOnProcess" class="form-check-label mb-0">
-                  On Process
-                </label>
-              </div>
-            </div>
-
-            <div class="row attach d-none">
-              <label for="upReentryAttach" class="col-4 col-form-label">
-                Attachment
-              </label>
-              <div class="col-8">
-                <input
-                  type="file"
-                  class="form-control form-control-sm"
-                  id="upReentryAttach"
-                  disabled
-                />
-              </div>
+      <div class="modal-body d-flex gap-3 flex-lg-row flex-column">
+        <div style="width: 350px" class="kaliwa">
+          <div class="row mb-2">
+            <label for="upReentryExp" class="col-4 col-form-label">
+              Valid Until
+            </label>
+            <div class="col-8">
+              <input type="date" class="form-control form-control-sm ddates reentry" id="upReentryExp" disabled />
             </div>
           </div>
 
-          <div
-            class="kanan"
-            style="
+          <div class="row mb-2">
+            <label for="upReentryOnProcess" class="col-4 col-form-label">
+              Status
+            </label>
+            <div class="col-8 d-flex align-items-center">
+              <input type="checkbox" class="form-check-input me-2" id="upReentryOnProcess" disabled />
+              <label for="upReentryOnProcess" class="form-check-label mb-0">
+                On Process
+              </label>
+            </div>
+          </div>
+
+          <div class="row attach d-none">
+            <label for="upReentryAttach" class="col-4 col-form-label">
+              Attachment
+            </label>
+            <div class="col-8">
+              <input type="file" class="form-control form-control-sm" id="upReentryAttach" disabled />
+            </div>
+          </div>
+        </div>
+
+        <div class="kanan" style="
               width: calc(100% - 350px);
               background-color: whitesmoke;
               border-radius: 6px;
-            "
-          >
-            <label id="reentryAttachLabel" class="p-2">Attachment</label>
-            <div style="height: 300px; width: 100%">
-              <div
-                class="d-flex w-100 h-100 flex-column gap-3 justify-content-center align-items-center d-none"
-                style="opacity: 0.75"
-                id="noAttachReentry"
-              >
-                <i class="bx bxs-inbox" style="font-size: 80px"></i>
-                <span>No attachment found.</span>
-              </div>
+            ">
+          <label id="reentryAttachLabel" class="p-2">Attachment</label>
+          <div style="height: 300px; width: 100%">
+            <div class="d-flex w-100 h-100 flex-column gap-3 justify-content-center align-items-center d-none"
+              style="opacity: 0.75" id="noAttachReentry">
+              <i class="bx bxs-inbox" style="font-size: 80px"></i>
+              <span>No attachment found.</span>
+            </div>
 
-              <div id="wAttachReentry" class="w-100 h-100">
-                <iframe
-                  src=""
-                  width="100%"
-                  height="100%"
-                  id="reentryAttachView"
-                ></iframe>
-              </div>
+            <div id="wAttachReentry" class="w-100 h-100">
+              <iframe src="" width="100%" height="100%" id="reentryAttachView"></iframe>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-cancel btn-secondary">
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn btn-update"
-            id="btn-updateReentryPermit"
-          >
-            Update Re-entry Permit
-          </button>
-        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-cancel btn-secondary">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-update" id="btn-updateReentryPermit">
+          Update Re-entry Permit
+        </button>
       </div>
     </div>
   </div>
+</div>
 
-  <div
-    class="modal fade"
-    id="deleteEntry"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    tabindex="-1"
-    aria-labelledby="staticBackdropLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">
-            Delete Entry
-          </h1>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <p class="mb-2">
-            Are you sure you want to delete
-            <span class="fw-semibold" id="selectedEmp"></span>'s Dispatch entry
-            <span class="fw-semibold"
-              >no. <span id="storeId" del-id="0"></span
-            ></span>
-            ?
-          </p>
-        </div>
+<div class="modal fade" id="deleteEntry" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">
+          Delete Entry
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-2">
+          Are you sure you want to delete
+          <span class="fw-semibold" id="selectedEmp"></span>'s Dispatch entry
+          <span class="fw-semibold">no. <span id="storeId" del-id="0"></span></span>
+          ?
+        </p>
+      </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-cancel btn-secondary">
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn btn-danger fw-medium"
-            id="btn-deleteEntry"
-          >
-            Delete
-          </button>
-        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-cancel btn-secondary">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger fw-medium" id="btn-deleteEntry">
+          Delete
+        </button>
       </div>
     </div>
   </div>
+</div>
 
-  <div
-    class="modal fade"
-    id="editEntry"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    tabindex="-1"
-    aria-labelledby="staticBackdropLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Entry</h1>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <div class="d-grid">
-            <div class="row mb-2">
-              <label
-                for="editentryLocation"
-                class="col-sm-4 col-form-label col-form-label-sm"
-                >Location</label
-              >
-              <div class="col-sm-8">
-                <select class="form-select" id="editentryLocation">
-                  <option value="1">Kobe</option>
-                  <option value="2">Tokyo</option>
-                </select>
-              </div>
+<div class="modal fade" id="editEntry" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Entry</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-grid">
+          <div class="row mb-2">
+            <label for="editentryLocation" class="col-sm-4 col-form-label col-form-label-sm">Location</label>
+            <div class="col-sm-8">
+              <select class="form-select" id="editentryLocation">
+                <option value="1">Kobe</option>
+                <option value="2">Tokyo</option>
+              </select>
             </div>
-            <div class="row mb-2">
-              <label
-                for="editentryDateJ"
-                class="col-sm-4 col-form-label col-form-label-sm"
-                >Date to Japan</label
-              >
-              <div class="col-sm-8">
-                <input
-                  type="date"
-                  class="form-control edit-date"
-                  id="editentryDateJ"
-                />
-              </div>
+          </div>
+          <div class="row mb-2">
+            <label for="editentryDateJ" class="col-sm-4 col-form-label col-form-label-sm">Date to Japan</label>
+            <div class="col-sm-8">
+              <input type="date" class="form-control edit-date" id="editentryDateJ" />
             </div>
-            <div class="row mb-2">
-              <label
-                for="editentryDateP"
-                class="col-sm-4 col-form-label col-form-label-sm"
-                >Date to PH</label
-              >
-              <div class="col-sm-8">
-                <input
-                  type="date"
-                  class="form-control edit-date"
-                  id="editentryDateP"
-                />
-              </div>
+          </div>
+          <div class="row mb-2">
+            <label for="editentryDateP" class="col-sm-4 col-form-label col-form-label-sm">Date to PH</label>
+            <div class="col-sm-8">
+              <input type="date" class="form-control edit-date" id="editentryDateP" />
             </div>
-            <div class="row mb-2">
-              <label
-                for="editentryDays"
-                class="col-sm-4 col-form-label col-form-label-sm"
-                >No. of Days</label
-              >
-              <div class="col-sm-8 d-flex align-items-center">
-                <span id="editentryDays" class="fw-medium fs-5">0</span>
-              </div>
+          </div>
+          <div class="row mb-2">
+            <label for="editentryDays" class="col-sm-4 col-form-label col-form-label-sm">No. of Days</label>
+            <div class="col-sm-8 d-flex align-items-center">
+              <span id="editentryDays" class="fw-medium fs-5">0</span>
             </div>
-            <!-- <div class="row mb-2">
+          </div>
+          <!-- <div class="row mb-2">
               <label
                 for="editentryPYear"
                 class="col-sm-4 col-form-label col-form-label-sm"
@@ -575,1041 +359,650 @@
                 <span id="editentryPYear" class="fw-medium fs-5">0</span>
               </div>
             </div> -->
-          </div>
         </div>
+      </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-cancel btn-secondary">
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn btn-success fw-medium"
-            id="btn-saveEntry"
-            e-id="0"
-          >
-            Save Changes
-          </button>
-        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-cancel btn-secondary">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-success fw-medium" id="btn-saveEntry" e-id="0">
+          Save Changes
+        </button>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- #region workhistory -->
-  <div
-    class="modal fade"
-    id="addNewWork"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    tabindex="-1"
-    aria-labelledby="staticBackdropLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">
-            Add Work History Entry
-          </h1>
-          <button
-            type="button"
-            class="btn-wh-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          <div class="d-grid">
-            <div class="row mb-2">
-              <label
-                for="addcompanyName"
-                class="col-form-label col-form-label-sm"
-                >Company Name</label
-              >
-              <div>
-                <input
-                  type="text"
-                  class="input company-name"
-                  id="addcompanyName"
-                  placeholder="Company Name"
-                />
-              </div>
+<!-- #region workhistory -->
+<div class="modal fade" id="addNewWork" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">
+          Add Work History Entry
+        </h1>
+        <button type="button" class="btn-wh-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-grid">
+          <div class="row mb-2">
+            <label for="addcompanyName" class="col-form-label col-form-label-sm">Company Name</label>
+            <div>
+              <input type="text" class="input company-name" id="addcompanyName" placeholder="Company Name" />
             </div>
-            <small class="compNameError hidden"
-              >Please Complete the Field</small
-            >
-
-            <div class="MYDates mb-2 d-flex flex-row">
-              <div class="col-sm-6">
-                <label
-                  for="addStartMonthYear"
-                  class="col-form-label col-form-label-sm"
-                  >Start Month and Year</label
-                >
-                <input
-                  type="month"
-                  class="input add-start-year"
-                  id="addStartMonthYear"
-                  min="1900-01"
-                  max="2025-12"
-                />
-              </div>
-
-              <div class="col-sm-6">
-                <label
-                  for="addEndMonthYear"
-                  class="col-form-label col-form-label-sm"
-                  >End Month and Year</label
-                >
-                <input
-                  type="month"
-                  class="input add-start-year"
-                  id="addEndMonthYear"
-                  min="1900-01"
-                  max="2025-12"
-                />
-              </div>
-            </div>
-            <small class="dateError hidden">Please Complete the Fields</small>
-
-            <div class="row mb-2">
-              <label
-                for="addcompanyBusiness"
-                class="col-form-label col-form-label-sm"
-                >Company Business</label
-              >
-              <div>
-                <input
-                  type="text"
-                  class="input company-business"
-                  id="addcompanyBusiness"
-                  placeholder="Company Business"
-                />
-              </div>
-            </div>
-            <small class="BusiError hidden">Please Complete the Field</small>
-
-            <div class="row mb-2">
-              <label
-                for="addbusinessContent"
-                class="col-form-label col-form-label-sm"
-                >Business Content</label
-              >
-              <div>
-                <input
-                  type="text"
-                  class="input business-content"
-                  id="addbusinessContent"
-                  placeholder="Business Content"
-                />
-              </div>
-            </div>
-            <small class="ContentError hidden">Please Complete the Field</small>
-
-            <div class="row mb-2">
-              <label
-                for="addworkLocation"
-                class="col-form-label col-form-label-sm"
-                >Work Location</label
-              >
-              <div>
-                <input
-                  type="text"
-                  class="input work-location"
-                  id="addworkLocation"
-                  placeholder="Work Location"
-                />
-              </div>
-            </div>
-            <small class="LocError hidden">Please Complete the Field</small>
-
-            <div class="add-wh-error"></div>
           </div>
-        </div>
+          <small class="compNameError hidden">Please Complete the Field</small>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-wh-cancel btn-secondary">
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn btn-success fw-medium"
-            id="btn-addWorkEntry"
-          >
-            Add Entry
-          </button>
+          <div class="MYDates mb-2 d-flex flex-row">
+            <div class="col-sm-6">
+              <label for="addStartMonthYear" class="col-form-label col-form-label-sm">Start Month and Year</label>
+              <input type="month" class="input add-start-year" id="addStartMonthYear" min="1900-01" max="2025-12" />
+            </div>
+
+            <div class="col-sm-6">
+              <label for="addEndMonthYear" class="col-form-label col-form-label-sm">End Month and Year</label>
+              <input type="month" class="input add-start-year" id="addEndMonthYear" min="1900-01" max="2025-12" />
+            </div>
+          </div>
+          <small class="dateError hidden">Please Complete the Fields</small>
+
+          <div class="row mb-2">
+            <label for="addcompanyBusiness" class="col-form-label col-form-label-sm">Company Business</label>
+            <div>
+              <input type="text" class="input company-business" id="addcompanyBusiness"
+                placeholder="Company Business" />
+            </div>
+          </div>
+          <small class="BusiError hidden">Please Complete the Field</small>
+
+          <div class="row mb-2">
+            <label for="addbusinessContent" class="col-form-label col-form-label-sm">Business Content</label>
+            <div>
+              <input type="text" class="input business-content" id="addbusinessContent"
+                placeholder="Business Content" />
+            </div>
+          </div>
+          <small class="ContentError hidden">Please Complete the Field</small>
+
+          <div class="row mb-2">
+            <label for="addworkLocation" class="col-form-label col-form-label-sm">Work Location</label>
+            <div>
+              <input type="text" class="input work-location" id="addworkLocation" placeholder="Work Location" />
+            </div>
+          </div>
+          <small class="LocError hidden">Please Complete the Field</small>
+
+          <div class="add-wh-error"></div>
         </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-wh-cancel btn-secondary">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-success fw-medium" id="btn-addWorkEntry">
+          Add Entry
+        </button>
       </div>
     </div>
   </div>
+</div>
 
-  <div
-    class="modal fade"
-    id="editWorkHistory"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    tabindex="-1"
-    aria-labelledby="staticBackdropLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">
-            Edit Work History Entry
-          </h1>
-          <button
-            type="button"
-            class="btn-wh-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-wh-body px-3">
-          <div class="d-grid">
-            <div class="row mb-2">
-              <label
-                for="edit-companyName"
-                class="col-form-label col-form-label-sm"
-                >Company Name</label
-              >
-              <div>
-                <input
-                  type="text"
-                  class="input company-name"
-                  id="edit-companyName"
-                  placeholder="Company Name"
-                />
-              </div>
+<div class="modal fade" id="editWorkHistory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">
+          Edit Work History Entry
+        </h1>
+        <button type="button" class="btn-wh-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-wh-body px-3">
+        <div class="d-grid">
+          <div class="row mb-2">
+            <label for="edit-companyName" class="col-form-label col-form-label-sm">Company Name</label>
+            <div>
+              <input type="text" class="input company-name" id="edit-companyName" placeholder="Company Name" />
             </div>
-            <small class="compNameError hidden"
-              >Please Complete the Field</small
-            >
-
-            <div class="MYDates mb-2 d-flex flex-row">
-              <div class="col-sm-6">
-                <label
-                  for="edit-StartMonthYear"
-                  class="col-form-label col-form-label-sm"
-                  >Start Month and Year</label
-                >
-                <input
-                  type="month"
-                  class="input add-start-year"
-                  id="edit-StartMonthYear"
-                  min="1900-01"
-                  max="2025-12"
-                />
-              </div>
-              <div class="col-sm-6">
-                <label
-                  for="edit-EndMonthYear"
-                  class="col-form-label col-form-label-sm"
-                  >End Month and Year</label
-                >
-                <input
-                  type="month"
-                  class="input add-start-year"
-                  id="edit-EndMonthYear"
-                  min="1900-01"
-                  max="2025-12"
-                />
-              </div>
-            </div>
-            <small class="dateError hidden">Please Complete the Field</small>
-
-            <div class="row mb-2">
-              <label
-                for="edit-companyBusiness"
-                class="col-form-label col-form-label-sm"
-                >Company Business</label
-              >
-              <div>
-                <input
-                  type="text"
-                  class="input company-business"
-                  id="edit-companyBusiness"
-                  placeholder="Company Business"
-                />
-              </div>
-            </div>
-            <small class="BusiError hidden">Please Complete the Field</small>
-
-            <div class="row mb-2">
-              <label
-                for="edit-businessContent"
-                class="col-form-label col-form-label-sm"
-                >Business Content</label
-              >
-              <div>
-                <input
-                  type="text"
-                  class="input business-content"
-                  id="edit-businessContent"
-                  placeholder="Business Content"
-                />
-              </div>
-            </div>
-            <small class="ContentError hidden">Please Complete the Field</small>
-
-            <div class="row mb-2">
-              <label
-                for="edit-workLocation"
-                class="col-form-label col-form-label-sm"
-                >Work Location</label
-              >
-              <div>
-                <input
-                  type="text"
-                  class="input work-location"
-                  id="edit-workLocation"
-                  placeholder="Work Location"
-                />
-              </div>
-            </div>
-            <small class="LocError hidden">Please Complete the Field</small>
-
-            <div class="edit-wh-error"></div>
           </div>
-        </div>
+          <small class="compNameError hidden">Please Complete the Field</small>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-wh-cancel btn-secondary">
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn btn-success fw-medium"
-            id="btn-updateWorkEntry"
-            e-wh-id="0"
-          >
-            Save Changes
-          </button>
+          <div class="MYDates mb-2 d-flex flex-row">
+            <div class="col-sm-6">
+              <label for="edit-StartMonthYear" class="col-form-label col-form-label-sm">Start Month and Year</label>
+              <input type="month" class="input add-start-year" id="edit-StartMonthYear" min="1900-01" max="2025-12" />
+            </div>
+            <div class="col-sm-6">
+              <label for="edit-EndMonthYear" class="col-form-label col-form-label-sm">End Month and Year</label>
+              <input type="month" class="input add-start-year" id="edit-EndMonthYear" min="1900-01" max="2025-12" />
+            </div>
+          </div>
+          <small class="dateError hidden">Please Complete the Field</small>
+
+          <div class="row mb-2">
+            <label for="edit-companyBusiness" class="col-form-label col-form-label-sm">Company Business</label>
+            <div>
+              <input type="text" class="input company-business" id="edit-companyBusiness"
+                placeholder="Company Business" />
+            </div>
+          </div>
+          <small class="BusiError hidden">Please Complete the Field</small>
+
+          <div class="row mb-2">
+            <label for="edit-businessContent" class="col-form-label col-form-label-sm">Business Content</label>
+            <div>
+              <input type="text" class="input business-content" id="edit-businessContent"
+                placeholder="Business Content" />
+            </div>
+          </div>
+          <small class="ContentError hidden">Please Complete the Field</small>
+
+          <div class="row mb-2">
+            <label for="edit-workLocation" class="col-form-label col-form-label-sm">Work Location</label>
+            <div>
+              <input type="text" class="input work-location" id="edit-workLocation" placeholder="Work Location" />
+            </div>
+          </div>
+          <small class="LocError hidden">Please Complete the Field</small>
+
+          <div class="edit-wh-error"></div>
         </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-wh-cancel btn-secondary">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-success fw-medium" id="btn-updateWorkEntry" e-wh-id="0">
+          Save Changes
+        </button>
       </div>
     </div>
   </div>
+</div>
 
-  <div
-    class="modal fade"
-    id="deleteWorkHistory"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    tabindex="-1"
-    aria-labelledby="staticBackdropLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">
-            Delete Work History Entry
-          </h1>
-          <button
-            type="button"
-            class="btn-wh-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-wh-body">
-          <p class="mb-2">
-            Are you sure you want to delete
-            <span class="fw-semibold" id="selectedEmpWH"></span>'s Work History
-            Entry
-            <span class="fw-semibold"
-              >no. <span id="storeWorkId" del-work-id="0"></span
-            ></span>
-            ?
-          </p>
-        </div>
+<div class="modal fade" id="deleteWorkHistory" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">
+          Delete Work History Entry
+        </h1>
+        <button type="button" class="btn-wh-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-wh-body">
+        <p class="mb-2">
+          Are you sure you want to delete
+          <span class="fw-semibold" id="selectedEmpWH"></span>'s Work History
+          Entry
+          <span class="fw-semibold">no. <span id="storeWorkId" del-work-id="0"></span></span>
+          ?
+        </p>
+      </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-wh-cancel btn-secondary">
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn btn-danger fw-medium"
-            id="btn-deleteWorkHistory"
-          >
-            Delete
-          </button>
-        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-wh-cancel btn-secondary">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger fw-medium" id="btn-deleteWorkHistory">
+          Delete
+        </button>
       </div>
     </div>
   </div>
-  <!-- #endregion workhistory -->
+</div>
+<!-- #endregion workhistory -->
 
-  <!-- #endregion modal-->
+<!-- #endregion modal-->
 
-  <body>
-    <div class="toastBox"></div>
-    <div class="position-relative flex h-screen">
-      <div class="navigation">
-        <div
-          class="title p-3 d-flex justify-content-between align-items-center"
-        >
-          <div class="w-full h-[36px] px-[.75rem]">
-            <img src="../images/pcs logo bold.png" alt="logo" class="h-full" />
-          </div>
-          <div
-            id="closeNav"
-            class="justify-content-center align-items-center m-0"
-          >
-            <i class="bx bx-x fs-3"></i>
-          </div>
+<body>
+  <div class="toastBox"></div>
+  <div class="position-relative flex h-screen">
+    <div class="navigation">
+      <div class="title p-3 d-flex justify-content-between align-items-center">
+        <div class="w-full h-[36px] px-[.75rem]">
+          <img src="../images/pcs logo bold.png" alt="logo" class="h-full" />
         </div>
-        <nav class="flex flex-col justify-content-between h-[calc(100%-63px)]">
-          <section>
-            <ul class="list-unstyled d-grid gap-2">
-              <a href="../"
-                ><li>
-                  <div class="d-flex align-items-center gap-2">
-                    <i class="bx bxs-dashboard"></i>
-                    <p>Dashboard</p>
-                  </div>
-                </li></a
-              >
-              <a href="../requestList/"
-                ><li>
-                  <div class="d-flex align-items-center gap-2">
-                    <i class="bx bx-task text-[18px]"></i>
-                    <p>Request List</p>
-                  </div>
-                </li></a
-              >
-              <a href="../changeRequests/"
-                ><li>
-                  <div class="d-flex align-items-center gap-2">
-                    <span
-                      class="inline-flex h-4 w-4 shrink-0 items-center justify-center"
-                      aria-hidden="true"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="block h-full w-full"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        focusable="false"
-                      >
-                        <path
-                          d="M18.71 5.29a.996.996 0 0 0-1.41 0l-11 11a1 1 0 0 0-.29.71v3c0 .55.45 1 1 1h3c.27 0 .52-.11.71-.29l11-11a.996.996 0 0 0 0-1.41l-3-3ZM9.59 19H8v-1.59l7.5-7.5 1.59 1.59zm8.91-8.91L16.91 8.5 18 7.41 19.59 9zm-10.73.06C9.5 8.72 11 7.49 11 6c0-3.81-7.5-4-9-4v2c3.31 0 7 .83 7 2 0 .54-1.51 1.78-2.5 2.6-2.06 1.7-4.4 3.63-4.24 6.07.09 1.4 1 2.67 2.74 3.86V17c0-.3.07-.59.2-.85-.59-.56-.91-1.1-.94-1.61-.09-1.41 1.83-3 3.52-4.39Z"
-                        ></path>
-                      </svg>
-                    </span>
-                    <p>Change Requests</p>
-                  </div>
-                </li></a
-              >
-              <a href="../checkAvailability/"
-                ><li>
-                  <div class="d-flex align-items-center gap-2">
-                    <i class="bx bxs-briefcase"></i>
-                    <p>Dispatch Request</p>
-                  </div>
-                </li></a
-              >
-              <a href="../empList/"
-                ><li class="active">
-                  <div class="d-flex align-items-center gap-2">
-                    <i class="bx bxs-group"></i>
-                    <p>Employee List</p>
-                  </div>
-                </li></a
-              >
-              <a href="../report/"
-                ><li>
-                  <div class="d-flex align-items-center gap-2">
-                    <i class="bx bxs-report"></i>
-                    <p>Report</p>
-                  </div>
-                </li></a
-              >
-            </ul>
-          </section>
-          <section class="grid gap-2">
-            <li class="bg-[var(--main)] hover:bg-green-100">
-              <div class="flex gap-2 items-center">
-                <div
-                  class="bg-[var(--secondary)] rounded-full h-[45px] w-[45px] min-w-[45px] flex justify-content-center items-center"
-                  id="empInitials"
-                >
-                  BK
+        <div id="closeNav" class="justify-content-center align-items-center m-0">
+          <i class="bx bx-x fs-3"></i>
+        </div>
+      </div>
+      <nav class="flex flex-col justify-content-between h-[calc(100%-63px)]">
+        <section>
+          <ul class="list-unstyled d-grid gap-2">
+            <a href="../">
+              <li>
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bx bxs-dashboard"></i>
+                  <p>Dashboard</p>
                 </div>
-
-                <div class="w-full">
-                  <div class="" id="empLabel">Boglin Kit</div>
-                  <div
-                    class="text-uppercase text-[10px] text-gray-400"
-                    id="grpLabel"
-                  >
-                    Systems group
-                  </div>
+              </li>
+            </a>
+            <a href="../requestList/">
+              <li>
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bx bx-task text-[18px]"></i>
+                  <p>Request List</p>
                 </div>
+              </li>
+            </a>
+            <a href="../changeRequests/">
+              <li>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="inline-flex h-4 w-4 shrink-0 items-center justify-center" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="block h-full w-full" fill="currentColor"
+                      viewBox="0 0 24 24" focusable="false">
+                      <path
+                        d="M18.71 5.29a.996.996 0 0 0-1.41 0l-11 11a1 1 0 0 0-.29.71v3c0 .55.45 1 1 1h3c.27 0 .52-.11.71-.29l11-11a.996.996 0 0 0 0-1.41l-3-3ZM9.59 19H8v-1.59l7.5-7.5 1.59 1.59zm8.91-8.91L16.91 8.5 18 7.41 19.59 9zm-10.73.06C9.5 8.72 11 7.49 11 6c0-3.81-7.5-4-9-4v2c3.31 0 7 .83 7 2 0 .54-1.51 1.78-2.5 2.6-2.06 1.7-4.4 3.63-4.24 6.07.09 1.4 1 2.67 2.74 3.86V17c0-.3.07-.59.2-.85-.59-.56-.91-1.1-.94-1.61-.09-1.41 1.83-3 3.52-4.39Z">
+                      </path>
+                    </svg>
+                  </span>
+                  <p>Change Requests</p>
+                </div>
+              </li>
+            </a>
+      
+            <a href="../checkAvailability/">
+              <li>
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bx bxs-briefcase"></i>
+                  <p>Dispatch Request</p>
+                </div>
+              </li>
+            </a>
+            <a href="../empList/">
+              <li class="active">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bx bxs-group"></i>
+                  <p>Employee List</p>
+                </div>
+              </li>
+            </a>
+            <a href="../report/">
+              <li>
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bx bxs-report"></i>
+                  <p>Report</p>
+                </div>
+              </li>
+            </a>
+          </ul>
+        </section>
+        <section class="grid gap-2">
+          <li class="bg-[var(--main)] hover:bg-green-100">
+            <div class="flex gap-2 items-center">
+              <div
+                class="bg-[var(--secondary)] rounded-full h-[45px] w-[45px] min-w-[45px] flex justify-content-center items-center"
+                id="empInitials">
+                BK
+              </div>
+
+              <div class="w-full">
+                <div class="" id="empLabel">Boglin Kit</div>
+                <div class="text-uppercase text-[10px] text-gray-400" id="grpLabel">
+                  Systems group
+                </div>
+              </div>
+            </div>
+          </li>
+          <a href="#" id="portalBtn">
+            <li>
+              <div class="d-flex align-items-center gap-2">
+                <i class="bx bx-home-alt"></i>
+                <p>KDT Portal</p>
               </div>
             </li>
-            <a href="#" id="portalBtn"
-              ><li>
-                <div class="d-flex align-items-center gap-2">
-                  <i class="bx bx-home-alt"></i>
-                  <p>KDT Portal</p>
-                </div>
-              </li></a
-            >
-            <div class="relative">
-              <p
-                class="absolute bottom-[-10px] text-[var(--gray-text)] text-xs"
-              >
-                ©2024 KDT.トラベる v1.0.0
-              </p>
-            </div>
-          </section>
-        </nav>
-      </div>
-      <div class="content h-screen">
-        <div
-          class="flex flex-col gap-3 overflow-auto p-[14px] md:p-8 h-full w-full"
-        >
-          <div class="pageTitle w-100 gap-3 flex">
-            <div id="menu">
-              <i class="bx bx-menu-alt-left fs-3"></i>
-            </div>
-            <h1 class="fw-semibold m-0">Employee Details</h1>
+          </a>
+          <div class="relative">
+            <p class="absolute bottom-[-10px] text-[var(--gray-text)] text-xs">
+              ©2024 KDT.トラベる v1.0.0
+            </p>
           </div>
+        </section>
+      </nav>
+    </div>
+    <div class="content h-screen">
+      <div class="flex flex-col gap-3 overflow-auto p-[14px] md:p-8 h-full w-full">
+        <div class="pageTitle w-100 gap-3 flex">
+          <div id="menu">
+            <i class="bx bx-menu-alt-left fs-3"></i>
+          </div>
+          <h1 class="fw-semibold m-0">Employee Details</h1>
+        </div>
 
-          <div class="main w-100 h-[calc(100%-30px)] flex flex-col">
-            <div class="w-100 flex back">
-              <a href="../empList/" class="d-flex align-items-center">
-                <i class="bx bx-arrow-back fs-5"></i>
-                <span class="ps-2">Go back to Employee List</span>
-              </a>
-            </div>
-            <div class="xl:h-[calc(100%-42px)] flex xl:flex-row flex-col gap-3">
-              <div class="left w-full h-full flex gap-4 flex-column h-100">
-                <div class="top d-flex gap-3">
-                  <div
-                    class="w-[125px] h-[125px] lg:w-[200px] lg:h-[200px] pic"
-                  >
-                    <img src="" alt="employee pic" id="empPic" />
+        <div class="main w-100 h-[calc(100%-30px)] flex flex-col">
+          <div class="w-100 flex back">
+            <a href="../empList/" class="d-flex align-items-center">
+              <i class="bx bx-arrow-back fs-5"></i>
+              <span class="ps-2">Go back to Employee List</span>
+            </a>
+          </div>
+          <div class="xl:h-[calc(100%-42px)] flex xl:flex-row flex-col gap-3">
+            <div class="left w-full h-full flex gap-4 flex-column h-100">
+              <div class="top d-flex gap-3">
+                <div class="w-[125px] h-[125px] lg:w-[200px] lg:h-[200px] pic">
+                  <img src="" alt="employee pic" id="empPic" />
+                </div>
+
+                <div class="personal d-flex flex-column">
+                  <div class="empId">
+                    Employee Id.
+                    <span id="empId" class="font-bold text-inherit"></span>
                   </div>
 
-                  <div class="personal d-flex flex-column">
-                    <div class="empId">
-                      Employee Id.
-                      <span id="empId" class="font-bold text-inherit"></span>
+                  <div class="empName">
+                    <div
+                      class="surname text-uppercase leading-[35px] text-[30px] md:leading-[50px] md:text-[45px] xl:leading-[65px] xl:text-[60px] fw-bold">
                     </div>
-
-                    <div class="empName">
-                      <div
-                        class="surname text-uppercase leading-[35px] text-[30px] md:leading-[50px] md:text-[45px] xl:leading-[65px] xl:text-[60px] fw-bold"
-                      ></div>
-                      <div
-                        class="givenname text-uppercase leading-[35px] text-[30px] md:leading-[50px] md:text-[45px] xl:leading-[65px] xl:text-[60px]"
-                      ></div>
+                    <div
+                      class="givenname text-uppercase leading-[35px] text-[30px] md:leading-[50px] md:text-[45px] xl:leading-[65px] xl:text-[60px]">
                     </div>
                   </div>
                 </div>
-                <div class="mid d-flex">
-                  <div class="d-flex totalThisYear flex-column gap-3 p-3 w-100">
-                    <div class="label fw-medium">
-                      Total Days of Dispatch this Year
-                    </div>
-                    <div>
-                      <div class="count" id="dCount">0 days</div>
+              </div>
+              <div class="mid d-flex">
+                <div class="d-flex totalThisYear flex-column gap-3 p-3 w-100">
+                  <div class="label fw-medium">
+                    Total Days of Dispatch this Year
+                  </div>
+                  <div>
+                    <div class="count" id="dCount">0 days</div>
 
-                      <div class="prog-cont">
-                        <div class="progress mb-1" role="progressbar">
-                          <div
-                            id="progBar"
-                            class="progress-bar progress-bar-striped bg-danger"
-                            style="width: 0%"
-                          ></div>
-                        </div>
-                        <small id="daysWarning" class="d-none"
-                          ><i
-                            class="bx bx-error-circle"
-                            style="vertical-align: middle"
-                          ></i
-                          ><span class="ps-1"
-                            >Warning: Total dispatch days already exceeded 183
-                            days for this year.</span
-                          ></small
-                        >
+                    <div class="prog-cont">
+                      <div class="progress mb-1" role="progressbar">
+                        <div id="progBar" class="progress-bar progress-bar-striped bg-danger" style="width: 0%"></div>
                       </div>
+                      <small id="daysWarning" class="d-none"><i class="bx bx-error-circle"
+                          style="vertical-align: middle"></i><span class="ps-1">Warning: Total dispatch days already
+                          exceeded 183
+                          days for this year.</span></small>
                     </div>
                   </div>
                 </div>
-                <div
-                  class="bot h-full flex flex-column"
-                  style="height: calc(100%-450px)"
-                >
-                  <div
-                    class="d-flex justify-content-between align-items-center header"
-                  >
-                    <div class="title">Japan Dispatch History</div>
-                    <div>
-                      <button class="btn btn-success" id="btnExport">
-                        Export table
-                      </button>
-                    </div>
-                  </div>
-                  <div class="table-cont overflow-auto">
-                    <table class="table" id="histTable">
-                      <thead class="sticky-top">
-                        <tr>
-                          <th data-exclude="true" data-b-a-s="thin">No.</th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            Location
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            Date to Japan
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            Date to Philippines
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            No. of Days
-                          </th>
-                          <th data-exclude="true"></th>
-                        </tr>
-                      </thead>
-                      <tbody id="dList"></tbody>
-                    </table>
+              </div>
+              <div class="bot h-full flex flex-column" style="height: calc(100%-450px)">
+                <div class="d-flex justify-content-between align-items-center header">
+                  <div class="title">Japan Dispatch History</div>
+                  <div>
+                    <button class="btn btn-success" id="btnExport">
+                      Export table
+                    </button>
                   </div>
                 </div>
-                <div class="work-hist h-full pb-3 xl:pb-0">
-                  <div class="top flex justify-content-between header">
-                    <div class="wh title">Work History (Maximum 3)</div>
-                    <!-- <div>
+                <div class="table-cont overflow-auto">
+                  <table class="table" id="histTable">
+                    <thead class="sticky-top">
+                      <tr>
+                        <th data-exclude="true" data-b-a-s="thin">No.</th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000">
+                          Location
+                        </th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000">
+                          Date to Japan
+                        </th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000">
+                          Date to Philippines
+                        </th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000">
+                          No. of Days
+                        </th>
+                        <th data-exclude="true"></th>
+                      </tr>
+                    </thead>
+                    <tbody id="dList"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="work-hist h-full pb-3 xl:pb-0">
+                <div class="top flex justify-content-between header">
+                  <div class="wh title">Work History (Maximum 3)</div>
+                  <!-- <div>
                       <button class="btn btn-success bg-[var(--darkest)]" id="btnExportss">
                         Export table
                       </button>
                     </div> -->
-                  </div>
-                  <div class="table-cont overflow-auto min-h-[300px]">
-                    <table
-                      class="table min-w-[1100px] lg:min-w-full"
-                      id="workhistTable"
-                    >
-                      <thead class="sticky top-0 bg-gray-200">
-                        <tr>
-                          <th data-exclude="true" rowspan="2">No.</th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                            colspan="2"
-                          >
-                            Start
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                            colspan="2"
-                          >
-                            End
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                            rowspan="2"
-                          >
-                            Company's Name
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                            rowspan="2"
-                          >
-                            Company's Business
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                            rowspan="2"
-                          >
-                            Business Content
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                            rowspan="2"
-                          >
-                            Work Location
-                          </th>
+                </div>
+                <div class="table-cont overflow-auto min-h-[300px]">
+                  <table class="table min-w-[1100px] lg:min-w-full" id="workhistTable">
+                    <thead class="sticky top-0 bg-gray-200">
+                      <tr>
+                        <th data-exclude="true" rowspan="2">No.</th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000" colspan="2">
+                          Start
+                        </th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000" colspan="2">
+                          End
+                        </th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000" rowspan="2">
+                          Company's Name
+                        </th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000" rowspan="2">
+                          Company's Business
+                        </th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000" rowspan="2">
+                          Business Content
+                        </th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000" rowspan="2">
+                          Work Location
+                        </th>
 
-                          <th data-exclude="true" rowspan="2"></th>
-                        </tr>
-                        <tr>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            Year
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            Month
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            Year
-                          </th>
-                          <th
-                            data-f-name="Arial"
-                            data-f-sz="9"
-                            data-f-bold="true"
-                            data-a-h="center"
-                            data-a-v="middle"
-                            data-b-a-s="thin"
-                            data-b-a-c="000000"
-                          >
-                            Month
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody id="wList">
-                        <tr>
-                          <td colspan="10" class="text-center">
-                            No data found
-                          </td>
-                        </tr>
-                        <tr>
-                          <td colspan="10" class="add-work text-center">
-                            + Add New Item
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                        <th data-exclude="true" rowspan="2"></th>
+                      </tr>
+                      <tr>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000">
+                          Year
+                        </th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000">
+                          Month
+                        </th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000">
+                          Year
+                        </th>
+                        <th data-f-name="Arial" data-f-sz="9" data-f-bold="true" data-a-h="center" data-a-v="middle"
+                          data-b-a-s="thin" data-b-a-c="000000">
+                          Month
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody id="wList">
+                      <tr>
+                        <td colspan="10" class="text-center">
+                          No data found
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="10" class="add-work text-center">
+                          + Add New Item
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="right pb-[20px] xl:pb-0 h-full d-flex gap-3 w-full xl:w-[400px]">
+              <div class="w-full xl:w-[400px] card">
+                <div class="card-body">
+                  <h5 class="card-title text-capitalize">
+                    Total dispatch days per year
+                  </h5>
+
+                  <div class="card-content">
+                    <ul class="list-unstyled gap-3 d-grid m-0">
+                      <li>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span class="fw-medium">Previous Year (<span id="y1">2023</span>)</span>
+                          <span class="totalDays" id="y1-days">269</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span class="fw-medium">Current Year (<span id="y2">2024</span>)</span>
+                          <span class="totalDays" id="y2-days">213</span>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span class="fw-medium">Next Year (<span id="y3">2025</span>)</span>
+                          <span class="totalDays" id="y3-days">210</span>
+                        </div>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
-              <div
-                class="right pb-[20px] xl:pb-0 h-full d-flex gap-3 w-full xl:w-[400px]"
-              >
-                <div class="w-full xl:w-[400px] card">
-                  <div class="card-body">
-                    <h5 class="card-title text-capitalize">
-                      Total dispatch days per year
-                    </h5>
+              <div class="w-full xl:w-[400px] card">
+                <div class="card-body">
+                  <h5 class="card-title">Latest Passport</h5>
 
-                    <div class="card-content">
-                      <ul class="list-unstyled gap-3 d-grid m-0">
-                        <li>
-                          <div
-                            class="d-flex justify-content-between align-items-center"
-                          >
-                            <span class="fw-medium"
-                              >Previous Year (<span id="y1">2023</span>)</span
-                            >
-                            <span class="totalDays" id="y1-days">269</span>
-                          </div>
-                        </li>
-                        <li>
-                          <div
-                            class="d-flex justify-content-between align-items-center"
-                          >
-                            <span class="fw-medium"
-                              >Current Year (<span id="y2">2024</span>)</span
-                            >
-                            <span class="totalDays" id="y2-days">213</span>
-                          </div>
-                        </li>
-                        <li>
-                          <div
-                            class="d-flex justify-content-between align-items-center"
-                          >
-                            <span class="fw-medium"
-                              >Next Year (<span id="y3">2025</span>)</span
-                            >
-                            <span class="totalDays" id="y3-days">210</span>
-                          </div>
-                        </li>
-                      </ul>
+                  <div class="card-content">
+                    <div id="passDeets" class="pass d-none">
+                      <div class="row">
+                        <label for="passStatus" class="col-4 col-form-label">Validity</label>
+                        <div class="col-8 d-flex align-items-center justify-end">
+                          <!-- <span class="badge bg-success" id="passStatus">Valid</span> -->
+                          <span class="badge bg-danger" id="passStatus">Expired</span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <label for="passNo" class="col-4 col-form-label">Passport no.</label>
+                        <div class="col-8 d-flex align-items-center justify-end">
+                          <span class="" id="passNo"></span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <label for="passBday" class="col-4 col-form-label">Birth date</label>
+                        <div class="col-8 d-flex align-items-center justify-end">
+                          <span class="" id="passBday"></span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <label for="passIssue" class="col-4 col-form-label">Date issue</label>
+                        <div class="col-8 d-flex align-items-center justify-end">
+                          <span class="" id="passIssue"></span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <label for="passExp" class="col-4 col-form-label">Valid until</label>
+                        <div class="col-8 d-flex align-items-center justify-end">
+                          <span class="" id="passExp"></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="passEmpty"
+                      class="emptyState-pass w-100 p-3 d-flex justify-content-center align-items-center flex-column">
+                      <img src="../images/passport.png" alt="" style="width: 100px" />
+                      <span class="fw-semibold p-3">No Passport found.</span>
                     </div>
                   </div>
                 </div>
-                <div class="w-full xl:w-[400px] card">
-                  <div class="card-body">
-                    <h5 class="card-title">Latest Passport</h5>
+                <div class="editThis" data-bs-target="#updatePass" data-bs-toggle="modal">
+                  <i class="bx bx-refresh"></i>
+                  <h1>Update Passport</h1>
+                </div>
+              </div>
+              <div class="w-full xl:w-[400px] card">
+                <div class="card-body">
+                  <h5 class="card-title">Latest Japan Visa</h5>
 
-                    <div class="card-content">
-                      <div id="passDeets" class="pass d-none">
-                        <div class="row">
-                          <label for="passStatus" class="col-4 col-form-label"
-                            >Validity</label
-                          >
-                          <div
-                            class="col-8 d-flex align-items-center justify-end"
-                          >
-                            <!-- <span class="badge bg-success" id="passStatus">Valid</span> -->
-                            <span class="badge bg-danger" id="passStatus"
-                              >Expired</span
-                            >
-                          </div>
-                        </div>
-                        <div class="row">
-                          <label for="passNo" class="col-4 col-form-label"
-                            >Passport no.</label
-                          >
-                          <div
-                            class="col-8 d-flex align-items-center justify-end"
-                          >
-                            <span class="" id="passNo"></span>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <label for="passBday" class="col-4 col-form-label"
-                            >Birth date</label
-                          >
-                          <div
-                            class="col-8 d-flex align-items-center justify-end"
-                          >
-                            <span class="" id="passBday"></span>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <label for="passIssue" class="col-4 col-form-label"
-                            >Date issue</label
-                          >
-                          <div
-                            class="col-8 d-flex align-items-center justify-end"
-                          >
-                            <span class="" id="passIssue"></span>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <label for="passExp" class="col-4 col-form-label"
-                            >Valid until</label
-                          >
-                          <div
-                            class="col-8 d-flex align-items-center justify-end"
-                          >
-                            <span class="" id="passExp"></span>
-                          </div>
+                  <div class="card-content">
+                    <div id="visaDeets" class="visd-none">
+                      <div class="row">
+                        <label for="visaStatus" class="col-4 col-form-label">Validity</label>
+                        <div class="col-8 d-flex align-items-center justify-end">
+                          <span class="badge bg-danger" id="visaStatus">Expired</span>
                         </div>
                       </div>
-                      <div
-                        id="passEmpty"
-                        class="emptyState-pass w-100 p-3 d-flex justify-content-center align-items-center flex-column"
-                      >
-                        <img
-                          src="../images/passport.png"
-                          alt=""
-                          style="width: 100px"
-                        />
-                        <span class="fw-semibold p-3">No Passport found.</span>
+
+                      <div class="row">
+                        <label for="visaNo" class="col-4 col-form-label">Visa no.</label>
+                        <div class="col-8 d-flex align-items-center justify-end">
+                          <span class="" id="visaNo"></span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <label for="visaIssue" class="col-4 col-form-label">Date Issue</label>
+                        <div class="col-8 d-flex align-items-center justify-end">
+                          <span class="" id="visaIssue"></span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <label for="visaExp" class="col-4 col-form-label">Valid until</label>
+                        <div class="col-8 d-flex align-items-center justify-end">
+                          <span class="" id="visaExp"></span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    class="editThis"
-                    data-bs-target="#updatePass"
-                    data-bs-toggle="modal"
-                  >
-                    <i class="bx bx-refresh"></i>
-                    <h1>Update Passport</h1>
-                  </div>
-                </div>
-                <div class="w-full xl:w-[400px] card">
-                  <div class="card-body">
-                    <h5 class="card-title">Latest Japan Visa</h5>
-
-                    <div class="card-content">
-                      <div id="visaDeets" class="visd-none">
-                        <div class="row">
-                          <label for="visaStatus" class="col-4 col-form-label"
-                            >Validity</label
-                          >
-                          <div
-                            class="col-8 d-flex align-items-center justify-end"
-                          >
-                            <span class="badge bg-danger" id="visaStatus"
-                              >Expired</span
-                            >
-                          </div>
-                        </div>
-
-                        <div class="row">
-                          <label for="visaNo" class="col-4 col-form-label"
-                            >Visa no.</label
-                          >
-                          <div
-                            class="col-8 d-flex align-items-center justify-end"
-                          >
-                            <span class="" id="visaNo"></span>
-                          </div>
-                        </div>
-
-                        <div class="row">
-                          <label for="visaIssue" class="col-4 col-form-label"
-                            >Date Issue</label
-                          >
-                          <div
-                            class="col-8 d-flex align-items-center justify-end"
-                          >
-                            <span class="" id="visaIssue"></span>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <label for="visaExp" class="col-4 col-form-label"
-                            >Valid until</label
-                          >
-                          <div
-                            class="col-8 d-flex align-items-center justify-end"
-                          >
-                            <span class="" id="visaExp"></span>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        id="visaEmpty"
-                        class="emptyState-visa w-100 p-3 d-flex justify-content-center align-items-center flex-column"
-                      >
-                        <img
-                          src="../images/visa.png"
-                          alt=""
-                          style="width: 100px"
-                        />
-                        <span class="fw-semibold p-3">No Visa found.</span>
-                      </div>
+                    <div id="visaEmpty"
+                      class="emptyState-visa w-100 p-3 d-flex justify-content-center align-items-center flex-column">
+                      <img src="../images/visa.png" alt="" style="width: 100px" />
+                      <span class="fw-semibold p-3">No Visa found.</span>
                     </div>
                   </div>
-                  <div
-                    class="editThis"
-                    data-bs-target="#updateVisa"
-                    data-bs-toggle="modal"
-                  >
-                    <i class="bx bx-refresh"></i>
-                    <h1>Update Visa</h1>
-                  </div>
                 </div>
-                <div class="w-full xl:w-[400px] card">
-                  <div class="card-body">
-                    <h5 class="card-title">Latest Re-entry Permit</h5>
+                <div class="editThis" data-bs-target="#updateVisa" data-bs-toggle="modal">
+                  <i class="bx bx-refresh"></i>
+                  <h1>Update Visa</h1>
+                </div>
+              </div>
+              <div class="w-full xl:w-[400px] card">
+                <div class="card-body">
+                  <h5 class="card-title">Latest Re-entry Permit</h5>
 
-                    <div class="card-content">
-                      <div id="reentryDeets" class="reentry">
-                        <div class="row">
-                          <label for="reentryStatus" class="col-4 col-form-label">Validity</label>
-                          <div class="col-8 d-flex align-items-center justify-end">
-                            <span class="badge bg-success text-white" id="reentryStatus">Valid</span>
-                          </div>
-                        </div>
-
-                        <div class="row">
-                          <label for="reentryExp" class="col-4 col-form-label">Valid until</label>
-                          <div class="col-8 d-flex align-items-center justify-end">
-                            <span class="" id="reentryExp">08 Oct 2026</span>
-                          </div>
+                  <div class="card-content">
+                    <div id="reentryDeets" class="reentry">
+                      <div class="row">
+                        <label for="reentryStatus" class="col-4 col-form-label">Validity</label>
+                        <div class="col-8 d-flex align-items-center justify-end">
+                          <span class="badge bg-success text-white" id="reentryStatus">Valid</span>
                         </div>
                       </div>
 
-                      <div
-                        id="reentryEmpty"
-                        class="emptyState-reentry w-100 p-3 d-flex justify-content-center align-items-center flex-column d-none"
-                      >
-                        <img src="../images/permit.png" alt="" style="width: 100px" />
-                        <span class="fw-semibold p-3">No Re-entry Permit found.</span>
+                      <div class="row">
+                        <label for="reentryExp" class="col-4 col-form-label">Valid until</label>
+                        <div class="col-8 d-flex align-items-center justify-end">
+                          <span class="" id="reentryExp">08 Oct 2026</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div
-                    class="editThis"
-                    data-bs-target="#updateReentryPermit"
-                    data-bs-toggle="modal"
-                  >
-                    <i class="bx bx-refresh"></i>
-                    <h1>Update Re-entry</h1>
+                    <div id="reentryEmpty"
+                      class="emptyState-reentry w-100 p-3 d-flex justify-content-center align-items-center flex-column d-none">
+                      <img src="../images/permit.png" alt="" style="width: 100px" />
+                      <span class="fw-semibold p-3">No Re-entry Permit found.</span>
+                    </div>
                   </div>
                 </div>
-                              </div>
-                            </div>
+
+                <div class="editThis" data-bs-target="#updateReentryPermit" data-bs-toggle="modal">
+                  <i class="bx bx-refresh"></i>
+                  <h1>Update Re-entry</h1>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>

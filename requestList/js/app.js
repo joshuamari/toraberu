@@ -42,6 +42,7 @@ function initApp() {
       renderHeader(header["data"]);
       renderSalutation(header["data"]);
       initDispatchStatusFilter();
+      renderStatusGuideIcons();
       searchFilter(reqList);
     })
     .catch((error) => {

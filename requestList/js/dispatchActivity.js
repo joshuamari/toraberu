@@ -390,6 +390,52 @@ function buildChangeRequestDeepLinkUrl(event) {
   )}&openChangeRequestId=${encodeURIComponent(String(changeRequestId).trim())}`;
 }
 
+function getActivityChangeRequestBadgeClass(changeRequestType) {
+  const type = String(changeRequestType || "")
+    .trim()
+    .toLowerCase();
+
+  if (type === "cancellation") {
+    return "cancellation";
+  }
+
+  if (
+    type === "date_change" ||
+    type === "datechange" ||
+    type === "date-change"
+  ) {
+    return "date-change";
+  }
+
+  return "";
+}
+
+function formatActivityChangeRequestDisplayId(event) {
+  const reference = String(event?.changeRequestReference || "").trim();
+  if (reference) {
+    return reference;
+  }
+
+  const changeRequestId = String(event?.changeRequestId || "").trim();
+  if (!changeRequestId) {
+    return "";
+  }
+
+  const badgeClass = getActivityChangeRequestBadgeClass(
+    event?.changeRequestType,
+  );
+
+  if (badgeClass === "cancellation") {
+    return `CR-${changeRequestId.padStart(5, "0")}`;
+  }
+
+  if (badgeClass === "date-change") {
+    return `DC-${changeRequestId.padStart(5, "0")}`;
+  }
+
+  return "";
+}
+
 function escapeActivityHtml(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -407,9 +453,10 @@ function buildActivityEventMarkup(event) {
   );
   const actorText = getActivityActorText(event);
   const description = String(event?.description || "").trim();
-  const reference = String(
-    event?.changeRequestReference || event?.changeRequestId || "",
-  ).trim();
+  const displayId = formatActivityChangeRequestDisplayId(event);
+  const badgeClass = getActivityChangeRequestBadgeClass(
+    event?.changeRequestType,
+  );
   const deepLinkUrl = buildChangeRequestDeepLinkUrl(event);
 
   let actorMarkup = "";
@@ -427,18 +474,12 @@ function buildActivityEventMarkup(event) {
   }
 
   let referenceMarkup = "";
-  if (reference && deepLinkUrl) {
-    const linkClass =
-      "underline decoration-2 decoration-[var(--secondary)] text-[var(--dark)] hover:text-[var(--tertiary)] transition";
+  if (displayId && badgeClass && deepLinkUrl) {
     referenceMarkup = `<p class="dispatch-activity-reference"><a href="${escapeActivityHtml(
       deepLinkUrl,
-    )}" target="_blank" rel="noopener noreferrer" class="${linkClass}">${escapeActivityHtml(
-      reference,
-    )}</a></p>`;
-  } else if (reference) {
-    referenceMarkup = `<p class="dispatch-activity-reference">${escapeActivityHtml(
-      reference,
-    )}</p>`;
+    )}" class="activity-id-badge ${badgeClass}" aria-label="Open ${escapeActivityHtml(
+      displayId,
+    )}">${escapeActivityHtml(displayId)}</a></p>`;
   }
 
   return `

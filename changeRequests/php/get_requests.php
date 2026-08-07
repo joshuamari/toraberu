@@ -4,6 +4,8 @@ require_once '../../dbconn/dbconnectnew.php';
 require_once '../../dbconn/dbconnectpcs.php';
 require_once '../../dbconn/dbconnectkdtph.php';
 require_once '../../global/globalFunctions.php';
+require_once '../../helpers/env.php';
+require_once '../../helpers/reentry_permit.php';
 #endregion
 
 #region set timezone
@@ -63,7 +65,10 @@ try {
             `gl`.name AS group_name,
             `gll`.name AS requester_group,
             `pd`.passport_expiry,
-            `vd`.visa_expiry
+            `vd`.visa_expiry,
+            `rd`.emp_number AS reentry_emp_id,
+            `rd`.permit_expiry,
+            `rd`.on_process AS reentry_on_process
         FROM `pcosdb`.request_change_list rcl
         JOIN `pcosdb`.request_list rl
             ON `rl`.request_id = `rcl`.request_id
@@ -81,6 +86,8 @@ try {
             ON `rl`.location_id = `ll`.location_id
         LEFT JOIN `visa_details` vd
             ON `vd`.emp_number = `el`.id
+        LEFT JOIN `reentry_permit_details` rd
+            ON `rd`.emp_number = `el`.id
         WHERE `rl`.emp_number != 0
         $membersStatement
         ORDER BY `rcl`.requested_at DESC";
@@ -108,6 +115,11 @@ try {
             $visaExp = $req['visa_expiry'];
             $passValidity = $passExp && strtotime($passExp) >= strtotime($originalEnd);
             $visaValidity = $visaExp && strtotime($visaExp) >= strtotime($originalEnd);
+            $reentryStatus = resolveReentryPermitStatus(
+                $req['reentry_emp_id'] !== null && $req['reentry_emp_id'] !== '',
+                $req['reentry_on_process'] ?? 0,
+                $req['permit_expiry'] ?? null
+            );
 
             if ($changeType === 'date_change') {
                 $prefix = 'DC';
@@ -141,6 +153,7 @@ try {
                 "status" => $status,
                 "passValid" => (bool)$passValidity,
                 "visaValid" => (bool)$visaValidity,
+                "reentryStatus" => $reentryStatus,
                 "modified" => $req['date_modified'],
             ];
 

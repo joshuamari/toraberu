@@ -1,152 +1,4 @@
 //#region UI
-function fillDispatchList(dlist) {
-  const tableBody = $("#dlist");
-  tableBody.empty();
-
-  if (dlist.length === 0) {
-    const noDataRow = $("<tr>").append(
-      $("<td>").attr("colspan", "7").text("No data found"),
-    );
-    tableBody.append(noDataRow);
-    return;
-  }
-
-  $.each(dlist, function (index, item) {
-    let passClass = "bg-danger";
-    let passVal = "Invalid";
-
-    let visaClass = "bg-danger";
-    let visaVal = "Invalid";
-
-    let reentryClass = "bg-danger";
-    let reentryVal = "Invalid";
-
-    if (item.passportStatus === "on_process") {
-      passClass = "bg-warning text-dark";
-      passVal = "On Process";
-    } else if (item.passportStatus === "valid") {
-      passClass = "bg-success";
-      passVal = "Valid";
-    } else if (item.passportStatus === "valid_expiring") {
-      passClass = "bg-info"; // change color later if needed
-      passVal = "Valid";
-    }
-
-    if (item.visaStatus === "on_process") {
-      visaClass = "bg-warning text-dark";
-      visaVal = "On Process";
-    } else if (item.visaStatus === "valid") {
-      visaClass = "bg-success";
-      visaVal = "Valid";
-    } else if (item.visaStatus === "valid_expiring") {
-      visaClass = "bg-info"; // change color later if needed
-      visaVal = "Valid";
-    }
-
-    if (item.reentryStatus === "on_process") {
-      reentryClass = "bg-warning text-dark";
-      reentryVal = "On Process";
-    } else if (item.reentryStatus === "valid") {
-      reentryClass = "bg-success";
-      reentryVal = "Valid";
-    } else if (item.reentryStatus === "valid_expiring") {
-      reentryClass = "bg-info"; // change color later if needed
-      reentryVal = "Valid";
-    }
-
-    const row = $("<tr>");
-    row.append($("<td>").text(item.name));
-    row.append($("<td>").text(item.location));
-    row.append($("<td>").text(item.from));
-    row.append($("<td>").text(item.to));
-    row.append(
-      $("<td>").append(
-        $("<span>").addClass(`badge ${passClass}`).text(passVal),
-      ),
-    );
-    row.append(
-      $("<td>").append(
-        $("<span>").addClass(`badge ${visaClass}`).text(visaVal),
-      ),
-    );
-    row.append(
-      $("<td>").append(
-        $("<span>").addClass(`badge ${reentryClass}`).text(reentryVal),
-      ),
-    );
-
-    tableBody.append(row);
-  });
-}
-
-function fillPassport(eplist) {
-  const tableBody = $("#eplist");
-  tableBody.empty();
-
-  if (eplist.length === 0) {
-    const noDataRow = $("<tr>").append(
-      $("<td>")
-        .attr("colspan", "2")
-        .addClass("text-center")
-        .text("No expiring passports"),
-    );
-    tableBody.append(noDataRow);
-    return;
-  }
-
-  $.each(eplist, function (index, item) {
-    const untilText = formatDays(item.until);
-    const isShort = item.until < 300 ? "short" : "";
-
-    const row = $("<tr>")
-      .addClass("rowEmp")
-      .attr("data-emp-id", item.id);
-
-    row.append($("<td>").text(item.name));
-    row.append(
-      $("<td>")
-        .addClass(`expire ${isShort}`.trim())
-        .text(untilText),
-    );
-
-    tableBody.append(row);
-  });
-}
-
-function fillVisa(evlist) {
-  const tableBody = $("#evlist");
-  tableBody.empty();
-
-  if (evlist.length === 0) {
-    const noDataRow = $("<tr>").append(
-      $("<td>")
-        .attr("colspan", "2")
-        .addClass("text-center")
-        .text("No expiring visas"),
-    );
-    tableBody.append(noDataRow);
-    return;
-  }
-
-  $.each(evlist, function (index, item) {
-    const untilText = formatDays(item.until);
-    const isShort = item.until < 210 ? "short" : "";
-
-    const row = $("<tr>")
-      .addClass("rowEmp")
-      .attr("data-emp-id", item.id);
-
-    row.append($("<td>").text(item.name));
-    row.append(
-      $("<td>")
-        .addClass(`expire ${isShort}`.trim())
-        .text(untilText),
-    );
-
-    tableBody.append(row);
-  });
-}
-
 function fillEmployeeDetails() {
   const fName = capitalizeWord(empDetails.empname.firstname);
   const sName = capitalizeWord(empDetails.empname.surname);
@@ -156,5 +8,210 @@ function fillEmployeeDetails() {
   $("#empLabel").text(`${fName} ${sName}`);
   $("#empInitials").text(initials);
   $("#grpLabel").text(grpName);
+}
+
+function fillSummaryCards(year, options) {
+  const hasChangeData = !!(options && options.hasChangeData);
+
+  $("#cardActiveDispatches").text(String(dashboardDispatchList.length));
+
+  if (reqAccess) {
+    const statusCounts = getDispatchStatusCounts(dashboardRequestList);
+    $("#cardPendingDispatch").text(String(statusCounts.pending));
+    $("#cardCompletedYear").text(
+      String(countCompletedThisYear(dashboardRequestList, year)),
+    );
+  } else {
+    $("#cardPendingDispatch").text("—");
+    $("#cardCompletedYear").text("—");
+  }
+
+  if (hasChangeData) {
+    $("#cardPendingChange").text(
+      String(
+        countPendingChangeRequests(
+          dashboardCancellations,
+          dashboardDateChanges,
+        ),
+      ),
+    );
+  } else {
+    $("#cardPendingChange").text("—");
+  }
+
+  $(".crrntYear").text(`(${year})`);
+  $("#completedYearValue").text(String(year));
+}
+
+function fillDocumentAlerts() {
+  const $list = $("#documentAlertsList");
+  $list.empty();
+
+  const alerts = buildDocumentAlerts(
+    dashboardPassportAlerts,
+    dashboardVisaAlerts,
+    dashboardDispatchList,
+  );
+
+  if (!alerts.length) {
+    $list.html(
+      `<p class="dashboard-alerts-empty">No document alerts found.</p>`,
+    );
+    return;
+  }
+
+  alerts.forEach((alert) => {
+    const typeMeta = getDocumentAlertTypeMeta(alert.documentType);
+    const empId = resolveDocumentAlertEmployeeId(alert);
+    const isNavigable = empId !== null && empId !== undefined && empId !== "";
+
+    const $row = $(`
+      <div class="dashboard-alert-row${isNavigable ? "" : " is-static"}" ${
+        isNavigable ? 'role="button" tabindex="0"' : ""
+      }>
+        <span class="alert-icon" aria-hidden="true">
+          <i></i>
+        </span>
+        <div class="alert-body">
+          <div class="alert-top">
+            <p class="alert-name"></p>
+            <span class="dashboard-alert-severity"></span>
+          </div>
+          <div class="alert-issue-row">
+            <span class="alert-doc-type"></span>
+            <p class="alert-issue"></p>
+          </div>
+          <p class="alert-meta"></p>
+        </div>
+      </div>
+    `);
+
+    $row
+      .find(".alert-icon i")
+      .attr("class", typeMeta.iconClass)
+      .attr("aria-label", typeMeta.label);
+    $row.attr("data-document-type", alert.documentType || "");
+    $row.find(".alert-name").text(alert.name || "—");
+    $row.find(".alert-doc-type").text(typeMeta.label);
+    $row.find(".alert-issue").text(alert.issue);
+    $row.find(".alert-meta").text(alert.meta);
+    $row
+      .find(".dashboard-alert-severity")
+      .addClass(alert.severity)
+      .text(alert.severity);
+
+    if (isNavigable) {
+      $row.attr("data-emp-id", empId);
+    }
+
+    $list.append($row);
+  });
+}
+
+function fillActivityTablePage() {
+  const $body = $("#activityTableBody");
+  $body.empty();
+
+  const pagination = renderPaginationBar(
+    $("#activityPagination"),
+    activityPaginationState,
+    "activities",
+  );
+
+  activityPaginationState.currentPage = pagination.currentPage;
+
+  const pageItems = dashboardActivityItems.slice(
+    pagination.startIndex,
+    pagination.endIndex,
+  );
+
+  if (!pageItems.length) {
+    $body.append(`
+      <tr>
+        <td colspan="6">
+          <div class="py-4 text-center text-[var(--gray-text)]">
+            No recent activity found.
+          </div>
+        </td>
+      </tr>
+    `);
+    return;
+  }
+
+  pageItems.forEach((item) => {
+    const typeClass =
+      item.type === "cancellation"
+        ? "cancellation"
+        : item.type === "date_change"
+          ? "date-change"
+          : "dispatch";
+
+    const $row = $(`
+      <tr data-activity-type="${item.type}" data-activity-id="${item.id}">
+        <td>
+          <span class="activity-id-badge ${typeClass}"></span>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    `);
+
+    $row.find(".activity-id-badge").text(item.displayId);
+    $row.children().eq(1).text(item.empName || "—");
+    $row.children().eq(2).text(formatDate(item.reqDate));
+    $row
+      .children()
+      .eq(3)
+      .text(formatDispatchDateRange(item.from, item.to));
+    $row.children().eq(4).html(item.statusHtml);
+    $row.children().eq(5).html(getDocumentReadinessHtml(item));
+
+    $body.append($row);
+  });
+}
+
+function setActivityPage(page) {
+  activityPaginationState.currentPage = page;
+  fillActivityTablePage();
+}
+
+function fillDashboardYearSelector(selector, years, selectedYear) {
+  const $sel = $(selector);
+  if (!$sel.length) {
+    return;
+  }
+
+  const options = (years || []).map(
+    (year) =>
+      `<option value="${year}"${Number(year) === Number(selectedYear) ? " selected" : ""}>${year}</option>`,
+  );
+
+  $sel.html(options.join(""));
+}
+
+function fillGroupDispatchYearSelector(years, selectedYear) {
+  fillDashboardYearSelector("#groupDispatchYearSel", years, selectedYear);
+}
+
+function fillDispatchTrendYearSelector(years, selectedYear) {
+  fillDashboardYearSelector("#dispatchTrendYearSel", years, selectedYear);
+}
+
+function resolveDashboardSelectedYear(selectedYear, availableYears) {
+  const currentYear = getcurrentYear();
+  let year = selectedYear == null ? currentYear : Number(selectedYear);
+
+  if (!Number.isFinite(year)) {
+    year = currentYear;
+  }
+
+  if (!(availableYears || []).includes(year)) {
+    year = (availableYears && availableYears[0]) || currentYear;
+  }
+
+  return year;
 }
 //#endregion

@@ -19,25 +19,31 @@ function getJson(url, fallbackMessage) {
   });
 }
 
-function postJson(url, data, fallbackMessage) {
+function getLegacyJson(url, fallbackMessage) {
   return new Promise((resolve, reject) => {
     $.ajax({
-      type: "POST",
+      type: "GET",
       url: url,
-      data: data,
       dataType: "json",
       success: function (response) {
-        if (!response.success) {
+        if (response && response.isSuccess === false) {
           reject(response.message || fallbackMessage);
           return;
         }
-        resolve(response.data);
+        resolve(response);
       },
       error: function (xhr) {
         reject(ajaxJsonErrorMessage(xhr, fallbackMessage));
       },
     });
   });
+}
+
+function softLoad(promise) {
+  return promise.then(
+    (data) => ({ ok: true, data }),
+    (error) => ({ ok: false, error }),
+  );
 }
 //#endregion
 
@@ -74,10 +80,37 @@ function checkAccess() {
   );
 }
 
-function getGraph() {
+function getGraph(year) {
+  const selectedYear =
+    year == null || year === "" ? getcurrentYear() : Number(year);
+  const query = Number.isFinite(selectedYear)
+    ? `?year=${encodeURIComponent(selectedYear)}`
+    : "";
+
   return getJson(
-    "api/get_summary.php",
+    `api/get_summary.php${query}`,
     "Failed to load dashboard summary.",
   );
+}
+
+function getRequestListData() {
+  return getJson(
+    "requestList/api/get_requests.php",
+    "Failed to load request list.",
+  );
+}
+
+function getRequestListGroups() {
+  return getJson(
+    "requestList/api/get_groups.php",
+    "Failed to load groups.",
+  );
+}
+
+function getChangeRequestData() {
+  return getLegacyJson(
+    "changeRequests/php/get_requests.php",
+    "Failed to load change requests.",
+  ).then((response) => response.data || { cancellation: [], date_change: [] });
 }
 //#endregion
