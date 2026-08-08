@@ -3,8 +3,6 @@ function fillOpenModal(trID) {
   const req = reqList.find((req) => req.req_id == trID);
   const name = req.emp_name;
   const grp = req.group_name;
-  const passValidity = req.passValid;
-  const visaValidity = req.visaValid;
   const startDate = req.from;
   const endDate = req.to;
   const reqName = req.requester_name;
@@ -27,7 +25,7 @@ function fillOpenModal(trID) {
       ? `REQ-${String(req.req_id).padStart(5, "0")}`
       : "—",
   );
-  formatVisaPassport(visaValidity, passValidity);
+  formatDocumentStatuses(req);
   $("#modalEmpName").text(name);
   $("#modalGroup").text(grp);
   $("#modalDateFrom").text(formatDate(startDate));
@@ -105,25 +103,86 @@ function formatStatus(normalizedStatus) {
   );
 }
 
-function formatVisaPassport(visa, passport) {
-  function updateModal(id, isValid) {
-    const iconClass = isValid
-      ? "bx-check text-[var(--darkest-100)]"
-      : "bx-x text-[var(--red-200)]";
-    const className = isValid
-      ? "text-[var(--darkest-100)]"
-      : "text-[var(--red-200)]";
-    const statusText = isValid ? "Valid" : "Invalid";
-    $(id).html(`
-      <i class='bx ${iconClass} text-[18px]'></i>
-      <p class="text-[14px] ${className}">${statusText} ${
-        id === "#modalPassport" ? "Passport" : "Visa"
-      }</p>
-    `);
+function formatDocumentStatuses(req) {
+  const docs = [
+    {
+      id: "#modalPassport",
+      label: "Passport",
+      status: resolveModalTravelDocStatus(req, "passport"),
+    },
+    {
+      id: "#modalVisa",
+      label: "Visa",
+      status: resolveModalTravelDocStatus(req, "visa"),
+    },
+    {
+      id: "#modalReentry",
+      label: "Re-entry",
+      status: resolveModalTravelDocStatus(req, "reentry"),
+    },
+  ];
+
+  docs.forEach(({ id, label, status }) => {
+    $(id).html(getModalDocumentStatusHtml(label, status));
+  });
+}
+
+function resolveModalTravelDocStatus(req, type) {
+  if (!req) {
+    return "invalid";
   }
 
-  updateModal("#modalPassport", passport);
-  updateModal("#modalVisa", visa);
+  if (type === "passport") {
+    if (req.passportStatus) {
+      return String(req.passportStatus);
+    }
+    return req.passValid ? "valid" : "invalid";
+  }
+
+  if (type === "visa") {
+    if (req.visaStatus) {
+      return String(req.visaStatus);
+    }
+    return req.visaValid ? "valid" : "invalid";
+  }
+
+  if (req.reentryStatus != null && req.reentryStatus !== "") {
+    return String(req.reentryStatus);
+  }
+
+  return "missing";
+}
+
+function getModalDocumentStatusHtml(label, status) {
+  const normalized = String(status || "invalid");
+
+  if (normalized === "valid" || normalized === "valid_expiring") {
+    return `
+      <i class='bx bx-check text-[18px] text-[var(--darkest-100)]'></i>
+      <p class="text-[14px] text-[var(--darkest-100)]">Valid ${label}</p>
+    `;
+  }
+
+  if (normalized === "on_process") {
+    return `
+      <i class='bx bx-time-five text-[18px] text-[var(--yellow-200)]'></i>
+      <p class="text-[14px] text-[var(--yellow-200)]">${label} On Process</p>
+    `;
+  }
+
+  if (normalized === "missing") {
+    return `
+      <i class='bx bx-x text-[18px] text-[var(--red-200)]'></i>
+      <p class="text-[14px] text-[var(--red-200)]">Missing ${label}</p>
+    `;
+  }
+
+  // invalid / expired
+  const invalidLabel = label === "Re-entry" ? "Expired Re-entry" : `Invalid ${label}`;
+  return `
+    <i class='bx bx-x text-[18px] text-[var(--red-200)]'></i>
+    <p class="text-[14px] text-[var(--red-200)]">${invalidLabel}</p>
+  `;
 }
 
 function fillTable(sampleData) {
@@ -139,16 +198,7 @@ function fillTable(sampleData) {
       <td>${formatDate(item.req_date)}</td>
       <td>${formatDispatchDateRange(item.from, item.to)}</td>
       <td>${getRequestListStatusBadgeHtml(item)}</td>
-      <td>${
-        item.passValid === true
-          ? `  <span class="validity "><i class='bx bx-check text-[18px]   font-semibold'></i></span>`
-          : ` <span class="validity "><i class='bx bx-x text-[18px] font-semibold'></i></span>`
-      }</td>
-        <td>${
-          item.visaValid === true
-            ? `  <span class="validity "><i class='bx bx-check text-[18px]   font-semibold'></i></span>`
-            : ` <span class="validity "><i class='bx bx-x text-[18px] font-semibold'></i></span>`
-        }</td>
+      <td>${getDocumentReadinessHtml(item)}</td>
       <td>
         <div class="openIcon " title="Open item">
            <i class='bx bx-link-external text-[16px] opacity-50'></i>
@@ -159,7 +209,7 @@ function fillTable(sampleData) {
       $("#tableBody").append(str);
     });
   } else {
-    str = `<tr><td colspan="8"><div class="request-list-empty flex items-center justify-center flex-col gap-3 py-5"><img src="../images/empty.png"   class="w-[150px] h-auto opacity-[0.75]" alt="empty">
+    str = `<tr><td colspan="7"><div class="request-list-empty flex items-center justify-center flex-col gap-3 py-5"><img src="../images/empty.png"   class="w-[150px] h-auto opacity-[0.75]" alt="empty">
     <h5 class="font-semibold text-[16px] text-[var(--gray-text)]">No item found.</h5>
     <p class="text-[var(--gray-text)]">Try adjusting your search or filter to find what you're looking for.</p>
     </div></td></tr>`;

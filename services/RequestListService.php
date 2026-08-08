@@ -560,6 +560,25 @@ function getDispatchID(PDO $connpcs, int $requestId): ?int
     return $dispatchId !== false ? (int)$dispatchId : null;
 }
 
+/**
+ * Passport / visa readiness relative to a dispatch end date.
+ * Prefer on_process over expiry checks (same priority as dashboard).
+ *
+ * @return string valid | on_process | invalid
+ */
+function resolveDispatchTravelDocStatus($onProcess, $expiry, string $dispatchTo): string
+{
+    if ((int) $onProcess === 1) {
+        return 'on_process';
+    }
+
+    if (!empty($expiry) && strtotime((string) $expiry) >= strtotime($dispatchTo)) {
+        return 'valid';
+    }
+
+    return 'invalid';
+}
+
 function getRequestList(PDO $connpcs, PDO $connnew, PDO $connkdt, string $employeeNumber): array
 {
     if (!hasPermission($connkdt, $employeeNumber, PCS_REQUEST_LIST_PERMISSION)) {
@@ -589,7 +608,9 @@ function getRequestList(PDO $connpcs, PDO $connnew, PDO $connkdt, string $employ
             el.group_id,
             gl.name,
             pd.passport_expiry,
+            pd.on_process AS passport_on_process,
             vd.visa_expiry,
+            vd.on_process AS visa_on_process,
             rd.emp_number AS reentry_emp_id,
             rd.permit_expiry,
             rd.on_process AS reentry_on_process,
@@ -634,8 +655,18 @@ function getRequestList(PDO $connpcs, PDO $connnew, PDO $connkdt, string $employ
         $passExp = $row['passport_expiry'];
         $visaExp = $row['visa_expiry'];
 
-        $passValidity = $passExp && strtotime($passExp) >= strtotime($to);
-        $visaValidity = $visaExp && strtotime($visaExp) >= strtotime($to);
+        $passportStatus = resolveDispatchTravelDocStatus(
+            $row['passport_on_process'] ?? 0,
+            $passExp,
+            $to
+        );
+        $visaStatus = resolveDispatchTravelDocStatus(
+            $row['visa_on_process'] ?? 0,
+            $visaExp,
+            $to
+        );
+        $passValidity = $passportStatus === 'valid';
+        $visaValidity = $visaStatus === 'valid';
         $reentryStatus = resolveReentryPermitStatus(
             $row['reentry_emp_id'] !== null && $row['reentry_emp_id'] !== '',
             $row['reentry_on_process'] ?? 0,
@@ -666,6 +697,8 @@ function getRequestList(PDO $connpcs, PDO $connnew, PDO $connkdt, string $employ
             'req_date' => date('Y-m-d', strtotime($row['date_requested'])),
             'passValid' => (bool)$passValidity,
             'visaValid' => (bool)$visaValidity,
+            'passportStatus' => $passportStatus,
+            'visaStatus' => $visaStatus,
             'reentryStatus' => $reentryStatus,
             'status' => $row['request_status'],
             'modified' => $row['date_modified'],

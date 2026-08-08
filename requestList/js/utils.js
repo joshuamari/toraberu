@@ -326,4 +326,81 @@ function openRequestFromUrl() {
     }
   });
 }
+
+/**
+ * Documents cell badges — same readiness display as dashboard
+ * Recent Dispatch Activity (passport, visa, re-entry).
+ */
+function getDocumentReadinessHtml(item) {
+  const badges = [];
+
+  if (item.passportStatus) {
+    badges.push(documentStatusBadge("Passport", item.passportStatus));
+  } else if (Object.prototype.hasOwnProperty.call(item, "passValid")) {
+    badges.push(
+      item.passValid
+        ? `<span class="doc-badge is-ok">Passport OK</span>`
+        : `<span class="doc-badge is-missing">Missing Passport</span>`,
+    );
+  }
+
+  if (item.visaStatus) {
+    badges.push(documentStatusBadge("Visa", item.visaStatus));
+  } else if (Object.prototype.hasOwnProperty.call(item, "visaValid")) {
+    badges.push(
+      item.visaValid
+        ? `<span class="doc-badge is-ok">Visa OK</span>`
+        : `<span class="doc-badge is-missing">Missing Visa</span>`,
+    );
+  }
+
+  badges.push(getReentryReadinessBadge(item));
+
+  if (!badges.length) {
+    return "—";
+  }
+
+  return `<div class="doc-readiness">${badges.join("")}</div>`;
+}
+
+function getReentryReadinessBadge(item) {
+  const status =
+    item && item.reentryStatus != null && item.reentryStatus !== ""
+      ? String(item.reentryStatus)
+      : "missing";
+
+  if (status === "valid" || status === "valid_expiring") {
+    return `<span class="doc-badge is-ok">Re-entry OK</span>`;
+  }
+
+  if (status === "on_process") {
+    return `<span class="doc-badge is-process">Re-entry On Process</span>`;
+  }
+
+  if (status === "invalid") {
+    return `<span class="doc-badge is-missing">Re-entry Expired</span>`;
+  }
+
+  return `<span class="doc-badge is-missing">Missing Re-entry</span>`;
+}
+
+function documentStatusBadge(label, status, isReentry) {
+  if (isReentry) {
+    return getReentryReadinessBadge({ reentryStatus: status });
+  }
+
+  if (status === "valid") {
+    return `<span class="doc-badge is-ok">${label} OK</span>`;
+  }
+
+  if (status === "valid_expiring") {
+    return `<span class="doc-badge is-expiring">${label} Expiring</span>`;
+  }
+
+  if (status === "on_process") {
+    return `<span class="doc-badge is-process">${label} On Process</span>`;
+  }
+
+  return `<span class="doc-badge is-missing">Missing ${label}</span>`;
+}
 //#endregion
