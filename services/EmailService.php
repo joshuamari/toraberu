@@ -220,7 +220,7 @@ $cc = implode(',', $ccArray);
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
     $baseUrl = $protocol . '://' . $host;
 
-    $statusString = ((int)$status === 1) ? 'accepted' : 'cancelled';
+    $statusString = ((int)$status === 1) ? 'approved' : 'declined';
     $subject = 'Dispatch Request Status';
 
     $requesterSurname = ucwords(strtolower((string)($khiDetails['surname'] ?? 'User')));
@@ -230,11 +230,10 @@ $cc = implode(',', $ccArray);
     $headers = "MIME-Version: 1.0\r\n";
     $headers .= "Content-type:text/html;charset=UTF-8\r\n";
 
-    $fromAddress = trim((string)env('MAIL_FROM_ADDRESS', ''));
-    $fromName = trim((string)env('MAIL_FROM_NAME', 'PCS System'));
+    $fromAddress = trim((string)env('MAIL_FROM_ADDRESS', 'kdt_toraberu@global.kawasaki.com'));
 
     if ($fromAddress !== '') {
-        $headers .= "From: {$fromName} <{$fromAddress}>\r\n";
+        $headers .= "From: {$fromAddress}\r\n";
     }
 
     if ($cc !== '') {
@@ -242,35 +241,35 @@ $cc = implode(',', $ccArray);
     }
 
     $body = "
-        <html>
-        <head>
-            <title>Dispatch Request</title>
-        </head>
-        <body>
-            <p>Dear {$requesterSurname}-san,</p>
-            <p>We are writing to inform you that your request has been {$statusString}.</p>
-            <p>Details:</p>
-            <p>Employee: {$employeeName}</p>
-            <p>Date From: {$details['dispatch_from']}</p>
-            <p>Date To: {$details['dispatch_to']}</p>
-            <p>Location: {$locationName}</p>
-            <p>Date Requested: {$details['date_requested']}</p>
-            <br>
-            <p>For <strong>KDT</strong>, review the request details:</p>
-            <ul>
-                <li><a href='{$baseUrl}/PCS/requestList/'>Dispatch Request List</a></li>
-            </ul>
-            <p>For <strong>KHI</strong>, track the request status:</p>
-            <ul>
-                <li><a href='{$baseUrl}/PCSKHI/requestList/'>Track Request Status</a></li>
-            </ul>
-            <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
-            <p>Best regards,</p>
-            <p>トラベる<br>KHI Design & Technical Service, Inc.</p>
-            <p style='margin-top: 20px; font-size: 12px; color: #999;'>Please do not reply to this email as it is system generated.</p>
-        </body>
-        </html>
-    ";
+                <html>
+                <head>
+                <title>Dispatch Request Status</title>
+                </head>
+                <body>
+        <p>Dear {$requesterSurname}-san,</p>
+        <p>We are writing to inform you that your dispatch request has been {$statusString}.</p>
+        <p>Details:</p>
+        <p>Employee: {$employeeName}</p>
+        <p>Date From: {$details['dispatch_from']}</p>
+        <p>Date To: {$details['dispatch_to']}</p>
+        <p>Location: {$locationName}</p>
+        <p>Date Requested: {$details['date_requested']}</p>
+        <br>
+        <p>For <strong>KDT</strong>, review the request details:</p>
+        <ul>
+            <li><a href='{$baseUrl}/PCS/requestList/'>Dispatch Request List</a></li>
+        </ul>
+        <p>For <strong>KHI</strong>, track the request status:</p>
+        <ul>
+            <li><a href='{$baseUrl}/PCSKHI/requestList/'>Track Request Status</a></li>
+        </ul>
+        <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
+        <p>Best regards,</p>
+        <p>トラベる<br>KHI Design & Technical Service, Inc.</p>
+         <p style='margin-top: 20px; font-size: 12px; color: #999;'>Please do not reply to this email as it is system generated.</p>
+                </body>
+                </html>
+            ";
 
     return sendSystemEmail($to, $subject, $body, $headers);
 }

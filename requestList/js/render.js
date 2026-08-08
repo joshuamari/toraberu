@@ -67,9 +67,6 @@ function fillOpenModal(trID) {
   }
 
   selectedDispatchRequest = req;
-  if (typeof updateChangeRequestActionsVisibility === "function") {
-    updateChangeRequestActionsVisibility(req);
-  }
 
   formatPresidentButtons(normalizedStatus);
   $("#openModal").modal("show");

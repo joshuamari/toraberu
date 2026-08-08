@@ -25,6 +25,32 @@ Format is based on a simplified version of Keep a Changelog.
 - Optional context, warnings, or migration notes
 -->
 
+## [2026-08-07] - Change Request Status Emails
+
+### Added
+
+- Email notification on change-request approve/deny (`emailChangeRequestStatusChange`), same To/CC pattern as dispatch approve/deny
+- Shared PCS dispatch email test mode (`DISPATCH_EMAIL_TEST_MODE` / `DISPATCH_EMAIL_DEV_IDS`) with PCSKHI-style `[TEST]` subject + recipient footer
+
+### Changed
+
+- `emailStatusChange` now uses the shared test-mode helpers
+
+---
+
+## [2026-08-07] - PCS Change Request Submission Restriction
+
+### Removed
+
+- Removed Request Cancellation button and modal from Request List (cancellations are KHI-only via PCSKHI)
+- Removed unused `emailCancellationRequest()` from PCS `globalFunctions.php`
+
+### Changed
+
+- `create_change_request.php` now rejects all change-request submissions from PCS; PCS only reviews/approves them in Change Requests
+
+---
+
 ## [2026-08-06] - PCS Date Change Request Restriction
 
 ### Removed
@@ -33,7 +59,7 @@ Format is based on a simplified version of Keep a Changelog.
 
 ### Changed
 
-- `create_change_request.php` now rejects `date_change` submissions from PCS; cancellation requests remain supported
+- `create_change_request.php` rejected `date_change` submissions from PCS (superseded by 2026-08-07: all CR creates are KHI-only)
 
 ---
 
@@ -43,8 +69,6 @@ Format is based on a simplified version of Keep a Changelog.
 
 - Request List API now embeds derived `activityLog` events from `request_list` + `request_change_list` (submit, approve/decline, date-change/cancellation lifecycle, cancelled)
 - Activity History side panel in the dispatch detail modal for non-pending requests (approved / declined / cancelled / completed)
-- Change-request action on approved active dispatches: Request Cancellation modal
-- Create endpoint: `changeRequests/php/create_change_request.php`
 - Pending CR guards (`pending_date_change_request` / `pending_cancellation_request`) and declined-vs-cancelled resolution via `has_approved_cancellation`
 - Deep links: Request List `?open_request=` / `?request_id=`; Change Requests `?type=date_change|cancellation&openChangeRequestId=`
 
@@ -52,7 +76,7 @@ Format is based on a simplified version of Keep a Changelog.
 
 - Activity History is derived (no new audit table). Approval timestamp uses `resolveDispatchApprovalTimestamp` when `date_modified` was overwritten by a CR decision.
 - Approver actor names resolve from the current KDT president record when available.
-- Date change requests are submitted from PCSKHI only; PCS still reviews them in Change Requests.
+- Date change and cancellation requests are submitted from PCSKHI only; PCS still reviews them in Change Requests.
 
 ---
 

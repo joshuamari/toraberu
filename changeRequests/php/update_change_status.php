@@ -219,6 +219,22 @@ try {
         }
     }
 
+    $details = getRequestDetails($originalRequestId);
+    $changeData = [
+        "change_type" => $changeType,
+        "original_start_date" => $change['original_start_date'] ?? null,
+        "original_end_date" => $change['original_end_date'] ?? null,
+        "requested_start_date" => $change['requested_start_date'] ?? null,
+        "requested_end_date" => $change['requested_end_date'] ?? null,
+        "reason" => $change['reason'] ?? '',
+    ];
+
+    if (!emailChangeRequestStatusChange($action === 'approve', $details, $changeData)) {
+        $connpcs->rollBack();
+        $result["message"] = "Mail failed";
+        die(json_encode($result));
+    }
+
     $connpcs->commit();
 
     $result["isSuccess"] = TRUE;

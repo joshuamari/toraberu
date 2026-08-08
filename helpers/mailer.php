@@ -21,6 +21,31 @@ function extractCcFromHeaders(string $headers): array
     return array_filter($cc);
 }
 
+function buildEmailTestRecipientFooter(array $actualTo, array $prodTo, array $prodCc): string
+{
+    $escapeList = static function (array $emails): string {
+        $emails = array_values(array_filter(array_map('trim', $emails)));
+        if (empty($emails)) {
+            return '<em>(none)</em>';
+        }
+        return htmlspecialchars(implode(', ', $emails), ENT_QUOTES, 'UTF-8');
+    };
+
+    $actualToText = $escapeList($actualTo);
+    $prodToText = $escapeList($prodTo);
+    $prodCcText = $escapeList($prodCc);
+
+    return "
+        <hr style='margin-top: 28px; border: none; border-top: 1px solid #ccc;'>
+        <div style='margin-top: 12px; padding: 12px; background: #fff8e1; border: 1px solid #f0c36d; font-size: 12px; color: #333;'>
+            <p style='margin: 0 0 8px 0;'><strong>[TEST MODE]</strong> This email was redirected to developers only. Real recipients were NOT notified.</p>
+            <p style='margin: 0 0 4px 0;'><strong>Actually sent To:</strong> {$actualToText}</p>
+            <p style='margin: 0 0 4px 0;'><strong>PROD would To:</strong> {$prodToText}</p>
+            <p style='margin: 0;'><strong>PROD would CC:</strong> {$prodCcText}</p>
+        </div>
+    ";
+}
+
 function sendSystemEmail(string $to, string $subject, string $message, string $headers = ''): bool
 {
     $mode = getEmailMode();
@@ -37,7 +62,10 @@ function sendSystemEmail(string $to, string $subject, string $message, string $h
         return false;
     }
 
-    // REDIRECT MODE
+    $sendTo = $originalTo;
+    $sendCc = $originalCc;
+
+    // REDIRECT MODE — same yellow footer pattern as change-request test emails
     if ($mode === 'redirect') {
         $testTo = envCsvArray('MAIL_TEST_TO');
         $testCc = envCsvArray('MAIL_TEST_CC');
@@ -47,18 +75,11 @@ function sendSystemEmail(string $to, string $subject, string $message, string $h
             return false;
         }
 
-        $subject = '[TEST REDIRECT] ' . $subject;
+        $subject = '[TEST] ' . $subject;
+        $message .= buildEmailTestRecipientFooter($testTo, $originalTo, $originalCc);
 
-        $message = "
-            <div style='border:1px solid orange;padding:10px;margin-bottom:10px'>
-                <strong>TEST REDIRECT</strong><br>
-                Original To: " . implode(',', $originalTo) . "<br>
-                Original CC: " . (!empty($originalCc) ? implode(',', $originalCc) : '(none)') . "
-            </div>
-        " . $message;
-
-        $originalTo = $testTo;
-        $originalCc = $testCc;
+        $sendTo = $testTo;
+        $sendCc = $testCc;
     }
 
     try {
@@ -70,21 +91,21 @@ function sendSystemEmail(string $to, string $subject, string $message, string $h
         $mail->SMTPAuth = false;
         $mail->SMTPSecure = false;
         $mail->Port = 25;
+        $mail->CharSet = 'UTF-8';
+        $mail->Encoding = 'base64';
 
-        // Sender
+        // Sender (address only — no display name, same as PCSKHI)
         $fromAddress = env('MAIL_FROM_ADDRESS', 'kdt_toraberu@global.kawasaki.com');
-        $fromName = env('MAIL_FROM_NAME', 'PCS System');
-
-        $mail->setFrom($fromAddress, $fromName);
+        $mail->setFrom($fromAddress);
 
         // Recipients
-        foreach ($originalTo as $email) {
+        foreach ($sendTo as $email) {
             if ($email) {
                 $mail->addAddress($email);
             }
         }
 
-        foreach ($originalCc as $email) {
+        foreach ($sendCc as $email) {
             if ($email) {
                 $mail->addCC($email);
             }
@@ -101,8 +122,8 @@ function sendSystemEmail(string $to, string $subject, string $message, string $h
 
     } catch (Exception $e) {
         error_log("EMAIL SEND FAILED: " . $mail->ErrorInfo);
-        error_log("To: " . implode(',', $originalTo));
-        error_log("CC: " . (!empty($originalCc) ? implode(',', $originalCc) : '(none)'));
+        error_log("To: " . implode(',', $sendTo));
+        error_log("CC: " . (!empty($sendCc) ? implode(',', $sendCc) : '(none)'));
         return false;
     }
 }

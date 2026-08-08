@@ -129,29 +129,4 @@ function getHeader() {
     "Failed to load header data.",
   );
 }
-
-function createChangeRequest(payload) {
-  return new Promise((resolve, reject) => {
-    $.ajax({
-      type: "POST",
-      url: "../changeRequests/php/create_change_request.php",
-      data: JSON.stringify(payload || {}),
-      contentType: "application/json",
-      dataType: "json",
-      success: function (response) {
-        resolve(response);
-      },
-      error: function (xhr) {
-        const message =
-          xhr.responseJSON && xhr.responseJSON.message
-            ? xhr.responseJSON.message
-            : ajaxJsonErrorMessage(
-                xhr,
-                "Failed to submit change request.",
-              );
-        reject(new Error(message));
-      },
-    });
-  });
-}
 //#endregion
