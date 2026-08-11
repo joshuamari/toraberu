@@ -914,10 +914,6 @@ video {
   height: 5px;
 }
 
-.h-\[calc\(100\%-104px\)\] {
-  height: calc(100% - 104px);
-}
-
 .h-\[calc\(100\%-30px\)\] {
   height: calc(100% - 30px);
 }
@@ -1124,8 +1120,8 @@ video {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.grid-cols-4 {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+.grid-cols-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .flex-row {
@@ -1208,10 +1204,6 @@ video {
   overflow-x: auto;
 }
 
-.overflow-y-auto {
-  overflow-y: auto;
-}
-
 .overflow-y-visible {
   overflow-y: visible;
 }
@@ -1288,10 +1280,6 @@ video {
 .border-\[\#ebebeb\] {
   --tw-border-opacity: 1;
   border-color: rgb(235 235 235 / var(--tw-border-opacity, 1));
-}
-
-.border-\[var\(--dark\)\] {
-  border-color: var(--dark);
 }
 
 .border-\[var\(--gray\)\] {
@@ -1374,17 +1362,9 @@ video {
   background-color: rgb(244 63 94 / var(--tw-bg-opacity, 1));
 }
 
-.bg-transparent {
-  background-color: transparent;
-}
-
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
-}
-
-.p-0 {
-  padding: 0px;
 }
 
 .p-1 {
@@ -1462,6 +1442,11 @@ video {
   padding-bottom: 1rem;
 }
 
+.py-5 {
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
 .py-6 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
@@ -1470,11 +1455,6 @@ video {
 .py-\[7mm\] {
   padding-top: 7mm;
   padding-bottom: 7mm;
-}
-
-.py-5 {
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
 }
 
 .pb-1 {
@@ -1727,6 +1707,10 @@ video {
   color: var(--white);
 }
 
+.text-\[var\(--yellow-200\)\] {
+  color: var(--yellow-200);
+}
+
 .text-black {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity, 1));
@@ -1868,10 +1852,6 @@ video {
   hostname: port;
 }
 
-.hover\:bg-\[var\(--gray\)\]:hover {
-  background-color: var(--gray);
-}
-
 .hover\:bg-\[var\(--gray-100\)\]:hover {
   background-color: var(--gray-100);
 }
@@ -1924,10 +1904,6 @@ video {
 
   .lg\:h-\[calc\(100\%-30px\)\] {
     height: calc(100% - 30px);
-  }
-
-  .lg\:h-\[calc\(100\%-93px\)\] {
-    height: calc(100% - 93px);
   }
 
   .lg\:w-\[200px\] {

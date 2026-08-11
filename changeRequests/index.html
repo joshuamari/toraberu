@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../css/font-awesome.css">
   <link rel="stylesheet" href="../css/boxicons.css">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/index.css?v=20260807a">
+  <link rel="stylesheet" href="css/index.css?v=20260811a">
   <link rel="stylesheet" href="../tailwindcss/output.css">
 
   <!-- JS libs -->
@@ -31,7 +31,7 @@
   <script src="js/api.js?v=20260804d"></script>
   <script src="js/pagination.js?v=20260804d"></script>
   <script src="js/ui.js?v=20260804d"></script>
-  <script src="js/render.js?v=20260807a"></script>
+  <script src="js/render.js?v=20260811a"></script>
   <script src="../js/sidebar.js"></script>
   <script src="js/events.js?v=20260804d"></script>
   <script src="js/app.js?v=20260804d"></script>
@@ -744,7 +744,7 @@
             <div class="change-requests-card w-full bg-white rounded-lg border flex flex-col">
               <div class="selection flex gap-2 items-center justify-content-between border-b p-3">
                 <div class="w-100">
-                  <div class="tabs-datechange tabs relative bg-[var(--gray)] rounded-lg p-1 grid grid-cols-4"
+                  <div class="tabs-datechange tabs relative bg-[var(--gray)] rounded-lg p-1 grid grid-cols-5"
                     role="tablist" aria-label="Date change request status filters">
                     <div
                       class="indicator-datechange indicator absolute top-0 my-[0.25rem] bottom-0 left-0 rounded-md bg-[var(--secondary)]">
@@ -769,6 +769,11 @@
                     <button id="datechange-tab-4" data-status="denied" type="button"
                       class="relative block p-2 tab-datechange tab rounded-full flex gap-1 items-center justify-content-center">
                       <span class="tab-segment__label text-[12px] text-[var(--gray-text)]">Rejected</span>
+                    </button>
+
+                    <button id="datechange-tab-5" data-status="withdrawn" type="button"
+                      class="relative block p-2 tab-datechange tab rounded-full flex gap-1 items-center justify-content-center">
+                      <span class="tab-segment__label text-[12px] text-[var(--gray-text)]">Withdrawn</span>
                     </button>
                   </div>
                 </div>
@@ -856,7 +861,7 @@
             <div class="change-requests-card w-full bg-white rounded-lg border flex flex-col">
               <div class="selection flex gap-2 items-center justify-content-between border-b p-3">
                 <div class="w-100">
-                  <div class="tabs relative bg-[var(--gray)] rounded-lg p-1 grid grid-cols-4" role="tablist"
+                  <div class="tabs relative bg-[var(--gray)] rounded-lg p-1 grid grid-cols-5" role="tablist"
                     aria-label="Cancellation request status filters">
                     <div class="indicator absolute top-0 my-[0.25rem] bottom-0 left-0 rounded-md bg-[var(--secondary)]">
                     </div>
@@ -880,6 +885,11 @@
                       type="button"
                       class="relative block p-2 tab tab-cancellation rounded-full flex gap-1 items-center justify-content-center">
                       <span class="tab-segment__label text-[12px] text-[var(--gray-text)]">Rejected</span>
+                    </button>
+                    <button role="tab" aria-selected="false" aria-controls="panel-5" id="tab-5" data-status="withdrawn" tabindex="-4"
+                      type="button"
+                      class="relative block p-2 tab tab-cancellation rounded-full flex gap-1 items-center justify-content-center">
+                      <span class="tab-segment__label text-[12px] text-[var(--gray-text)]">Withdrawn</span>
                     </button>
                   </div>
                 </div>

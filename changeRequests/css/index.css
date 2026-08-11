@@ -231,6 +231,10 @@ tbody tr:hover td {
   background-color: var(--red-100);
   color: var(--red-200) !important;
 }
+.status.withdrawn {
+  background-color: #f3f4f6;
+  color: #6b7280 !important;
+}
 .date-change-request-row {
   cursor: pointer;
   transition: background-color 0.15s ease;

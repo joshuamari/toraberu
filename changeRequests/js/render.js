@@ -58,7 +58,7 @@ function renderCancellationModalStatusBadge(normalizedStatus) {
   const $badge = $("#cancelModalStatus");
 
   $badge
-    .removeClass("pending accepted cancelled denied")
+    .removeClass("pending accepted cancelled denied withdrawn")
     .addClass(config.className)
     .text(config.label);
 }
@@ -107,6 +107,11 @@ const DATE_CHANGE_STATUS_CONFIG = {
     className: "denied",
     finalizedMessage: "This date change request has been rejected.",
   },
+  withdrawn: {
+    label: "WITHDRAWN",
+    className: "withdrawn",
+    finalizedMessage: "This request has been withdrawn.",
+  },
 };
 
 function normalizeDateChangeStatus(value) {
@@ -123,6 +128,7 @@ function normalizeDateChangeStatus(value) {
     denied: "denied",
     declined: "denied",
     rejected: "denied",
+    withdrawn: "withdrawn",
     null: "pending",
     1: "accepted",
     0: "cancelled",
@@ -147,7 +153,7 @@ function renderDateChangeModalStatusBadge(normalizedStatus) {
   const $badge = $("#modalChangeStatus");
 
   $badge
-    .removeClass("pending accepted cancelled denied")
+    .removeClass("pending accepted cancelled denied withdrawn")
     .addClass(config.className)
     .text(config.label);
 }
@@ -385,6 +391,10 @@ function getCancellationStatusBadgeHtml(status) {
 
   if (normalized === "denied" || normalized === "cancelled") {
     return `<span class="status denied">Rejected</span>`;
+  }
+
+  if (normalized === "withdrawn") {
+    return `<span class="status withdrawn">Withdrawn</span>`;
   }
 
   return `<span class="status pending">Pending</span>`;

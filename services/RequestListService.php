@@ -202,9 +202,11 @@ function getActivityEventSortOrder(string $eventType): int
         'date_change_requested' => 30,
         'date_change_accepted' => 40,
         'date_change_rejected' => 40,
+        'date_change_withdrawn' => 40,
         'cancellation_requested' => 50,
         'cancellation_accepted' => 60,
         'cancellation_rejected' => 60,
+        'cancellation_withdrawn' => 60,
         'dispatch_cancelled' => 70,
         'dispatch_completed' => 80,
     ];
@@ -299,9 +301,6 @@ function buildRequestActivityLog(
             }
 
             $requestDescription = "A date-change request was submitted{$periodText}.";
-            if ($changeStatus === 'withdrawn') {
-                $requestDescription = "A date-change request was submitted{$periodText} (later withdrawn).";
-            }
 
             if ($requestedAt !== '') {
                 $events[] = [
@@ -338,6 +337,17 @@ function buildRequestActivityLog(
                     'changeRequestId' => (string)$changeRequestId,
                     'changeRequestReference' => $displayId,
                 ];
+            } elseif ($changeStatus === 'withdrawn' && $decisionAt !== '') {
+                $events[] = [
+                    'activityId' => "ACT-{$requestId}-dcr-{$changeRequestId}-withdrawn",
+                    'eventType' => 'date_change_withdrawn',
+                    'occurredAt' => $decisionAt,
+                    'actorName' => $requestedByName,
+                    'description' => 'The date-change request was withdrawn.',
+                    'changeRequestType' => 'date_change',
+                    'changeRequestId' => (string)$changeRequestId,
+                    'changeRequestReference' => $displayId,
+                ];
             }
 
             continue;
@@ -345,9 +355,6 @@ function buildRequestActivityLog(
 
         if ($changeType === 'cancellation') {
             $requestDescription = 'A cancellation request was submitted.';
-            if ($changeStatus === 'withdrawn') {
-                $requestDescription = 'A cancellation request was submitted (later withdrawn).';
-            }
 
             if ($requestedAt !== '') {
                 $events[] = [
@@ -388,6 +395,17 @@ function buildRequestActivityLog(
                     'occurredAt' => $decisionAt,
                     'actorName' => $approverName,
                     'description' => 'The cancellation request was rejected.',
+                    'changeRequestType' => 'cancellation',
+                    'changeRequestId' => (string)$changeRequestId,
+                    'changeRequestReference' => $displayId,
+                ];
+            } elseif ($changeStatus === 'withdrawn' && $decisionAt !== '') {
+                $events[] = [
+                    'activityId' => "ACT-{$requestId}-cr-{$changeRequestId}-withdrawn",
+                    'eventType' => 'cancellation_withdrawn',
+                    'occurredAt' => $decisionAt,
+                    'actorName' => $requestedByName,
+                    'description' => 'The cancellation request was withdrawn.',
                     'changeRequestType' => 'cancellation',
                     'changeRequestId' => (string)$changeRequestId,
                     'changeRequestReference' => $displayId,
