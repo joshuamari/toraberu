@@ -148,6 +148,37 @@ function getLocationNameForEmail(PDO $connpcs, int $locationId): string
     return (string)($stmt->fetchColumn() ?: '');
 }
 
+function getGroupAbbreviationForEmail(PDO $connnew, int $groupId): string
+{
+    if ($groupId <= 0) {
+        return '';
+    }
+
+    $sql = "SELECT abbreviation FROM group_list WHERE id = :id LIMIT 1";
+    $stmt = $connnew->prepare($sql);
+    $stmt->execute([
+        ':id' => $groupId,
+    ]);
+
+    $abbr = $stmt->fetchColumn();
+    return $abbr !== false ? (string)$abbr : '';
+}
+
+function formatDispatchEmailDate($date): string
+{
+    $raw = trim((string)$date);
+    if ($raw === '') {
+        return '';
+    }
+
+    $ts = strtotime($raw);
+    if ($ts === false) {
+        return $raw;
+    }
+
+    return date('d M Y', $ts);
+}
+
 function sendRequestStatusChangeEmail(PDO $connpcs, PDO $connnew, int $status, array $details): bool
 {
     $requesterId = (int)($details['requester_id'] ?? 0);
@@ -220,8 +251,8 @@ $cc = implode(',', $ccArray);
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
     $baseUrl = $protocol . '://' . $host;
 
-    $statusString = ((int)$status === 1) ? 'approved' : 'declined';
-    $subject = 'Dispatch Request Status';
+    $isApproved = ((int)$status === 1);
+    $subject = $isApproved ? 'Dispatch Request Approved' : 'Dispatch Request Declined';
 
     $requesterSurname = ucwords(strtolower((string)($khiDetails['surname'] ?? 'User')));
     $employeeName = getEmployeeDisplayName($connnew, $connpcs, $employeeId);
@@ -240,36 +271,53 @@ $cc = implode(',', $ccArray);
         $headers .= "CC: {$cc}\r\n";
     }
 
-    $body = "
-                <html>
-                <head>
-                <title>Dispatch Request Status</title>
-                </head>
-                <body>
-        <p>Dear {$requesterSurname}-san,</p>
-        <p>We are writing to inform you that your dispatch request has been {$statusString}.</p>
-        <p>Details:</p>
-        <p>Employee: {$employeeName}</p>
-        <p>Date From: {$details['dispatch_from']}</p>
-        <p>Date To: {$details['dispatch_to']}</p>
-        <p>Location: {$locationName}</p>
-        <p>Date Requested: {$details['date_requested']}</p>
-        <br>
-        <p>For <strong>KDT</strong>, review the request details:</p>
-        <ul>
-            <li><a href='{$baseUrl}/PCS/requestList/'>Dispatch Request List</a></li>
-        </ul>
-        <p>For <strong>KHI</strong>, track the request status:</p>
-        <ul>
-            <li><a href='{$baseUrl}/PCSKHI/requestList/'>Track Request Status</a></li>
-        </ul>
-        <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
-        <p>Best regards,</p>
-        <p>トラベる<br>KHI Design & Technical Service, Inc.</p>
-         <p style='margin-top: 20px; font-size: 12px; color: #999;'>Please do not reply to this email as it is system generated.</p>
-                </body>
-                </html>
-            ";
+    require_once __DIR__ . '/../helpers/dispatch_email_templates.php';
+
+    $escape = static function ($value): string {
+        return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+    };
+
+    $requestId = (int)($details['request_id'] ?? 0);
+    $requestRef = $requestId > 0
+        ? 'REQ-' . str_pad((string)$requestId, 5, '0', STR_PAD_LEFT)
+        : '';
+
+    $dispatchFrom = formatDispatchEmailDate($details['dispatch_from'] ?? '');
+    $dispatchTo = formatDispatchEmailDate($details['dispatch_to'] ?? '');
+    $dispatchDates = trim(
+        $dispatchFrom
+        . ($dispatchFrom !== '' && $dispatchTo !== '' ? ' — ' : '')
+        . $dispatchTo
+    );
+
+    $requesterName = getEmployeeDisplayName($connnew, $connpcs, $requesterId);
+    $groupAbbr = getGroupAbbreviationForEmail($connnew, $empGroup);
+
+    $kdtCtaUrl = $requestId > 0
+        ? $baseUrl . '/PCS/requestList/?open_request=' . rawurlencode((string)$requestId)
+        : $baseUrl . '/PCS/requestList/';
+    $khiCtaUrl = $requestId > 0
+        ? $baseUrl . '/PCSKHI/requestList/?request_id=' . rawurlencode((string)$requestId)
+        : $baseUrl . '/PCSKHI/requestList/';
+    $logoUrl = $baseUrl . '/PCS/images/' . rawurlencode('pcs logo bold.png');
+
+    $templateData = [
+        'requester_surname' => $escape($requesterSurname),
+        'employee_name' => $escape($employeeName),
+        'location_name' => $escape($locationName),
+        'request_ref' => $escape($requestRef),
+        'requester_name' => $escape($requesterName),
+        'group_abbr' => $escape($groupAbbr),
+        'dispatch_dates' => $escape($dispatchDates),
+        'kdt_cta_url' => $escape($kdtCtaUrl),
+        'khi_cta_url' => $escape($khiCtaUrl),
+        'logo_url' => $escape($logoUrl),
+        'test_mode_placeholder' => '<!--EMAIL_TEST_MODE-->',
+    ];
+
+    $body = $isApproved
+        ? buildDispatchRequestApprovedEmailHtml($templateData)
+        : buildDispatchRequestDeclinedEmailHtml($templateData);
 
     return sendSystemEmail($to, $subject, $body, $headers);
 }

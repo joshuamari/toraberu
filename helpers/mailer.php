@@ -36,13 +36,16 @@ function buildEmailTestRecipientFooter(array $actualTo, array $prodTo, array $pr
     $prodCcText = $escapeList($prodCc);
 
     return "
-        <hr style='margin-top: 28px; border: none; border-top: 1px solid #ccc;'>
-        <div style='margin-top: 12px; padding: 12px; background: #fff8e1; border: 1px solid #f0c36d; font-size: 12px; color: #333;'>
-            <p style='margin: 0 0 8px 0;'><strong>[TEST MODE]</strong> This email was redirected to developers only. Real recipients were NOT notified.</p>
-            <p style='margin: 0 0 4px 0;'><strong>Actually sent To:</strong> {$actualToText}</p>
-            <p style='margin: 0 0 4px 0;'><strong>PROD would To:</strong> {$prodToText}</p>
-            <p style='margin: 0;'><strong>PROD would CC:</strong> {$prodCcText}</p>
-        </div>
+        <table role='presentation' width='100%' cellpadding='0' cellspacing='0' border='0' style='margin: 0 0 28px 0; border-collapse: collapse;'>
+            <tr>
+                <td style='padding: 14px 16px; background-color: #F9F9F9; border: 1px solid #E9E9E9; border-radius: 10px; font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 15px; color: #7D7D7D; word-break: break-word;'>
+                    <p style='margin: 0 0 8px 0; color: #000000;'><strong>[TEST MODE]</strong> This email was redirected to developers only. Real recipients were NOT notified.</p>
+                    <p style='margin: 0 0 4px 0;'><strong style='color: #000000;'>Actually sent To:</strong> {$actualToText}</p>
+                    <p style='margin: 0 0 4px 0;'><strong style='color: #000000;'>PROD would To:</strong> {$prodToText}</p>
+                    <p style='margin: 0;'><strong style='color: #000000;'>PROD would CC:</strong> {$prodCcText}</p>
+                </td>
+            </tr>
+        </table>
     ";
 }
 
@@ -76,10 +79,17 @@ function sendSystemEmail(string $to, string $subject, string $message, string $h
         }
 
         $subject = '[TEST] ' . $subject;
-        $message .= buildEmailTestRecipientFooter($testTo, $originalTo, $originalCc);
+        $testFooter = buildEmailTestRecipientFooter($testTo, $originalTo, $originalCc);
+        if (strpos($message, '<!--EMAIL_TEST_MODE-->') !== false) {
+            $message = str_replace('<!--EMAIL_TEST_MODE-->', $testFooter, $message);
+        } else {
+            $message .= $testFooter;
+        }
 
         $sendTo = $testTo;
         $sendCc = $testCc;
+    } else {
+        $message = str_replace('<!--EMAIL_TEST_MODE-->', '', $message);
     }
 
     try {

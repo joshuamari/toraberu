@@ -384,13 +384,16 @@ function buildDispatchEmailTestRecipientFooter(array $recipients): string
     $prodCc = $escapeList($recipients['prod_cc'] ?? []);
 
     return "
-        <hr style='margin-top: 28px; border: none; border-top: 1px solid #ccc;'>
-        <div style='margin-top: 12px; padding: 12px; background: #fff8e1; border: 1px solid #f0c36d; font-size: 12px; color: #333;'>
-            <p style='margin: 0 0 8px 0;'><strong>[TEST MODE]</strong> This email was redirected to developers only. Real recipients were NOT notified.</p>
-            <p style='margin: 0 0 4px 0;'><strong>Actually sent To:</strong> {$actualTo}</p>
-            <p style='margin: 0 0 4px 0;'><strong>PROD would To:</strong> {$prodTo}</p>
-            <p style='margin: 0;'><strong>PROD would CC:</strong> {$prodCc}</p>
-        </div>
+        <table role='presentation' width='100%' cellpadding='0' cellspacing='0' border='0' style='margin: 0 0 28px 0; border-collapse: collapse;'>
+            <tr>
+                <td style='padding: 14px 16px; background-color: #F9F9F9; border: 1px solid #E9E9E9; border-radius: 10px; font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 15px; color: #7D7D7D; word-break: break-word;'>
+                    <p style='margin: 0 0 8px 0; color: #000000;'><strong>[TEST MODE]</strong> This email was redirected to developers only. Real recipients were NOT notified.</p>
+                    <p style='margin: 0 0 4px 0;'><strong style='color: #000000;'>Actually sent To:</strong> {$actualTo}</p>
+                    <p style='margin: 0 0 4px 0;'><strong style='color: #000000;'>PROD would To:</strong> {$prodTo}</p>
+                    <p style='margin: 0;'><strong style='color: #000000;'>PROD would CC:</strong> {$prodCc}</p>
+                </td>
+            </tr>
+        </table>
     ";
 }
 
@@ -403,7 +406,14 @@ function sendDispatchNotificationEmail(string $subject, string $msg, array $reci
 
     if (!empty($recipients['test_mode'])) {
         $subject = '[TEST] ' . $subject;
-        $msg .= buildDispatchEmailTestRecipientFooter($recipients);
+        $testFooter = buildDispatchEmailTestRecipientFooter($recipients);
+        if (strpos($msg, '<!--DISPATCH_EMAIL_TEST_MODE-->') !== false) {
+            $msg = str_replace('<!--DISPATCH_EMAIL_TEST_MODE-->', $testFooter, $msg);
+        } else {
+            $msg .= $testFooter;
+        }
+    } else {
+        $msg = str_replace('<!--DISPATCH_EMAIL_TEST_MODE-->', '', $msg);
     }
 
     $headers = "MIME-Version: 1.0" . "\r\n";
@@ -423,43 +433,83 @@ function sendDispatchNotificationEmail(string $subject, string $msg, array $reci
     return mail($emailTo, $subject, $msg, $headers);
 }
 
+function getGroupAbbreviation($groupId)
+{
+    global $connnew;
+    $groupId = (int)$groupId;
+    if ($groupId <= 0) {
+        return '';
+    }
+    $grpQ = "SELECT `abbreviation` FROM `group_list` WHERE `id` = :id LIMIT 1";
+    $grpStmt = $connnew->prepare($grpQ);
+    $grpStmt->execute([":id" => $groupId]);
+    $abbr = $grpStmt->fetchColumn();
+    return $abbr !== false ? (string)$abbr : '';
+}
+
 function emailStatusChange($status, $details)
 {
     $recipients = buildStatusChangeEmailRecipients($details);
     $khidetails = $recipients['khidetails'];
     $link = $recipients['link'];
-    $statusString = $status ? 'approved' : 'declined';
-    $subject = 'Dispatch Request Status';
-    $msg = "
-                <html>
-                <head>
-                <title>Dispatch Request Status</title>
-                </head>
-                <body>
-        <p>Dear " . ucwords(strtolower((string)($khidetails['surname'] ?? ''))) . "-san,</p>
-        <p>We are writing to inform you that your dispatch request has been {$statusString}.</p>
-        <p>Details:</p>
-        <p>Employee: " . getName($details['emp_number']) . "</p>
-        <p>Date From: " . $details['dispatch_from'] . "</p>
-        <p>Date To: " . $details['dispatch_to'] . "</p>
-        <p>Location: " . getLocationName($details['location_id']) . "</p>
-        <p>Date Requested: " . $details['date_requested'] . "</p>
-        <br>
-        <p>For <strong>KDT</strong>, review the request details:</p>
-        <ul>
-            <li><a href='$link/PCS/requestList/'>Dispatch Request List</a></li>
-        </ul>
-        <p>For <strong>KHI</strong>, track the request status:</p>
-        <ul>
-            <li><a href='$link/PCSKHI/requestList/'>Track Request Status</a></li>
-        </ul>
-        <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
-        <p>Best regards,</p>
-        <p>トラベる<br>KHI Design & Technical Service, Inc.</p>
-         <p style='margin-top: 20px; font-size: 12px; color: #999;'>Please do not reply to this email as it is system generated.</p>
-                </body>
-                </html>
-            ";
+    $isApproved = (bool)$status;
+    $subject = $isApproved ? 'Dispatch Request Approved' : 'Dispatch Request Declined';
+
+    require_once __DIR__ . '/../helpers/dispatch_email_templates.php';
+
+    $escape = static function ($value): string {
+        return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+    };
+    $formatEmailDate = static function ($date) use ($escape): string {
+        $raw = trim((string)$date);
+        if ($raw === '') {
+            return '';
+        }
+        $ts = strtotime($raw);
+        if ($ts === false) {
+            return $escape($raw);
+        }
+        return $escape(date('d M Y', $ts));
+    };
+
+    $requestId = (int)($details['request_id'] ?? 0);
+    $requestRef = $requestId > 0
+        ? 'REQ-' . str_pad((string)$requestId, 5, '0', STR_PAD_LEFT)
+        : '';
+
+    $dispatchFrom = $formatEmailDate($details['dispatch_from'] ?? '');
+    $dispatchTo = $formatEmailDate($details['dispatch_to'] ?? '');
+    $dispatchDates = trim(
+        $dispatchFrom
+        . ($dispatchFrom !== '' && $dispatchTo !== '' ? ' — ' : '')
+        . $dispatchTo
+    );
+
+    $kdtCtaUrl = $requestId > 0
+        ? $link . '/PCS/requestList/?open_request=' . rawurlencode((string)$requestId)
+        : $link . '/PCS/requestList/';
+    $khiCtaUrl = $requestId > 0
+        ? $link . '/PCSKHI/requestList/?request_id=' . rawurlencode((string)$requestId)
+        : $link . '/PCSKHI/requestList/';
+    $logoUrl = $link . '/PCS/images/' . rawurlencode('pcs logo bold.png');
+
+    $templateData = [
+        'requester_surname' => $escape(ucwords(strtolower((string)($khidetails['surname'] ?? '')))),
+        'employee_name' => $escape(getName($details['emp_number'])),
+        'location_name' => $escape(getLocationName($details['location_id'])),
+        'request_ref' => $escape($requestRef),
+        'requester_name' => $escape(getName($details['requester_id'] ?? 0)),
+        'group_abbr' => $escape(getGroupAbbreviation($details['emp_group'] ?? 0)),
+        'dispatch_dates' => $dispatchDates,
+        'kdt_cta_url' => $escape($kdtCtaUrl),
+        'khi_cta_url' => $escape($khiCtaUrl),
+        'logo_url' => $escape($logoUrl),
+        'test_mode_placeholder' => '<!--DISPATCH_EMAIL_TEST_MODE-->',
+    ];
+
+    $msg = $isApproved
+        ? buildDispatchRequestApprovedEmailHtml($templateData)
+        : buildDispatchRequestDeclinedEmailHtml($templateData);
 
     return sendDispatchNotificationEmail($subject, $msg, $recipients);
 }
@@ -478,25 +528,260 @@ function emailChangeRequestStatusChange($approved, array $details, array $change
     $subject = "Dispatch {$typeTitle} Request Status";
     $reason = htmlspecialchars((string)($changeData['reason'] ?? ''), ENT_QUOTES, 'UTF-8');
 
-    if ($isCancellation) {
-        $detailRows = "
+    // Date Change Request Approved / Declined — redesigned templates only
+    if (!$isCancellation) {
+        require_once __DIR__ . '/../helpers/datechange_email_templates.php';
+
+        $escape = static function ($value): string {
+            return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+        };
+        $formatEmailDate = static function ($date) use ($escape): string {
+            $raw = trim((string)$date);
+            if ($raw === '') {
+                return '';
+            }
+            $ts = strtotime($raw);
+            if ($ts === false) {
+                return $escape($raw);
+            }
+            return $escape(date('d M Y', $ts));
+        };
+        $formatNetChangeValue = static function (int $currentDays, int $proposedDays): string {
+            $diff = $proposedDays - $currentDays;
+            if ($diff === 0) {
+                return '0';
+            }
+            if ($diff > 0) {
+                return '+' . $diff;
+            }
+            return (string)$diff;
+        };
+
+        $originalFromRaw = $changeData['original_start_date'] ?? $details['dispatch_from'] ?? '';
+        $originalToRaw = $changeData['original_end_date'] ?? $details['dispatch_to'] ?? '';
+        $proposedFromRaw = $changeData['requested_start_date'] ?? '';
+        $proposedToRaw = $changeData['requested_end_date'] ?? '';
+
+        $originalFrom = $formatEmailDate($originalFromRaw);
+        $originalTo = $formatEmailDate($originalToRaw);
+        $proposedFrom = $formatEmailDate($proposedFromRaw);
+        $proposedTo = $formatEmailDate($proposedToRaw);
+
+        $summaryDispatchDates = trim(
+            $originalFrom
+            . ($originalFrom !== '' && $originalTo !== '' ? ' — ' : '')
+            . $originalTo
+        );
+        $currentDates = trim(
+            $originalFrom
+            . ($originalFrom !== '' && $originalTo !== '' ? ' - ' : '')
+            . $originalTo
+        );
+        $proposedDates = trim(
+            $proposedFrom
+            . ($proposedFrom !== '' && $proposedTo !== '' ? ' - ' : '')
+            . $proposedTo
+        );
+
+        $currentDays = ($originalFromRaw !== '' && $originalToRaw !== '')
+            ? countDays($originalFromRaw, $originalToRaw)
+            : 0;
+        $proposedDays = ($proposedFromRaw !== '' && $proposedToRaw !== '')
+            ? countDays($proposedFromRaw, $proposedToRaw)
+            : 0;
+
+        $dispatchRequestId = (int)($details['request_id'] ?? 0);
+        $reqRef = $dispatchRequestId > 0
+            ? 'REQ-' . str_pad((string)$dispatchRequestId, 5, '0', STR_PAD_LEFT)
+            : '';
+
+        $changeRequestId = (int)($changeData['change_request_id'] ?? 0);
+        $dcRef = trim((string)($changeData['display_id'] ?? ''));
+        if ($dcRef === '' && $changeRequestId > 0) {
+            $dcRef = 'DC-' . str_pad((string)$changeRequestId, 5, '0', STR_PAD_LEFT);
+        }
+
+        $deepLinkQuery = 'type=date_change&openChangeRequestId=' . rawurlencode((string)$changeRequestId);
+        $kdtCtaUrl = $link . '/PCS/changeRequests/' . ($changeRequestId > 0 ? ('?' . $deepLinkQuery) : '');
+        $khiCtaUrl = $link . '/PCSKHI/changeRequests/' . ($changeRequestId > 0 ? ('?' . $deepLinkQuery) : '');
+        $logoUrl = $link . '/PCS/images/' . rawurlencode('pcs logo bold.png');
+
+        $baseTemplateData = [
+            'requester_surname' => $escape(ucwords(strtolower((string)($khidetails['surname'] ?? '')))),
+            'employee_name' => $escape(getName($details['emp_number'])),
+            'location_name' => $escape(getLocationName($details['location_id'])),
+            'group_abbr' => $escape(getGroupAbbreviation($details['emp_group'] ?? 0)),
+            'dc_ref' => $escape($dcRef),
+            'req_ref' => $escape($reqRef),
+            'summary_dispatch_dates' => $summaryDispatchDates,
+            'kdt_cta_url' => $escape($kdtCtaUrl),
+            'khi_cta_url' => $escape($khiCtaUrl),
+            'logo_url' => $escape($logoUrl),
+            'test_mode_placeholder' => '<!--DISPATCH_EMAIL_TEST_MODE-->',
+        ];
+
+        if ($approved) {
+            $netChange = $formatNetChangeValue((int)$currentDays, (int)$proposedDays);
+            $subject = 'Date Change Request Approved';
+            $msg = buildDateChangeRequestApprovedEmailHtml(array_merge($baseTemplateData, [
+                'original_dates' => $currentDates,
+                'updated_dates' => $proposedDates,
+                'original_days' => (string)(int)$currentDays,
+                'updated_days' => (string)(int)$proposedDays,
+                'net_change' => $escape($netChange),
+            ]));
+        } else {
+            $subject = 'Date Change Request Declined';
+            $msg = buildDateChangeRequestDeclinedEmailHtml(array_merge($baseTemplateData, [
+                'current_dates' => $currentDates,
+                'proposed_dates' => $proposedDates,
+                'current_days' => (string)(int)$currentDays,
+                'proposed_days' => (string)(int)$proposedDays,
+                'remaining_dates' => $currentDates,
+            ]));
+        }
+
+        return sendDispatchNotificationEmail($subject, $msg, $recipients);
+    }
+
+    // Cancellation Request Approved — redesigned template
+    if ($isCancellation && $approved) {
+        require_once __DIR__ . '/../helpers/cancellation_email_templates.php';
+
+        $escape = static function ($value): string {
+            return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+        };
+        $formatEmailDate = static function ($date) use ($escape): string {
+            $raw = trim((string)$date);
+            if ($raw === '') {
+                return '';
+            }
+            $ts = strtotime($raw);
+            if ($ts === false) {
+                return $escape($raw);
+            }
+            return $escape(date('d M Y', $ts));
+        };
+
+        $dispatchFromRaw = $changeData['original_start_date'] ?? $details['dispatch_from'] ?? '';
+        $dispatchToRaw = $changeData['original_end_date'] ?? $details['dispatch_to'] ?? '';
+        $dispatchFrom = $formatEmailDate($dispatchFromRaw);
+        $dispatchTo = $formatEmailDate($dispatchToRaw);
+        $dispatchDates = trim(
+            $dispatchFrom
+            . ($dispatchFrom !== '' && $dispatchTo !== '' ? ' — ' : '')
+            . $dispatchTo
+        );
+
+        $dispatchRequestId = (int)($details['request_id'] ?? 0);
+        $reqRef = $dispatchRequestId > 0
+            ? 'REQ-' . str_pad((string)$dispatchRequestId, 5, '0', STR_PAD_LEFT)
+            : '';
+
+        $changeRequestId = (int)($changeData['change_request_id'] ?? 0);
+        $crRef = trim((string)($changeData['display_id'] ?? ''));
+        if ($crRef === '' && $changeRequestId > 0) {
+            $crRef = 'CR-' . str_pad((string)$changeRequestId, 5, '0', STR_PAD_LEFT);
+        }
+
+        $deepLinkQuery = 'type=cancellation&openChangeRequestId=' . rawurlencode((string)$changeRequestId);
+        $kdtCtaUrl = $link . '/PCS/changeRequests/' . ($changeRequestId > 0 ? ('?' . $deepLinkQuery) : '');
+        $khiCtaUrl = $link . '/PCSKHI/changeRequests/' . ($changeRequestId > 0 ? ('?' . $deepLinkQuery) : '');
+        $logoUrl = $link . '/PCS/images/' . rawurlencode('pcs logo bold.png');
+
+        // Approval of a cancellation request cancels the original dispatch (existing business result).
+        $originalDispatchStatus = 'Cancelled';
+
+        $subject = 'Cancellation Request Approved';
+        $msg = buildCancellationRequestApprovedEmailHtml([
+            'requester_surname' => $escape(ucwords(strtolower((string)($khidetails['surname'] ?? '')))),
+            'employee_name' => $escape(getName($details['emp_number'])),
+            'location_name' => $escape(getLocationName($details['location_id'])),
+            'group_abbr' => $escape(getGroupAbbreviation($details['emp_group'] ?? 0)),
+            'cr_ref' => $escape($crRef),
+            'req_ref' => $escape($reqRef),
+            'dispatch_dates' => $dispatchDates,
+            'reason' => $reason,
+            'original_dispatch_status' => $escape($originalDispatchStatus),
+            'kdt_cta_url' => $escape($kdtCtaUrl),
+            'khi_cta_url' => $escape($khiCtaUrl),
+            'logo_url' => $escape($logoUrl),
+            'test_mode_placeholder' => '<!--DISPATCH_EMAIL_TEST_MODE-->',
+        ]);
+
+        return sendDispatchNotificationEmail($subject, $msg, $recipients);
+    }
+
+    // Cancellation Request Declined — redesigned template
+    if ($isCancellation && !$approved) {
+        require_once __DIR__ . '/../helpers/cancellation_email_templates.php';
+
+        $escape = static function ($value): string {
+            return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+        };
+        $formatEmailDate = static function ($date) use ($escape): string {
+            $raw = trim((string)$date);
+            if ($raw === '') {
+                return '';
+            }
+            $ts = strtotime($raw);
+            if ($ts === false) {
+                return $escape($raw);
+            }
+            return $escape(date('d M Y', $ts));
+        };
+
+        $dispatchFromRaw = $changeData['original_start_date'] ?? $details['dispatch_from'] ?? '';
+        $dispatchToRaw = $changeData['original_end_date'] ?? $details['dispatch_to'] ?? '';
+        $dispatchFrom = $formatEmailDate($dispatchFromRaw);
+        $dispatchTo = $formatEmailDate($dispatchToRaw);
+        $dispatchDates = trim(
+            $dispatchFrom
+            . ($dispatchFrom !== '' && $dispatchTo !== '' ? ' — ' : '')
+            . $dispatchTo
+        );
+
+        $dispatchRequestId = (int)($details['request_id'] ?? 0);
+        $reqRef = $dispatchRequestId > 0
+            ? 'REQ-' . str_pad((string)$dispatchRequestId, 5, '0', STR_PAD_LEFT)
+            : '';
+
+        $changeRequestId = (int)($changeData['change_request_id'] ?? 0);
+        $crRef = trim((string)($changeData['display_id'] ?? ''));
+        if ($crRef === '' && $changeRequestId > 0) {
+            $crRef = 'CR-' . str_pad((string)$changeRequestId, 5, '0', STR_PAD_LEFT);
+        }
+
+        $deepLinkQuery = 'type=cancellation&openChangeRequestId=' . rawurlencode((string)$changeRequestId);
+        $kdtCtaUrl = $link . '/PCS/changeRequests/' . ($changeRequestId > 0 ? ('?' . $deepLinkQuery) : '');
+        $khiCtaUrl = $link . '/PCSKHI/changeRequests/' . ($changeRequestId > 0 ? ('?' . $deepLinkQuery) : '');
+        $logoUrl = $link . '/PCS/images/' . rawurlencode('pcs logo bold.png');
+
+        $subject = 'Cancellation Request Declined';
+        $msg = buildCancellationRequestDeclinedEmailHtml([
+            'requester_surname' => $escape(ucwords(strtolower((string)($khidetails['surname'] ?? '')))),
+            'employee_name' => $escape(getName($details['emp_number'])),
+            'location_name' => $escape(getLocationName($details['location_id'])),
+            'group_abbr' => $escape(getGroupAbbreviation($details['emp_group'] ?? 0)),
+            'cr_ref' => $escape($crRef),
+            'req_ref' => $escape($reqRef),
+            'dispatch_dates' => $dispatchDates,
+            'reason' => $reason,
+            'kdt_cta_url' => $escape($kdtCtaUrl),
+            'khi_cta_url' => $escape($khiCtaUrl),
+            'logo_url' => $escape($logoUrl),
+            'test_mode_placeholder' => '<!--DISPATCH_EMAIL_TEST_MODE-->',
+        ]);
+
+        return sendDispatchNotificationEmail($subject, $msg, $recipients);
+    }
+
+    // Fallback legacy path (should not be reached for known change types)
+    $detailRows = "
         <p>Date From: " . $details['dispatch_from'] . "</p>
         <p>Date To: " . $details['dispatch_to'] . "</p>
         <p>Location: " . getLocationName($details['location_id']) . "</p>
         <p>Reason: " . $reason . "</p>";
-    } else {
-        $originalFrom = $changeData['original_start_date'] ?? $details['dispatch_from'];
-        $originalTo = $changeData['original_end_date'] ?? $details['dispatch_to'];
-        $proposedFrom = $changeData['requested_start_date'] ?? '';
-        $proposedTo = $changeData['requested_end_date'] ?? '';
-        $detailRows = "
-        <p>Current Date From: " . $originalFrom . "</p>
-        <p>Current Date To: " . $originalTo . "</p>
-        <p>Proposed Date From: " . $proposedFrom . "</p>
-        <p>Proposed Date To: " . $proposedTo . "</p>
-        <p>Location: " . getLocationName($details['location_id']) . "</p>
-        <p>Reason: " . $reason . "</p>";
-    }
 
     $msg = "
                 <html>

@@ -222,6 +222,8 @@ try {
     $details = getRequestDetails($originalRequestId);
     $changeData = [
         "change_type" => $changeType,
+        "change_request_id" => $changeRequestId,
+        "display_id" => ($changeType === 'date_change' ? 'DC' : 'CR') . '-' . str_pad((string)$changeRequestId, 5, '0', STR_PAD_LEFT),
         "original_start_date" => $change['original_start_date'] ?? null,
         "original_end_date" => $change['original_end_date'] ?? null,
         "requested_start_date" => $change['requested_start_date'] ?? null,
