@@ -363,6 +363,13 @@ function renderDashboard(year, options) {
     totalItems: dashboardActivityItems.length,
   };
 
+  latestDispatchPaginationState = {
+    currentPage: 1,
+    itemsPerPage: LATEST_DISPATCH_PAGE_SIZE,
+    totalItems: dashboardDispatchList.length,
+  };
+
+  fillLatestDispatchTablePage();
   fillActivityTablePage();
 }
 //#endregion

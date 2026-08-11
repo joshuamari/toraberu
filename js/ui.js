@@ -128,7 +128,7 @@ function fillActivityTablePage() {
   if (!pageItems.length) {
     $body.append(`
       <tr>
-        <td colspan="6">
+        <td colspan="5">
           <div class="py-4 text-center text-[var(--gray-text)]">
             No recent activity found.
           </div>
@@ -155,7 +155,6 @@ function fillActivityTablePage() {
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
       </tr>
     `);
 
@@ -167,7 +166,6 @@ function fillActivityTablePage() {
       .eq(3)
       .text(formatDispatchDateRange(item.from, item.to));
     $row.children().eq(4).html(item.statusHtml);
-    $row.children().eq(5).html(getDocumentReadinessHtml(item));
 
     $body.append($row);
   });
@@ -176,6 +174,78 @@ function fillActivityTablePage() {
 function setActivityPage(page) {
   activityPaginationState.currentPage = page;
   fillActivityTablePage();
+}
+
+function fillLatestDispatchTablePage() {
+  const $body = $("#latestDispatchTableBody");
+  $body.empty();
+
+  const pagination = renderPaginationBar(
+    $("#latestDispatchPagination"),
+    latestDispatchPaginationState,
+    "dispatches",
+  );
+
+  latestDispatchPaginationState.currentPage = pagination.currentPage;
+
+  const pageItems = dashboardDispatchList.slice(
+    pagination.startIndex,
+    pagination.endIndex,
+  );
+
+  if (!pageItems.length) {
+    $body.append(`
+      <tr>
+        <td colspan="5">
+          <div class="py-4 text-center text-[var(--gray-text)]">
+            No approved dispatches found.
+          </div>
+        </td>
+      </tr>
+    `);
+    return;
+  }
+
+  pageItems.forEach((item) => {
+    const requestId = item.requestId;
+    const displayId =
+      requestId != null && requestId !== ""
+        ? formatDispatchRequestId(requestId)
+        : "—";
+    const hasRequestId = requestId != null && requestId !== "";
+
+    const $row = $(`
+      <tr ${hasRequestId ? `data-request-id="${requestId}"` : 'class="is-static"'}>
+        <td>
+          <span class="activity-id-badge dispatch"></span>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    `);
+
+    $row.find(".activity-id-badge").text(displayId);
+    $row.children().eq(1).text(item.name || "—");
+    $row.children().eq(2).text(item.location || "—");
+    $row
+      .children()
+      .eq(3)
+      .text(formatDispatchDateRange(item.from, item.to));
+    $row.children().eq(4).html(getDocumentReadinessHtml(item));
+
+    if (!hasRequestId) {
+      $row.find("td").css("cursor", "default");
+    }
+
+    $body.append($row);
+  });
+}
+
+function setLatestDispatchPage(page) {
+  latestDispatchPaginationState.currentPage = page;
+  fillLatestDispatchTablePage();
 }
 
 function fillDashboardYearSelector(selector, years, selectedYear) {

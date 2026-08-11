@@ -64,6 +64,53 @@ function bindEvents() {
     },
   );
 
+  $(document).on(
+    "click",
+    "#latestDispatchTableBody tr[data-request-id]",
+    function () {
+      const requestId = $(this).data("request-id");
+      if (requestId === undefined || requestId === null || requestId === "") {
+        return;
+      }
+
+      window.location.href = `./requestList/?open_request=${encodeURIComponent(requestId)}`;
+    },
+  );
+
+  $(document).on(
+    "click",
+    "#latestDispatchPagination [data-role='prev']",
+    function () {
+      if ($(this).prop("disabled")) {
+        return;
+      }
+      setLatestDispatchPage(latestDispatchPaginationState.currentPage - 1);
+    },
+  );
+
+  $(document).on(
+    "click",
+    "#latestDispatchPagination [data-role='next']",
+    function () {
+      if ($(this).prop("disabled")) {
+        return;
+      }
+      setLatestDispatchPage(latestDispatchPaginationState.currentPage + 1);
+    },
+  );
+
+  $(document).on(
+    "click",
+    "#latestDispatchPagination [data-page]",
+    function () {
+      const page = Number($(this).attr("data-page"));
+      if (!Number.isFinite(page)) {
+        return;
+      }
+      setLatestDispatchPage(page);
+    },
+  );
+
   $(document).on("click", "#portalBtn", function () {
     window.location.href = `${rootFolder}`;
   });

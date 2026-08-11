@@ -91,6 +91,7 @@ function getDashboardDispatchList(PDO $connpcs, PDO $connnew, PDO $connkdt, stri
 
     $sql = "
         SELECT
+            dl.request_id,
             CONCAT(ed.firstname, ' ', ed.surname) AS ename,
             ll.location_name,
             dl.dispatch_from,
@@ -171,6 +172,7 @@ function getDashboardDispatchList(PDO $connpcs, PDO $connnew, PDO $connkdt, stri
         }
 
         $dispatchList[] = [
+            'requestId' => $row['request_id'] !== null ? (int) $row['request_id'] : null,
             'name' => ucwords(strtolower((string)$row['ename'])),
             'location' => $row['location_name'],
             'from' => date('d M Y', strtotime($row['dispatch_from'])),

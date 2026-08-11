@@ -27,6 +27,13 @@ let activityPaginationState = {
   totalItems: 0,
 };
 
+const LATEST_DISPATCH_PAGE_SIZE = 10;
+let latestDispatchPaginationState = {
+  currentPage: 1,
+  itemsPerPage: LATEST_DISPATCH_PAGE_SIZE,
+  totalItems: 0,
+};
+
 const STATUS_CHART_COLORS = {
   pending: "#be860b",
   approved: "#0e9c42",
