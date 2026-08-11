@@ -755,17 +755,39 @@ td {
     grid-template-columns: 1fr;
   }
 
-  /* When stacked, keep a bounded height so the list can scroll */
+  /*
+   * When stacked, the alerts card is no longer stretched by a tall sibling.
+   * Desktop uses flex: 1 1 0 + min-height: 0 so the list fills a definite height.
+   * With height: auto that same basis collapses the list to 0px (clipped by
+   * overflow: hidden) — only the header remains visible. Size the list to its
+   * content and scroll the list area when it exceeds max-height.
+   */
   .dashboard-area-alerts {
     height: auto;
-    max-height: 420px;
+    max-height: none;
     align-self: stretch;
+    overflow: hidden;
+  }
+
+  .dashboard-alerts-list {
+    /* auto basis = size to content (avoids 0-height collapse from flex-basis: 0) */
+    flex: 1 1 auto;
+    min-height: auto;
+    max-height: 22rem;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 }
 
 @media (max-width: 900px) {
   .dashboard-charts-grid {
     grid-template-columns: 1fr;
+  }
+
+  .dashboard-alert-row .alert-name {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
   }
 }
 
@@ -776,5 +798,9 @@ td {
 
   .dashboard-chart-wrap {
     min-height: 200px;
+  }
+
+  .dashboard-alerts-list {
+    max-height: 18rem;
   }
 }
