@@ -227,7 +227,7 @@ function buildCancellationRequestApprovedEmailHtml(array $data): string
                             <tr>
                                 <td>
                                     <img src="' . $logoUrl . '" alt="トラべる" width="84" style="display:block;width:84px;max-width:100%;height:auto;border:0;">
-                                    <div style="margin-top:9px;font-size:11px;line-height:14px;color:#7D7D7D;">KDT Design &amp; Technical Service, Inc.</div>
+                                    <div style="margin-top:9px;font-size:11px;line-height:14px;color:#7D7D7D;">KHI Design &amp; Technical Services, Inc.</div>
                                 </td>
                             </tr>
                         </table>
@@ -466,7 +466,7 @@ function buildCancellationRequestDeclinedEmailHtml(array $data): string
                             <tr>
                                 <td>
                                     <img src="' . $logoUrl . '" alt="トラべる" width="84" style="display:block;width:84px;max-width:100%;height:auto;border:0;">
-                                    <div style="margin-top:9px;font-size:11px;line-height:14px;color:#7D7D7D;">KDT Design &amp; Technical Service, Inc.</div>
+                                    <div style="margin-top:9px;font-size:11px;line-height:14px;color:#7D7D7D;">KHI Design &amp; Technical Services, Inc.</div>
                                 </td>
                             </tr>
                         </table>

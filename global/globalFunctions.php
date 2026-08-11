@@ -860,7 +860,7 @@ function emailChangeRequestStatusChange($approved, array $details, array $change
         </ul>
         <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
         <p>Best regards,</p>
-        <p>トラベる<br>KHI Design & Technical Service, Inc.</p>
+        <p>トラベる<br>KHI Design & Technical Services, Inc.</p>
          <p style='margin-top: 20px; font-size: 12px; color: #999;'>Please do not reply to this email as it is system generated.</p>
                 </body>
                 </html>
