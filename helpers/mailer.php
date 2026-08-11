@@ -10,6 +10,46 @@ function getEmailMode(): string
     return strtolower(trim((string)env('EMAIL_MODE', 'off')));
 }
 
+/**
+ * Public base URL for links/images in outbound emails.
+ * Never use the request host (localhost) — mail clients cannot reach it.
+ */
+function getEmailPublicBaseUrl(): string
+{
+    $configured = rtrim(trim((string)env('APP_URL', '')), '/');
+    if ($configured !== '') {
+        return $configured;
+    }
+
+    return 'http://kdt-ph.kdts.net';
+}
+
+/** CID used for the embedded トラべる logo in HTML emails. */
+function getEmailLogoCid(): string
+{
+    return 'toraberu-logo';
+}
+
+function getEmailLogoPath(): string
+{
+    return dirname(__DIR__) . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'pcs logo bold.png';
+}
+
+/**
+ * Logo src for HTML templates. Prefer CID so images render without
+ * depending on a reachable public URL or corporate SSL trust.
+ */
+function getEmailLogoUrl(): string
+{
+    return 'cid:' . getEmailLogoCid();
+}
+
+/** Remote fallback when CID embedding is unavailable (legacy mail()). */
+function getEmailLogoRemoteUrl(): string
+{
+    return getEmailPublicBaseUrl() . '/PCS/images/' . rawurlencode('pcs logo bold.png');
+}
+
 function extractCcFromHeaders(string $headers): array
 {
     $cc = [];
@@ -47,6 +87,84 @@ function buildEmailTestRecipientFooter(array $actualTo, array $prodTo, array $pr
             </tr>
         </table>
     ";
+}
+
+/**
+ * Low-level HTML send via PHPMailer. Embeds the トラべる logo when the body uses cid:toraberu-logo.
+ *
+ * @param string[] $to
+ * @param string[] $cc
+ * @param string[] $bcc
+ */
+function sendPhpMailerHtmlEmail(
+    array $to,
+    string $subject,
+    string $message,
+    array $cc = [],
+    array $bcc = [],
+    ?string $fromAddress = null
+): bool {
+    $to = array_values(array_filter(array_map('trim', $to)));
+    $cc = array_values(array_filter(array_map('trim', $cc)));
+    $bcc = array_values(array_filter(array_map('trim', $bcc)));
+
+    if (empty($to)) {
+        return false;
+    }
+
+    try {
+        $mail = new PHPMailer(true);
+
+        $mail->isSMTP();
+        $mail->Host = 'mail01.khi.co.jp';
+        $mail->SMTPAuth = false;
+        $mail->SMTPSecure = false;
+        $mail->Port = 25;
+        $mail->CharSet = 'UTF-8';
+        $mail->Encoding = 'base64';
+
+        $from = trim((string)($fromAddress ?: env('MAIL_FROM_ADDRESS', 'kdt_toraberu@global.kawasaki.com')));
+        if ($from === '') {
+            $from = 'kdt_toraberu@global.kawasaki.com';
+        }
+        $mail->setFrom($from);
+
+        foreach ($to as $email) {
+            $mail->addAddress($email);
+        }
+        foreach ($cc as $email) {
+            $mail->addCC($email);
+        }
+        foreach ($bcc as $email) {
+            $mail->addBCC($email);
+        }
+
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = $message;
+
+        $logoCid = getEmailLogoCid();
+        $logoPath = getEmailLogoPath();
+        if (is_file($logoPath) && strpos($message, 'cid:' . $logoCid) !== false) {
+            $mail->addEmbeddedImage(
+                $logoPath,
+                $logoCid,
+                'pcs-logo-bold.png',
+                PHPMailer::ENCODING_BASE64,
+                'image/png'
+            );
+        }
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        $errorInfo = isset($mail) ? $mail->ErrorInfo : $e->getMessage();
+        error_log('EMAIL SEND FAILED: ' . $errorInfo);
+        error_log('To: ' . implode(',', $to));
+        error_log('CC: ' . (!empty($cc) ? implode(',', $cc) : '(none)'));
+        error_log('BCC: ' . (!empty($bcc) ? implode(',', $bcc) : '(none)'));
+        return false;
+    }
 }
 
 function sendSystemEmail(string $to, string $subject, string $message, string $headers = ''): bool
@@ -92,48 +210,5 @@ function sendSystemEmail(string $to, string $subject, string $message, string $h
         $message = str_replace('<!--EMAIL_TEST_MODE-->', '', $message);
     }
 
-    try {
-        $mail = new PHPMailer(true);
-
-        // SMTP CONFIG (your requirement)
-        $mail->isSMTP();
-        $mail->Host = 'mail01.khi.co.jp';
-        $mail->SMTPAuth = false;
-        $mail->SMTPSecure = false;
-        $mail->Port = 25;
-        $mail->CharSet = 'UTF-8';
-        $mail->Encoding = 'base64';
-
-        // Sender (address only — no display name, same as PCSKHI)
-        $fromAddress = env('MAIL_FROM_ADDRESS', 'kdt_toraberu@global.kawasaki.com');
-        $mail->setFrom($fromAddress);
-
-        // Recipients
-        foreach ($sendTo as $email) {
-            if ($email) {
-                $mail->addAddress($email);
-            }
-        }
-
-        foreach ($sendCc as $email) {
-            if ($email) {
-                $mail->addCC($email);
-            }
-        }
-
-        // Content
-        $mail->isHTML(true);
-        $mail->Subject = $subject;
-        $mail->Body = $message;
-
-        $mail->send();
-
-        return true;
-
-    } catch (Exception $e) {
-        error_log("EMAIL SEND FAILED: " . $mail->ErrorInfo);
-        error_log("To: " . implode(',', $sendTo));
-        error_log("CC: " . (!empty($sendCc) ? implode(',', $sendCc) : '(none)'));
-        return false;
-    }
+    return sendPhpMailerHtmlEmail($sendTo, $subject, $message, $sendCc);
 }

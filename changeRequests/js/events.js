@@ -434,7 +434,11 @@ $(document).on("click", "#btnConfirmDateChangeAction", function () {
   }
 
   const $btn = $(this);
-  $btn.prop("disabled", true);
+  const $modal = $("#confirmDateChangeActionModal");
+  const restoreLabel =
+    action === "approve" ? "Approve Change" : "Deny Request";
+  setConfirmActionButtonLoading($btn, action);
+  setConfirmModalControlsDisabled($modal, true);
 
   updateChangeRequestStatus(changeRequestId, action)
     .then(() => refreshChangeRequests())
@@ -451,7 +455,8 @@ $(document).on("click", "#btnConfirmDateChangeAction", function () {
       alert(error || "Failed to update date change request.");
     })
     .finally(() => {
-      $btn.prop("disabled", false);
+      setConfirmModalControlsDisabled($modal, false);
+      $btn.prop("disabled", false).text(restoreLabel);
       pendingDateChangeAction = null;
     });
 });
@@ -505,7 +510,11 @@ $(document).on("click", "#btnConfirmCancellationAction", function () {
   }
 
   const $btn = $(this);
-  $btn.prop("disabled", true);
+  const $modal = $("#confirmCancellationActionModal");
+  const restoreLabel =
+    action === "approve" ? "Approve Cancellation" : "Deny Request";
+  setConfirmActionButtonLoading($btn, action);
+  setConfirmModalControlsDisabled($modal, true);
 
   updateChangeRequestStatus(changeRequestId, action)
     .then(() => refreshChangeRequests())
@@ -525,7 +534,8 @@ $(document).on("click", "#btnConfirmCancellationAction", function () {
       alert(error || "Failed to update cancellation request.");
     })
     .finally(() => {
-      $btn.prop("disabled", false);
+      setConfirmModalControlsDisabled($modal, false);
+      $btn.prop("disabled", false).text(restoreLabel);
       pendingCancellationAction = null;
     });
 });

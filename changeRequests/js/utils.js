@@ -71,6 +71,44 @@ function syncOriginalDispatchRequestIdBadge($targetBtn, $sourceBtn) {
   );
 }
 
+function getConfirmActionLoadingHtml(action, useDarkSpinner) {
+  const isApprove = action === "approve";
+  const label = isApprove ? "Approving..." : "Denying...";
+  const spinnerColor = useDarkSpinner ? "text-[var(--dark)]" : "text-white";
+
+  return `<svg class="animate-spin -ml-1 mr-2 h-5 w-5 ${spinnerColor}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>${label}`;
+}
+
+function setConfirmActionButtonLoading($btn, action) {
+  if (!$btn || !$btn.length) {
+    return;
+  }
+
+  const useDarkSpinner =
+    $btn.hasClass("bg-green-400") || $btn.hasClass("bg-green-500");
+
+  $btn
+    .prop("disabled", true)
+    .addClass("inline-flex items-center justify-center")
+    .html(getConfirmActionLoadingHtml(action, useDarkSpinner));
+}
+
+function setConfirmModalControlsDisabled($modal, disabled) {
+  if (!$modal || !$modal.length) {
+    return;
+  }
+
+  $modal
+    .find(
+      ".modal-footer button, .modal-header .btn-close, [data-bs-dismiss='modal']",
+    )
+    .prop("disabled", disabled)
+    .attr("aria-disabled", disabled ? "true" : "false");
+}
+
 function isValidIsoDate(value) {
   if (!value || typeof value !== "string") {
     return false;

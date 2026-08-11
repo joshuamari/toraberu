@@ -27,13 +27,13 @@
 
   <!-- Page JS -->
   <script src="js/state.js?v=20260804d"></script>
-  <script src="js/utils.js?v=20260807a"></script>
+  <script src="js/utils.js?v=20260811c"></script>
   <script src="js/api.js?v=20260804d"></script>
   <script src="js/pagination.js?v=20260804d"></script>
   <script src="js/ui.js?v=20260804d"></script>
   <script src="js/render.js?v=20260811a"></script>
   <script src="../js/sidebar.js"></script>
-  <script src="js/events.js?v=20260804d"></script>
+  <script src="js/events.js?v=20260811c"></script>
   <script src="js/app.js?v=20260804d"></script>
   <script src="js/main.js?v=20260804d"></script>
 </head>
@@ -270,12 +270,12 @@
             </div> -->
             <div class="flex shrink-0 items-center justify-between gap-3">
               <button type="button"
-                class="rounded-lg px-4 py-2 min-w-[130px] font-semibold text-[var(--dark)] border border-[var(--gray)] hover:bg-[var(--gray-100)] transition"
+                class="rounded-lg px-4 py-2 min-w-[130px] font-semibold text-[var(--dark)] border border-[var(--gray)] hover:bg-[var(--gray-100)] transition disabled:pointer-events-none disabled:opacity-60"
                 id="btnBackToCancellationModal">
                 Back
               </button>
               <button type="button"
-                class="rounded-lg px-4 py-2 min-w-[170px] font-semibold transition disabled:pointer-events-none bg-rose-500 hover:bg-rose-600 text-white"
+                class="inline-flex items-center justify-center rounded-lg px-4 py-2 min-w-[170px] font-semibold transition disabled:pointer-events-none bg-rose-500 hover:bg-rose-600 text-white"
                 id="btnConfirmCancellationAction">
                 Approve Cancellation
               </button>
@@ -587,12 +587,13 @@
           </p>
           <div class="flex shrink-0 items-center gap-3">
             <button type="button"
-              class="rounded-lg px-4 py-2 min-w-[130px] font-semibold text-[var(--dark)] border border-[var(--gray)] hover:bg-[var(--gray-100)] transition"
+              class="rounded-lg px-4 py-2 min-w-[130px] font-semibold text-[var(--dark)] border border-[var(--gray)] hover:bg-[var(--gray-100)] transition disabled:pointer-events-none disabled:opacity-60"
+              id="btnBackToDateChangeModal"
               data-bs-dismiss="modal">
               Back
             </button>
             <button type="button"
-              class="rounded-lg px-4 py-2 min-w-[150px] font-semibold transition disabled:pointer-events-none bg-green-400 hover:bg-green-500 text-white"
+              class="inline-flex items-center justify-center rounded-lg px-4 py-2 min-w-[150px] font-semibold transition disabled:pointer-events-none bg-green-400 hover:bg-green-500 text-white"
               id="btnConfirmDateChangeAction">
               Approve Change
             </button>

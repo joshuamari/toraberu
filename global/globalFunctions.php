@@ -303,7 +303,11 @@ function getDispatchEmailDevEmails(): array
  */
 function buildStatusChangeEmailRecipients(array $details): array
 {
-    $link = "https://kdt-ph.kdts.net";
+    // Use http for email assets — https://kdt-ph.kdts.net uses a private corporate CA
+    // that many mail clients will not trust, which breaks remote images.
+    $link = function_exists('getEmailPublicBaseUrl')
+        ? getEmailPublicBaseUrl()
+        : 'http://kdt-ph.kdts.net';
     $khidetails = getKHIUserDetails($details['requester_id']);
     if (!is_array($khidetails)) {
         $khidetails = [];
@@ -397,10 +401,46 @@ function buildDispatchEmailTestRecipientFooter(array $recipients): string
     ";
 }
 
+function ensureDispatchMailerLoaded(): bool
+{
+    static $loaded = null;
+    if ($loaded !== null) {
+        return $loaded;
+    }
+
+    $root = dirname(__DIR__);
+    $autoload = $root . '/vendor/autoload.php';
+    $envHelper = $root . '/helpers/env.php';
+    $mailer = $root . '/helpers/mailer.php';
+
+    if (!is_file($autoload) || !is_file($envHelper) || !is_file($mailer)) {
+        return $loaded = false;
+    }
+
+    require_once $autoload;
+    require_once $envHelper;
+
+    if (class_exists(\Dotenv\Dotenv::class)) {
+        \Dotenv\Dotenv::createImmutable($root)->safeLoad();
+    }
+
+    require_once $mailer;
+    return $loaded = true;
+}
+
+function getDispatchEmailLogoUrl(): string
+{
+    ensureDispatchMailerLoaded();
+    if (function_exists('getEmailLogoUrl')) {
+        return getEmailLogoUrl();
+    }
+    return 'cid:toraberu-logo';
+}
+
 function sendDispatchNotificationEmail(string $subject, string $msg, array $recipients): bool
 {
-    $emailTo = implode(",", $recipients["to"] ?? []);
-    if ($emailTo === "") {
+    $to = array_values(array_filter(array_map('trim', $recipients['to'] ?? [])));
+    if (empty($to)) {
         return false;
     }
 
@@ -416,21 +456,36 @@ function sendDispatchNotificationEmail(string $subject, string $msg, array $reci
         $msg = str_replace('<!--DISPATCH_EMAIL_TEST_MODE-->', '', $msg);
     }
 
+    $cc = array_values(array_filter(array_map('trim', $recipients['cc'] ?? [])));
+    $bcc = array_values(array_filter(array_map('trim', $recipients['bcc'] ?? [])));
+
+    // Prefer PHPMailer so the logo can be embedded as CID (remote localhost/https URLs break in clients).
+    if (ensureDispatchMailerLoaded() && function_exists('sendPhpMailerHtmlEmail')) {
+        return sendPhpMailerHtmlEmail(
+            $to,
+            $subject,
+            $msg,
+            $cc,
+            $bcc,
+            'kdt_toraberu@global.kawasaki.com'
+        );
+    }
+
+    // Legacy fallback: rewrite CID to a public HTTP URL, then use PHP mail().
+    $remoteLogo = 'http://kdt-ph.kdts.net/PCS/images/' . rawurlencode('pcs logo bold.png');
+    $msg = str_replace(['cid:toraberu-logo', 'cid:' . (function_exists('getEmailLogoCid') ? getEmailLogoCid() : 'toraberu-logo')], $remoteLogo, $msg);
+
     $headers = "MIME-Version: 1.0" . "\r\n";
     $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
     $headers .= "From: kdt_toraberu@global.kawasaki.com" . "\r\n";
-
-    $cc = implode(",", $recipients["cc"] ?? []);
-    if ($cc !== "") {
-        $headers .= "CC: " . $cc . "\r\n";
+    if (!empty($cc)) {
+        $headers .= "CC: " . implode(',', $cc) . "\r\n";
+    }
+    if (!empty($bcc)) {
+        $headers .= "Bcc: " . implode(',', $bcc) . "\r\n";
     }
 
-    $bcc = implode(",", $recipients["bcc"] ?? []);
-    if ($bcc !== "") {
-        $headers .= "Bcc: " . $bcc . "\r\n";
-    }
-
-    return mail($emailTo, $subject, $msg, $headers);
+    return mail(implode(',', $to), $subject, $msg, $headers);
 }
 
 function getGroupAbbreviation($groupId)
@@ -491,7 +546,7 @@ function emailStatusChange($status, $details)
     $khiCtaUrl = $requestId > 0
         ? $link . '/PCSKHI/requestList/?request_id=' . rawurlencode((string)$requestId)
         : $link . '/PCSKHI/requestList/';
-    $logoUrl = $link . '/PCS/images/' . rawurlencode('pcs logo bold.png');
+    $logoUrl = getDispatchEmailLogoUrl();
 
     $templateData = [
         'requester_surname' => $escape(ucwords(strtolower((string)($khidetails['surname'] ?? '')))),
@@ -604,7 +659,7 @@ function emailChangeRequestStatusChange($approved, array $details, array $change
         $deepLinkQuery = 'type=date_change&openChangeRequestId=' . rawurlencode((string)$changeRequestId);
         $kdtCtaUrl = $link . '/PCS/changeRequests/' . ($changeRequestId > 0 ? ('?' . $deepLinkQuery) : '');
         $khiCtaUrl = $link . '/PCSKHI/changeRequests/' . ($changeRequestId > 0 ? ('?' . $deepLinkQuery) : '');
-        $logoUrl = $link . '/PCS/images/' . rawurlencode('pcs logo bold.png');
+        $logoUrl = getDispatchEmailLogoUrl();
 
         $baseTemplateData = [
             'requester_surname' => $escape(ucwords(strtolower((string)($khidetails['surname'] ?? '')))),
@@ -687,7 +742,7 @@ function emailChangeRequestStatusChange($approved, array $details, array $change
         $deepLinkQuery = 'type=cancellation&openChangeRequestId=' . rawurlencode((string)$changeRequestId);
         $kdtCtaUrl = $link . '/PCS/changeRequests/' . ($changeRequestId > 0 ? ('?' . $deepLinkQuery) : '');
         $khiCtaUrl = $link . '/PCSKHI/changeRequests/' . ($changeRequestId > 0 ? ('?' . $deepLinkQuery) : '');
-        $logoUrl = $link . '/PCS/images/' . rawurlencode('pcs logo bold.png');
+        $logoUrl = getDispatchEmailLogoUrl();
 
         // Approval of a cancellation request cancels the original dispatch (existing business result).
         $originalDispatchStatus = 'Cancelled';
@@ -755,7 +810,7 @@ function emailChangeRequestStatusChange($approved, array $details, array $change
         $deepLinkQuery = 'type=cancellation&openChangeRequestId=' . rawurlencode((string)$changeRequestId);
         $kdtCtaUrl = $link . '/PCS/changeRequests/' . ($changeRequestId > 0 ? ('?' . $deepLinkQuery) : '');
         $khiCtaUrl = $link . '/PCSKHI/changeRequests/' . ($changeRequestId > 0 ? ('?' . $deepLinkQuery) : '');
-        $logoUrl = $link . '/PCS/images/' . rawurlencode('pcs logo bold.png');
+        $logoUrl = getDispatchEmailLogoUrl();
 
         $subject = 'Cancellation Request Declined';
         $msg = buildCancellationRequestDeclinedEmailHtml([

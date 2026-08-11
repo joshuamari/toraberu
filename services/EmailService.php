@@ -247,9 +247,7 @@ $cc = implode(',', $ccArray);
     error_log('Final CC: ' . ($cc !== '' ? $cc : '(none)'));
     error_log('EMAIL RECIPIENT BREAKDOWN END');
 
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $baseUrl = $protocol . '://' . $host;
+    $baseUrl = getEmailPublicBaseUrl();
 
     $isApproved = ((int)$status === 1);
     $subject = $isApproved ? 'Dispatch Request Approved' : 'Dispatch Request Declined';
@@ -299,7 +297,7 @@ $cc = implode(',', $ccArray);
     $khiCtaUrl = $requestId > 0
         ? $baseUrl . '/PCSKHI/requestList/?request_id=' . rawurlencode((string)$requestId)
         : $baseUrl . '/PCSKHI/requestList/';
-    $logoUrl = $baseUrl . '/PCS/images/' . rawurlencode('pcs logo bold.png');
+    $logoUrl = getEmailLogoUrl();
 
     $templateData = [
         'requester_surname' => $escape($requesterSurname),
