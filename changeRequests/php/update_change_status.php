@@ -231,11 +231,9 @@ try {
         "reason" => $change['reason'] ?? '',
     ];
 
-    if (!emailChangeRequestStatusChange($action === 'approve', $details, $changeData)) {
-        $connpcs->rollBack();
-        $result["message"] = "Mail failed";
-        die(json_encode($result));
-    }
+    // Best-effort notification: do not block approve/deny if mail fails
+    // (same behavior as PCSKHI create_change_request.php).
+    emailChangeRequestStatusChange($action === 'approve', $details, $changeData);
 
     $connpcs->commit();
 

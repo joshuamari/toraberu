@@ -100,17 +100,13 @@ try {
                 die(json_encode($result));
             }
         }
-        if (emailStatusChange($status, $details)) {
-        // if (true) {
-            $text = $status ? "approved" : "denied";
-            $result['isSuccess'] = TRUE;
-            $result['message'] = "Successfully $text";
-            $connpcs->commit();
-        } else {
-            $result['message'] = "Mail failed";
-            $connpcs->rollBack();
-            die(json_encode($result));
-        }
+        // Best-effort notification: do not block approve/deny if mail fails.
+        emailStatusChange($status, $details);
+
+        $text = $status ? "approved" : "denied";
+        $result['isSuccess'] = TRUE;
+        $result['message'] = "Successfully $text";
+        $connpcs->commit();
     } else {
         $connpcs->rollBack();
         $result['message'] = '0 rows updated';

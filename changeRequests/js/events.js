@@ -162,6 +162,10 @@ function bindEvents() {
     sortDateAsc = !sortDateAsc;
     searchFilter(reqList);
   });
+
+  $(document).on("click", ".rmvToast", function () {
+    $(this).closest(".toasty").remove();
+  });
 }
 
 function bindCancellationStatusTabs() {
@@ -429,7 +433,7 @@ $(document).on("click", "#btnConfirmDateChangeAction", function () {
   const action = pendingDateChangeAction;
 
   if (!changeRequestId || (action !== "approve" && action !== "deny")) {
-    alert("Missing change request details.");
+    showToast("error", "Missing change request details.");
     return;
   }
 
@@ -445,14 +449,15 @@ $(document).on("click", "#btnConfirmDateChangeAction", function () {
     .then(() => {
       $("#dateChangeModal").data("keep-closed", true);
       $("#confirmDateChangeActionModal").modal("hide");
-      alert(
+      showToast(
+        "success",
         action === "approve"
           ? "Date change request approved."
           : "Date change request declined.",
       );
     })
     .catch((error) => {
-      alert(error || "Failed to update date change request.");
+      showToast("error", error || "Failed to update date change request.");
     })
     .finally(() => {
       setConfirmModalControlsDisabled($modal, false);
@@ -505,7 +510,7 @@ $(document).on("click", "#btnConfirmCancellationAction", function () {
   const action = pendingCancellationAction;
 
   if (!changeRequestId || (action !== "approve" && action !== "deny")) {
-    alert("Missing change request details.");
+    showToast("error", "Missing change request details.");
     return;
   }
 
@@ -524,14 +529,15 @@ $(document).on("click", "#btnConfirmCancellationAction", function () {
       );
       confirmModal.hide();
       $("#openModal").modal("hide");
-      alert(
+      showToast(
+        "success",
         action === "approve"
           ? "Cancellation request approved."
           : "Cancellation request declined.",
       );
     })
     .catch((error) => {
-      alert(error || "Failed to update cancellation request.");
+      showToast("error", error || "Failed to update cancellation request.");
     })
     .finally(() => {
       setConfirmModalControlsDisabled($modal, false);
