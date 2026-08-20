@@ -8,6 +8,9 @@ function fillEmployeeDetails() {
   $("#empLabel").text(`${fName} ${sName}`);
   $("#empInitials").text(initials);
   $("#grpLabel").text(grpName);
+  if (typeof setAppVersion === "function") {
+    setAppVersion(empDetails && empDetails.app_version);
+  }
 }
 
 function fillSummaryCards(year, options) {

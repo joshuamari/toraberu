@@ -206,6 +206,9 @@ function fillEmployeeDetails() {
   $("#empLabel").html(`${fName} ${sName}`);
   $("#empInitials").html(`${initials}`);
   $("#grpLabel").html(`${grpName}`);
+  if (typeof setAppVersion === "function") {
+    setAppVersion(empDetails && empDetails.app_version);
+  }
 }
 
 function fillLocations(locs) {

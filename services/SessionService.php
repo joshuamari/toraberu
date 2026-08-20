@@ -39,5 +39,6 @@ function getSessionData(PDO $connkdt, string $employeeNumber): array
         ],
         'group' => $employee['fldBUName'],
         'permissions' => $permissions,
+        'app_version' => getAppConfig()['version'] ?? '',
     ];
 }
