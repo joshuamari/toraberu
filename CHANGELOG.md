@@ -3,11 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 Format is based on a simplified version of Keep a Changelog.
+This project uses [Semantic Versioning](https://semver.org/).
 
 ---
 
 <!-- Template (for future entries)
-## [YYYY-MM-DD] - Release Title
+## [X.Y.Z] - YYYY-MM-DD
 
 ### Added
 - New features
@@ -25,70 +26,57 @@ Format is based on a simplified version of Keep a Changelog.
 - Optional context, warnings, or migration notes
 -->
 
-## [2026-08-07] - Change Request Status Emails
+## [Unreleased] - 1.1.0
+
+Planned for next week. Includes all changes from 2026-04-09 through 2026-08-20.
 
 ### Added
 
-- Email notification on change-request approve/deny (`emailChangeRequestStatusChange`), same To/CC pattern as dispatch approve/deny
-- Shared PCS dispatch email test mode (`DISPATCH_EMAIL_TEST_MODE` / `DISPATCH_EMAIL_DEV_IDS`) with PCSKHI-style `[TEST]` subject + recipient footer
-
-### Changed
-
-- `emailStatusChange` now uses the shared test-mode helpers
-
----
-
-## [2026-08-07] - PCS Change Request Submission Restriction
-
-### Removed
-
-- Removed Request Cancellation button and modal from Request List (cancellations are KHI-only via PCSKHI)
-- Removed unused `emailCancellationRequest()` from PCS `globalFunctions.php`
-
-### Changed
-
-- `create_change_request.php` now rejects all change-request submissions from PCS; PCS only reviews/approves them in Change Requests
-
----
-
-## [2026-08-06] - PCS Date Change Request Restriction
-
-### Removed
-
-- Removed Request Date Change button and modal from Request List (date changes are KHI-only via PCSKHI)
-
-### Changed
-
-- `create_change_request.php` rejected `date_change` submissions from PCS (superseded by 2026-08-07: all CR creates are KHI-only)
-
----
-
-## [2026-08-05] - Request List Activity History
-
-### Added
-
-- Request List API now embeds derived `activityLog` events from `request_list` + `request_change_list` (submit, approve/decline, date-change/cancellation lifecycle, cancelled)
-- Activity History side panel in the dispatch detail modal for non-pending requests (approved / declined / cancelled / completed)
-- Pending CR guards (`pending_date_change_request` / `pending_cancellation_request`) and declined-vs-cancelled resolution via `has_approved_cancellation`
+- API layer under `/api`, `bootstrap.php`, `.env` (dotenv), and service-based architecture (`AuthService`, `PermissionService`, `SessionService`, `GroupService`, `DashboardService`, and others)
+- New API endpoints: `/api/session.php`, `/api/get_summary.php`, `/api/get_dispatch_list.php`, `/api/get_expiring_passport.php`, `/api/get_expiring_visa.php`
+- Change Requests page for reviewing date-change and cancellation requests from PCSKHI
+- `request_change_list` table, migration `db/migrations/001_create_request_change_list.sql`, and optional local seed `db/seeds/dev_request_change_list.sql`
+- Change Request approve/deny API (`changeRequests/php/update_change_status.php`)
+- Change Requests sidebar icon
+- Request List Activity History side panel (derived `activityLog` from `request_list` + `request_change_list`)
 - Deep links: Request List `?open_request=` / `?request_id=`; Change Requests `?type=date_change|cancellation&openChangeRequestId=`
+- Withdraw tab and withdraw logs on Change Requests
+- Re-entry permit on Employee Details, Employee List (expiry), dashboard, and Report
+- Dashboard: on-process dispatches, expiring passport/visa, and dispatch list table
+- Email notification on change-request approve/deny (same To/CC pattern as dispatch approve/deny)
+- HTML email templates for dispatch, date-change, and cancellation approve/decline
+- Shared PCS dispatch email test mode (`DISPATCH_EMAIL_TEST_MODE` / `DISPATCH_EMAIL_DEV_IDS`) with PCSKHI-style `[TEST]` subject + recipient footer
+- This changelog
 
-### Notes
+### Changed
 
-- Activity History is derived (no new audit table). Approval timestamp uses `resolveDispatchApprovalTimestamp` when `date_modified` was overwritten by a CR decision.
-- Approver actor names resolve from the current KDT president record when available.
-- Date change and cancellation requests are submitted from PCSKHI only; PCS still reviews them in Change Requests.
+- Folder cleanup and JS split into page modules (`state`, `api`, `render`, `events`, etc.)
+- Refactored Request List, Employee List, Employee Details, Check Availability, and Report pages
+- Dashboard redesign (layout, summary cards, pagination)
+- Change Requests and Request List UI
+- Request List document status display
+- Dashboard document alerts made responsive
+- Database connections and passport/visa expiry windows now use `.env` (`PASSPORT_EXPIRY_WARNING_MONTHS`, `VISA_EXPIRY_WARNING_MONTHS`)
+- Dashboard logic moved into `DashboardService.php`; new endpoints no longer depend on `globalFunctions.php`
+- `emailStatusChange` now uses the shared test-mode helpers
+- `create_change_request.php` rejects all change-request submissions from PCS; PCS only reviews/approves them
+- Inactive employees removed from email recipients
+- Company name updated in emails
+- Approve/deny buttons disable after click to prevent double submit
+- Modal color updates
 
----
+### Fixed
 
-## [2026-08-04] - Change Request Workflow
+- Passport/visa expiry window logic (passport: 9 months, visa: 6 months)
+- Invalid date handling in summary calculations (removed hardcoded `-31`)
+- Broken images in email templates
 
-### Added
+### Removed
 
-- Added `request_change_list` table for date-change and cancellation requests (separate from `request_list`)
-- Added DB migration: `db/migrations/001_create_request_change_list.sql`
-- Added optional local seed: `db/seeds/dev_request_change_list.sql` (1 pending date change + 1 pending cancellation)
-- Change Requests page now loads from `request_change_list`
-- Added approve/deny API: `changeRequests/php/update_change_status.php`
+- Request Date Change and Request Cancellation buttons/modals from Request List (submissions are KHI-only via PCSKHI)
+- Unused `emailCancellationRequest()` from PCS `globalFunctions.php`
+- Alert shown on approve/deny
+- Dependency on `globalFunctions.php` for newly created API endpoints
 
 ### Notes
 
@@ -97,58 +85,23 @@ Format is based on a simplified version of Keep a Changelog.
   mysql -u root pcosdb < db/migrations/001_create_request_change_list.sql
   ```
   Or import `db/migrations/001_create_request_change_list.sql` in phpMyAdmin (select `pcosdb` first).
-- Safe to re-run (`CREATE TABLE IF NOT EXISTS`)
+  Safe to re-run (`CREATE TABLE IF NOT EXISTS`).
 - **Optional local sample data** (do not run on production):
   ```bash
   mysql -u root pcosdb < db/seeds/dev_request_change_list.sql
   ```
   Requires employees `518` and `521` to exist (or edit emp numbers in the seed file).
   Creates approved `request_list` + `dispatch_list` rows, then pending change requests.
+- Requires `composer install` and a configured `.env` after pulling
+- Existing endpoints under `/php` and `/global` remain for backward compatibility
+- Date change and cancellation requests are submitted from PCSKHI only; PCS still reviews them in Change Requests
+- Activity History is derived (no new audit table). Approval timestamp uses `resolveDispatchApprovalTimestamp` when `date_modified` was overwritten by a CR decision. Approver names resolve from the current KDT president record when available
+- Pending CR guards: `pending_date_change_request` / `pending_cancellation_request`; declined vs cancelled via `has_approved_cancellation`
+
 ---
 
-## [Unreleased] - API Refactor & Environment Configuration
+## [1.0.0] - 2023-12-05
 
 ### Added
 
-- Introduced new API layer under `/api`
-- Added `bootstrap.php` for centralized initialization
-- Added `.env` support using dotenv
-- Created service-based architecture:
-  - AuthService
-  - PermissionService
-  - SessionService
-  - GroupService
-  - DashboardService
-- Added new API endpoints:
-  - `/api/session.php`
-  - `/api/get_summary.php`
-  - `/api/get_dispatch_list.php`
-  - `/api/get_expiring_passport.php`
-  - `/api/get_expiring_visa.php`
-- Added new folder Change Request for monitoring cancellations and date change requests from khi
-
-### Changed
-
-- Database connections now use environment variables (`.env`)
-- Passport expiry warning window is now configurable via `.env` (`PASSPORT_EXPIRY_WARNING_MONTHS`)
-- Visa expiry warning window is now configurable via `.env` (`VISA_EXPIRY_WARNING_MONTHS`)
-- Refactored dashboard-related logic into `DashboardService.php`
-- New endpoints no longer depend on `globalFunctions.php`
-
-### Fixed
-
-- Corrected expiry window logic (passport: 9 months, visa: 6 months)
-- Fixed invalid date handling in summary calculations (removed hardcoded `-31`)
-
-### Removed
-
-- Dependency on `globalFunctions.php` for newly created API endpoints
-
-### Notes
-
-- Existing endpoints under `/php` and `/global` remain unchanged for backward compatibility
-- Frontend still uses legacy endpoints (migration pending)
-- Requires running `composer install` after pulling changes
-- Ensure `.env` file is properly configured before running the application
-
----
+- Initial release
