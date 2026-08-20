@@ -38,6 +38,7 @@ Planned for next week. Includes all changes from 2026-04-09 through 2026-08-20.
 - `request_change_list` table, migration `db/migrations/001_create_request_change_list.sql`, and optional local seed `db/seeds/dev_request_change_list.sql`
 - Change Request approve/deny API (`changeRequests/php/update_change_status.php`)
 - Change Requests sidebar icon
+- Version history modal from the sidebar version label
 - Request List Activity History side panel (derived `activityLog` from `request_list` + `request_change_list`)
 - Deep links: Request List `?open_request=` / `?request_id=`; Change Requests `?type=date_change|cancellation&openChangeRequestId=`
 - Withdraw tab and withdraw logs on Change Requests
