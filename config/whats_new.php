@@ -9,27 +9,27 @@ function getWhatsNewReleases(string $currentVersion = ''): array
             'highlights' => [
                 [
                     'type' => 'added',
-                    'text' => 'Change Requests page for reviewing date-change and cancellation requests',
+                    'text' => 'Re-entry permit for employees (alongside passport and visa), with expiry on Employee List, dashboard alerts, and Report',
                 ],
                 [
                     'type' => 'added',
-                    'text' => 'Activity history on Request List',
+                    'text' => 'Change Requests page in Toraberu to monitor date-change and cancellation requests from KHI (approve or deny: president only)',
                 ],
                 [
                     'type' => 'added',
-                    'text' => 'Re-entry permit on employee screens, dashboard, and Report',
-                ],
-                [
-                    'type' => 'added',
-                    'text' => 'Dashboard cards for on-process dispatches and expiring passport or visa',
-                ],
-                [
-                    'type' => 'added',
-                    'text' => 'Email when a change request is approved or denied',
+                    'text' => 'Activity history on Request List, showing dispatch and change-request events for each request',
                 ],
                 [
                     'type' => 'changed',
-                    'text' => 'Dashboard, Request List, and Change Requests layout and alerts',
+                    'text' => 'Redesigned dashboard, with summary cards, on-process dispatches, document alerts, and a dispatch list',
+                ],
+                [
+                    'type' => 'changed',
+                    'text' => 'Updated Request List and the other main screens (Employee List, Employee Details, Check Availability, Report)',
+                ],
+                [
+                    'type' => 'removed',
+                    'text' => 'Direct cancellation by the president in Toraberu. Cancellations now come from KHI and are reviewed in Change Requests',
                 ],
             ],
         ],
@@ -39,7 +39,7 @@ function getWhatsNewReleases(string $currentVersion = ''): array
             'highlights' => [
                 [
                     'type' => 'added',
-                    'text' => 'Initial release of トラベる',
+                    'text' => 'Initial release of Toraberu',
                 ],
             ],
         ],

@@ -109,7 +109,7 @@ function ensureVersionHistoryModal() {
           <div class="modal-header border-0">
             <div>
               <h1 class="modal-title m-0" id="versionHistoryTitle">Version history</h1>
-              <p class="version-history-subtitle m-0">What's new in トラベる</p>
+              <p class="version-history-subtitle m-0">What's new in Toraberu</p>
             </div>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
