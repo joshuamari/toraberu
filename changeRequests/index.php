@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/../helpers/asset.php';
+sendHtmlNoCacheHeaders();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,33 +13,33 @@
 
   <!-- CSS FIRST (no delay) -->
 
-  <link rel="stylesheet" href="../global.css">
-  <link rel="stylesheet" href="../css/font-awesome.css">
-  <link rel="stylesheet" href="../css/boxicons.css">
-  <link rel="stylesheet" href="../css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/index.css?v=20260811a">
-  <link rel="stylesheet" href="../tailwindcss/output.css">
+  <link rel="stylesheet" href="<?= asset('../global.css') ?>">
+  <link rel="stylesheet" href="<?= asset('../css/font-awesome.css') ?>">
+  <link rel="stylesheet" href="<?= asset('../css/boxicons.css') ?>">
+  <link rel="stylesheet" href="<?= asset('../css/bootstrap.min.css') ?>">
+  <link rel="stylesheet" href="<?= asset('css/index.css') ?>">
+  <link rel="stylesheet" href="<?= asset('../tailwindcss/output.css') ?>">
 
   <!-- JS libs -->
-  <script src="../js/jquery.js"></script>
-  <script src="../js/bootstrap.min.js"></script>
-  <script src="../js/html2canvas.js"></script>
-  <script src="../js/jquery.inview.min.js"></script>
-  <script src="../js/jspdf.js"></script>
-  <script src="../js/chart.min.js"></script>
-  <script src="../js/tableToExcel.js"></script>
+  <script src="<?= asset('../js/jquery.js') ?>"></script>
+  <script src="<?= asset('../js/bootstrap.min.js') ?>"></script>
+  <script src="<?= asset('../js/html2canvas.js') ?>"></script>
+  <script src="<?= asset('../js/jquery.inview.min.js') ?>"></script>
+  <script src="<?= asset('../js/jspdf.js') ?>"></script>
+  <script src="<?= asset('../js/chart.min.js') ?>"></script>
+  <script src="<?= asset('../js/tableToExcel.js') ?>"></script>
 
   <!-- Page JS -->
-  <script src="js/state.js?v=20260804d"></script>
-  <script src="js/utils.js?v=20260813a"></script>
-  <script src="js/api.js?v=20260804d"></script>
-  <script src="js/pagination.js?v=20260804d"></script>
-  <script src="js/ui.js?v=20260804d"></script>
-  <script src="js/render.js?v=20260811a"></script>
-  <script src="../js/sidebar.js"></script>
-  <script src="js/events.js?v=20260813a"></script>
-  <script src="js/app.js?v=20260804d"></script>
-  <script src="js/main.js?v=20260804d"></script>
+  <script src="<?= asset('js/state.js') ?>"></script>
+  <script src="<?= asset('js/utils.js') ?>"></script>
+  <script src="<?= asset('js/api.js') ?>"></script>
+  <script src="<?= asset('js/pagination.js') ?>"></script>
+  <script src="<?= asset('js/ui.js') ?>"></script>
+  <script src="<?= asset('js/render.js') ?>"></script>
+  <script src="<?= asset('../js/sidebar.js') ?>"></script>
+  <script src="<?= asset('js/events.js') ?>"></script>
+  <script src="<?= asset('js/app.js') ?>"></script>
+  <script src="<?= asset('js/main.js') ?>"></script>
 </head>
 
 <!-- #region modal -->
