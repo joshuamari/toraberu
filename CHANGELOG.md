@@ -34,7 +34,7 @@ Planned for next week. Includes all changes from 2026-04-09 through 2026-08-20.
 
 - API layer under `/api`, `bootstrap.php`, `.env` (dotenv), and service-based architecture (`AuthService`, `PermissionService`, `SessionService`, `GroupService`, `DashboardService`, and others)
 - New API endpoints: `/api/session.php`, `/api/get_summary.php`, `/api/get_dispatch_list.php`, `/api/get_expiring_passport.php`, `/api/get_expiring_visa.php`
-- Change Requests page for reviewing date-change and cancellation requests from PCSKHI
+- Change Requests page for reviewing date-change and cancellation requests from PCSKHI *(requested by Kondo-san)*
 - `request_change_list` table, migration `db/migrations/001_create_request_change_list.sql`, and optional local seed `db/seeds/dev_request_change_list.sql`
 - Change Request approve/deny API (`changeRequests/php/update_change_status.php`)
 - Change Requests sidebar icon
@@ -42,7 +42,7 @@ Planned for next week. Includes all changes from 2026-04-09 through 2026-08-20.
 - Request List Activity History side panel (derived `activityLog` from `request_list` + `request_change_list`)
 - Deep links: Request List `?open_request=` / `?request_id=`; Change Requests `?type=date_change|cancellation&openChangeRequestId=`
 - Withdraw tab and withdraw logs on Change Requests
-- Re-entry permit on Employee Details, Employee List (expiry), dashboard, and Report
+- Re-entry permit on Employee Details, Employee List (expiry), dashboard, and Report *(requested by Admin Group)*
 - Dashboard: on-process dispatches, expiring passport/visa, and dispatch list table
 - Email notification on change-request approve/deny (same To/CC pattern as dispatch approve/deny)
 - HTML email templates for dispatch, date-change, and cancellation approve/decline
@@ -74,6 +74,7 @@ Planned for next week. Includes all changes from 2026-04-09 through 2026-08-20.
 
 ### Removed
 
+- Total Days Past 1 Year from Report *(requested by Admin Group)*
 - Request Date Change and Request Cancellation buttons/modals from Request List (submissions are KHI-only via PCSKHI)
 - Unused `emailCancellationRequest()` from PCS `globalFunctions.php`
 - Alert shown on approve/deny
@@ -81,6 +82,8 @@ Planned for next week. Includes all changes from 2026-04-09 through 2026-08-20.
 
 ### Notes
 
+- Requested by Admin Group: re-entry permit; removal of Total Days Past 1 Year from Report
+- Requested by Kondo-san: date-change and cancellation requests (Change Requests page)
 - **Required for other developers:** run the migration on local `pcosdb` after pulling:
   ```bash
   mysql -u root pcosdb < db/migrations/001_create_request_change_list.sql
