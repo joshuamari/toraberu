@@ -53,6 +53,33 @@ function buildCancellationRequestApprovedEmailHtml(array $data): string
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style type="text/css">
+  body,
+  table,
+  td,
+  div,
+  p,
+  a,
+  span {
+      font-family: Arial, Helvetica, sans-serif;
+  }
+</style>
+
+<!--[if mso]>
+  <style type="text/css">
+    body,
+    table,
+    td,
+    div,
+    p,
+    a,
+    span {
+        font-family: Arial, Helvetica, sans-serif !important;
+    }
+  </style>
+<![endif]-->
+
 <title>Cancellation Request Approved</title>
 </head>
 <body style="margin:0;padding:0;background-color:#F9F9F9;font-family:Arial, Helvetica, sans-serif;color:#000000;">
@@ -292,6 +319,33 @@ function buildCancellationRequestDeclinedEmailHtml(array $data): string
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style type="text/css">
+  body,
+  table,
+  td,
+  div,
+  p,
+  a,
+  span {
+      font-family: Arial, Helvetica, sans-serif;
+  }
+</style>
+
+<!--[if mso]>
+  <style type="text/css">
+    body,
+    table,
+    td,
+    div,
+    p,
+    a,
+    span {
+        font-family: Arial, Helvetica, sans-serif !important;
+    }
+  </style>
+<![endif]-->
+
 <title>Cancellation Request Declined</title>
 </head>
 <body style="margin:0;padding:0;background-color:#F9F9F9;font-family:Arial, Helvetica, sans-serif;color:#000000;">
