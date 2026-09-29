@@ -172,21 +172,6 @@ function groupByID($id)
     }
     return $grpID;
 }
-function getKHIPICEmail($group_id, $exclude = 0)
-{
-    global $connpcs;
-    $khiEmail = array();
-    $khiQ = "SELECT `email` FROM `khi_details` WHERE `group_id`=:group_id AND `number` != :exclude";
-    $khiStmt = $connpcs->prepare($khiQ);
-    $khiStmt->execute([":group_id" => $group_id, ":exclude" => $exclude]);
-    if ($khiStmt->rowCount() > 0) {
-        $khiArr = $khiStmt->fetchAll();
-        foreach ($khiArr as $emails) {
-            $khiEmail[] = $emails['email'];
-        }
-    }
-    return $khiEmail;
-}
 function getRequestDetails($request_id)
 {
     global $connpcs;
@@ -197,16 +182,6 @@ function getRequestDetails($request_id)
     $details = $detailsStmt->fetch();
     $details['emp_group'] = groupByID($details['emp_number']);
     return $details;
-}
-function getKHIUserDetails($id)
-{
-    global $connpcs;
-    $khidetails = array();
-    $khidQ = "SELECT `surname`,`email` FROM `khi_details` WHERE `number`=:id";
-    $khidStmt = $connpcs->prepare($khidQ);
-    $khidStmt->execute([":id" => $id]);
-    $khidetails = $khidStmt->fetch();
-    return $khidetails;
 }
 function getLocationName($id)
 {
@@ -265,7 +240,7 @@ function buildStatusChangeEmailRecipients(array $details): array
     $link = function_exists('getEmailPublicBaseUrl')
         ? getEmailPublicBaseUrl()
         : 'http://kdt-ph.kdts.net';
-    $khidetails = getKHIUserDetails($details['requester_id']);
+    $khidetails = getKhiUserDetailsById($connpcs, (int)($details['requester_id'] ?? 0));
     if (!is_array($khidetails)) {
         $khidetails = [];
     }
@@ -276,7 +251,7 @@ function buildStatusChangeEmailRecipients(array $details): array
 
     #region PROD recipient resolution (always computed)
     $admins = getAdminEmails($connnew);
-    $khipic = getKHIPICEmail($group, $details['requester_id'] ?? 0);
+    $khipic = getKhiPicEmails($connpcs, $group, (int)($details['requester_id'] ?? 0));
     $khiAdmins = getKhiAdminEmails($connpcs);
     $kdtManagers = getGroupManagerEmails($connnew, $group);
     $prodCc = array_values(array_unique(array_filter(array_merge(

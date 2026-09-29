@@ -2,7 +2,7 @@
 
 function getKhiUserDetailsById(PDO $connpcs, int $id): array
 {
-    $sql = "SELECT surname, email FROM khi_details WHERE number = :id LIMIT 1";
+    $sql = "SELECT surname, email FROM khi_details WHERE number = :id AND is_active = 1 LIMIT 1";
     $stmt = $connpcs->prepare($sql);
     $stmt->execute([
         ':id' => $id,
