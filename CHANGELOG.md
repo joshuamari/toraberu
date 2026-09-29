@@ -26,6 +26,12 @@ This project uses [Semantic Versioning](https://semver.org/).
 - Optional context, warnings, or migration notes
 -->
 
+## [1.1.3] - 2026-09-29
+
+### Fixed
+
+- Bug regarding email recipients on change request approval and denial
+
 ## [1.1.2] - 2026-09-29
 
 ### Fixed

@@ -160,35 +160,6 @@ function getPresID()
     }
     return $arrayID;
 }
-function getPresEmail()
-{
-    global $connnew;
-    $emailp = '';
-    $emailQ = "SELECT `email` FROM `employee_list` WHERE `designation`=29 AND (`resignation_date` IS NULL OR `resignation_date` = '0000-00-00' OR `resignation_date` > CURDATE())";
-    $emailStmt = $connnew->query($emailQ);
-    if ($emailStmt->rowCount() > 0) {
-        $emailp = $emailStmt->fetchColumn();
-    }
-    return $emailp;
-}
-function getAdminEmails()
-{
-    global $connnew;
-    $adminEmail = array();
-    $exclude = [29, 40, 43, 44, 45, 49, 51, 53];
-    $adminGroupID = 2;
-    $excludeStmt = "AND `designation` NOT IN (" . implode(",", $exclude) . ")";
-    $emailQ = "SELECT `email` FROM `employee_list` WHERE `group_id`=:group_id $excludeStmt";
-    $emailStmt = $connnew->prepare($emailQ);
-    $emailStmt->execute([":group_id" => $adminGroupID]);
-    if ($emailStmt->rowCount() > 0) {
-        $emailArr = $emailStmt->fetchAll();
-        foreach ($emailArr as $emails) {
-            $adminEmail[] = $emails['email'];
-        }
-    }
-    return $adminEmail;
-}
 function groupByID($id)
 {
     global $connnew;
@@ -208,21 +179,6 @@ function getKHIPICEmail($group_id, $exclude = 0)
     $khiQ = "SELECT `email` FROM `khi_details` WHERE `group_id`=:group_id AND `number` != :exclude";
     $khiStmt = $connpcs->prepare($khiQ);
     $khiStmt->execute([":group_id" => $group_id, ":exclude" => $exclude]);
-    if ($khiStmt->rowCount() > 0) {
-        $khiArr = $khiStmt->fetchAll();
-        foreach ($khiArr as $emails) {
-            $khiEmail[] = $emails['email'];
-        }
-    }
-    return $khiEmail;
-}
-function getKHIAdminEmails()
-{
-    global $connpcs;
-    $khiEmail = array();
-    $khiQ = "SELECT `email` FROM `khi_details` WHERE `group_id`=2 AND `number` != 905007";
-    $khiStmt = $connpcs->prepare($khiQ);
-    $khiStmt->execute();
     if ($khiStmt->rowCount() > 0) {
         $khiArr = $khiStmt->fetchAll();
         foreach ($khiArr as $emails) {
@@ -301,6 +257,9 @@ function getDispatchEmailDevEmails(): array
  */
 function buildStatusChangeEmailRecipients(array $details): array
 {
+    require_once __DIR__ . '/../services/EmailService.php';
+    global $connnew, $connpcs;
+
     // Use http for email assets — https://kdt-ph.kdts.net uses a private corporate CA
     // that many mail clients will not trust, which breaks remote images.
     $link = function_exists('getEmailPublicBaseUrl')
@@ -316,17 +275,17 @@ function buildStatusChangeEmailRecipients(array $details): array
     $devEmails = getDispatchEmailDevEmails();
 
     #region PROD recipient resolution (always computed)
-    $admins = getAdminEmails();
+    $admins = getAdminEmails($connnew);
     $khipic = getKHIPICEmail($group, $details['requester_id'] ?? 0);
-    $khiAdmins = getKHIAdminEmails();
-    $kdtManagers = getGroupManagersEmail($group);
+    $khiAdmins = getKhiAdminEmails($connpcs);
+    $kdtManagers = getGroupManagerEmails($connnew, $group);
     $prodCc = array_values(array_unique(array_filter(array_merge(
         $khipic,
         $khiAdmins,
         $kdtManagers,
         $admins
     ))));
-    $presEmail = getPresEmail();
+    $presEmail = getPresidentEmail($connnew);
     if ($presEmail !== '') {
         $prodCc[] = $presEmail;
         $prodCc = array_values(array_unique(array_filter($prodCc)));
@@ -910,25 +869,6 @@ function getWorkHistory($id)
         }
     }
     return $workHistory;
-}
-function getGroupManagersEmail($group_id)
-{
-    global $connnew;
-    $matik = [19, 55]; //GM & SM
-    $matikStmt = implode(",", $matik);
-    $mgs = [17, 18]; //AM & DM
-    $mgsStmt = implode(",", $mgs);
-    $mgEmail = array();
-    $emailQ = "SELECT DISTINCT `el`.email FROM `employee_list` el LEFT JOIN `employee_group` eg ON `el`.id=`eg`.employee_number WHERE (`el`.designation IN ($matikStmt) OR (`el`.designation IN ($mgsStmt) AND `eg`.group_id=:group_id)) AND (`el`.`resignation_date`>CURDATE() OR `el`.`resignation_date` IS NULL OR `el`.`resignation_date`='0000-00-00')";
-    $emailStmt = $connnew->prepare($emailQ);
-    $emailStmt->execute([":group_id" => $group_id]);
-    if ($emailStmt->rowCount() > 0) {
-        $mgArr = $emailStmt->fetchAll();
-        foreach ($mgArr as $mg) {
-            $mgEmail[] = $mg['email'];
-        }
-    }
-    return $mgEmail;
 }
 function getAllowance($id)
 {

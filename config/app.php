@@ -3,7 +3,7 @@
 function getAppConfig(): array
 {
     return [
-        'version' => '1.1.2',
+        'version' => '1.1.3',
         'env' => appEnv(),
         'debug' => envBool('APP_DEBUG', false),
         'email_enabled' => isEmailEnabled(),

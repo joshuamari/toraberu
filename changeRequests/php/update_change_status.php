@@ -10,6 +10,7 @@ header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,Content-Type,
 require_once '../../dbconn/dbconnectpcs.php';
 require_once '../../dbconn/dbconnectnew.php';
 require_once '../../global/globalFunctions.php';
+require_once '../../services/EmailService.php';
 require_once '../../vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__, 2));
