@@ -54,6 +54,7 @@ let presID = [];
 let reqAccess = false;
 
 let pendingDateChangeAction = null; // 'approve' | 'deny'
+let pendingDateChangeRequestId = null;
 
 let pendingCancellationAction = null;
 

@@ -2,25 +2,27 @@
 #region DB Connect
 require_once '../../dbconn/dbconnectpcs.php';
 require_once '../../dbconn/dbconnectnew.php';
-require_once '../../global/globalFunctions.php';
+require_once '../../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__, 2));
+$dotenv->safeLoad();
+
+require_once '../../services/ApprovalAccess.php';
 #endregion
 
 #region Initialize Variable
-$presID = 0;
 $result = [
-    "isSuccess" => FALSE,
+    "isSuccess" => false,
     "message" => "",
-    "data" => $presID
+    "data" => []
 ];
 #endregion
 try {
-    // $presID = getPresID(); // UNCOMMENT KAPAG PROD
-    $presID = [464, 487, 510, 518, 521]; // COMMENT KAPAG PROD
-    $result['isSuccess'] = TRUE;
-    $result['data'] = $presID;
+    $result['isSuccess'] = true;
+    $result['data'] = getRequestApprovalAllowedIds($connnew);
     $result['message'] = "Success";
-} catch (PDOException $e) {
-    $result['isSuccess'] = FALSE;
-    $result['message'] = "Connection failed: " . $e->getMessage();
+} catch (Throwable $e) {
+    $result['isSuccess'] = false;
+    $result['message'] = "Failed to load approval IDs.";
 }
 echo json_encode($result);

@@ -153,12 +153,10 @@ function getPresID()
 {
     global $connnew;
     $arrayID = [];
-    $idp = 0;
-    $idQ = "SELECT `id` FROM `employee_list` WHERE `designation`=29 AND `resignation_date` < CURRENT_DATE()";
+    $idQ = "SELECT `id` FROM `employee_list` WHERE `designation`=29 AND (`resignation_date` IS NULL OR `resignation_date` = '0000-00-00' OR `resignation_date` > CURDATE())";
     $idStmt = $connnew->query($idQ);
     if ($idStmt->rowCount() > 0) {
-        $idp = $idStmt->fetchColumn();
-        $arrayID[] = (int)$idp;
+        $arrayID = array_map('intval', array_column($idStmt->fetchAll(PDO::FETCH_ASSOC), 'id'));
     }
     return $arrayID;
 }
@@ -166,7 +164,7 @@ function getPresEmail()
 {
     global $connnew;
     $emailp = '';
-    $emailQ = "SELECT `email` FROM `employee_list` WHERE `designation`=29 AND `resignation_date` < CURRENT_DATE()";
+    $emailQ = "SELECT `email` FROM `employee_list` WHERE `designation`=29 AND (`resignation_date` IS NULL OR `resignation_date` = '0000-00-00' OR `resignation_date` > CURDATE())";
     $emailStmt = $connnew->query($emailQ);
     if ($emailStmt->rowCount() > 0) {
         $emailp = $emailStmt->fetchColumn();

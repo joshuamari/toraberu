@@ -63,10 +63,21 @@ function renderCancellationModalStatusBadge(normalizedStatus) {
     .text(config.label);
 }
 
-function updateCancellationModalActions(normalizedStatus) {
-  const isPending = normalizedStatus === "pending";
+function canReviewChangeRequest() {
+  const userId = parseInt(empDetails && empDetails.id, 10);
+  if (!Number.isFinite(userId)) {
+    return false;
+  }
 
-  $("#cancelModalActionFooter").toggleClass("d-none", !isPending);
+  const allowedIds = Array.isArray(presID) ? presID : [];
+  return allowedIds.map((id) => parseInt(id, 10)).includes(userId);
+}
+
+function updateCancellationModalActions(normalizedStatus) {
+  const showActions =
+    normalizedStatus === "pending" && canReviewChangeRequest();
+
+  $("#cancelModalActionFooter").toggleClass("d-none", !showActions);
 }
 
 function openDateChangeRequestByKey(requestKey) {
@@ -160,11 +171,12 @@ function renderDateChangeModalStatusBadge(normalizedStatus) {
 
 function updateDateChangeModalActions(normalizedStatus) {
   const isPending = normalizedStatus === "pending";
+  const showActions = isPending && canReviewChangeRequest();
   const config =
     DATE_CHANGE_STATUS_CONFIG[normalizedStatus] ||
     DATE_CHANGE_STATUS_CONFIG.pending;
 
-  $("#dateChangeModalFooterPending").toggleClass("d-none", !isPending);
+  $("#dateChangeModalFooterPending").toggleClass("d-none", !showActions);
   $("#dateChangeModalFooterMessage")
     .toggleClass("d-none", isPending)
     .text(isPending ? "" : config.finalizedMessage);
@@ -301,7 +313,11 @@ function openDateChangeRequestModal(request) {
     originalRequestId,
   );
 
+  pendingDateChangeRequestId = request.req_id;
+  pendingDateChangeAction = null;
   $("#dateChangeModal").data("active-request-id", request.req_id);
+  $("#dateChangeModal").data("keep-closed", false);
+  $("#confirmDateChangeActionModal").data("active-request-id", request.req_id);
   $("#dateChangeModal").modal("show");
 }
 
@@ -362,6 +378,99 @@ function fillCancellationConfirmModal(action) {
     $("#confirmCancelOriginalDispatchIdBtn"),
     $("#cancelModalRequestIdBtn"),
   );
+}
+
+function fillDateChangeConfirmModal(action) {
+  pendingDateChangeAction = action;
+
+  const changeRequestId =
+    pendingDateChangeRequestId ||
+    $("#dateChangeModal").data("active-request-id") ||
+    null;
+  pendingDateChangeRequestId = changeRequestId;
+  $("#confirmDateChangeActionModal").data("active-request-id", changeRequestId);
+
+  const isApprove = action === "approve";
+
+  $("#confirmActionTitle").text(
+    isApprove ? "Confirm Approval" : "Confirm Denial",
+  );
+  $("#confirmActionHeading").text(
+    isApprove
+      ? "Approve this date change request?"
+      : "Deny this date change request?",
+  );
+  $("#confirmActionMessage").text(
+    isApprove
+      ? "This will update the original approved dispatch dates to the newly proposed schedule."
+      : "This will keep the current approved dispatch dates unchanged.",
+  );
+
+  $("#confirmRequestId").text($("#modalOriginalRequestId").text());
+  $("#confirmEmpName").text($("#modalDCEmpName").text());
+  $("#confirmDateChangeRange").text(
+    `${$("#modalOldDateFrom").text()} - ${$("#modalOldDateTo").text()} → ${$("#modalNewDateFrom").text()} - ${$("#modalNewDateTo").text()}`,
+  );
+
+  if (isApprove) {
+    $("#confirmNetChange")
+      .text(`${$("#modalSymbol").text()}${$("#modalTotalDiff").text()} days`)
+      .removeClass("text-rose-500 text-[var(--red-200)]")
+      .addClass("text-green-500");
+    $("#confirmActionIconWrap")
+      .removeClass("bg-[var(--red-100)]")
+      .addClass("bg-[var(--main)]");
+    $("#confirmActionIcon")
+      .removeClass("bx-x text-[var(--red-200)]")
+      .addClass("bx-check text-[var(--tertiary)]");
+    $("#confirmActionFooterText").text(
+      "Once approved, the original dispatch dates will be updated.",
+    );
+    $("#btnConfirmDateChangeAction")
+      .text("Approve Change")
+      .removeClass("bg-rose-500 hover:bg-rose-600 text-white")
+      .addClass(" bg-green-400 hover:bg-green-500");
+  } else {
+    $("#confirmNetChange")
+      .text(`${$("#modalSymbol").text()}${$("#modalTotalDiff").text()} days`)
+      .removeClass("text-[var(--tertiary)] text-green-500")
+      .addClass("text-[var(--red-200)]");
+    $("#confirmActionIconWrap")
+      .removeClass("bg-[var(--main)]")
+      .addClass("bg-[var(--red-100)]");
+    $("#confirmActionIcon")
+      .removeClass("bx-check text-[var(--tertiary)]")
+      .addClass("bx-x text-[var(--red-200)]");
+    $("#confirmActionFooterText").text(
+      "Once denied, the proposed date change request will not be applied.",
+    );
+    $("#btnConfirmDateChangeAction")
+      .text("Deny Request")
+      .removeClass(" bg-green-400 hover:bg-green-500")
+      .addClass("bg-rose-500 hover:bg-rose-600 text-white");
+  }
+
+  $("#confirmActionNoteWrap").addClass("hidden");
+}
+
+function openDateChangeConfirmModal(action) {
+  fillDateChangeConfirmModal(action);
+
+  const parentEl = document.getElementById("dateChangeModal");
+  const parentModal = bootstrap.Modal.getOrCreateInstance(parentEl);
+  const confirmModal = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById("confirmDateChangeActionModal"),
+  );
+
+  if (parentEl.classList.contains("show")) {
+    $("#dateChangeModal").one("hidden.bs.modal", function () {
+      confirmModal.show();
+    });
+    parentModal.hide();
+    return;
+  }
+
+  confirmModal.show();
 }
 
 function openCancellationConfirmModal(action) {

@@ -26,9 +26,21 @@ This project uses [Semantic Versioning](https://semver.org/).
 - Optional context, warnings, or migration notes
 -->
 
-## [Unreleased] - 1.1.0
+## [1.1.2] - 2026-09-29
 
-Planned for next week. Includes all changes from 2026-04-09 through 2026-08-20.
+### Fixed
+
+- Approve and deny on change requests did not follow authorization
+
+## [1.1.1] - 2026-09-28
+
+### Fixed
+
+- Bug when approving or denying change requests
+
+## [1.1.0] - 2026-08-25
+
+Includes all changes from 2026-04-09 through 2026-08-25.
 
 ### Added
 

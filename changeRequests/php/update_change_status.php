@@ -10,6 +10,12 @@ header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,Content-Type,
 require_once '../../dbconn/dbconnectpcs.php';
 require_once '../../dbconn/dbconnectnew.php';
 require_once '../../global/globalFunctions.php';
+require_once '../../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__, 2));
+$dotenv->safeLoad();
+
+require_once '../../services/ApprovalAccess.php';
 #endregion
 
 #region set timezone
@@ -23,9 +29,7 @@ $result = [
     "data" => array()
 ];
 $userID = getID();
-$devs = [464, 487, 510, 518, 521];
-$presID = getPresID();
-$devs = array_merge($presID, $devs);
+$allowedIds = getRequestApprovalAllowedIds($connnew);
 $data = json_decode(file_get_contents("php://input"), true);
 if (!is_array($data)) {
     $data = [];
@@ -64,7 +68,7 @@ if ($userID === 0) {
     $result["message"] = "Not logged in";
     die(json_encode($result));
 }
-if (!in_array((int)$userID, array_map('intval', $devs), true)) {
+if (!in_array((int)$userID, $allowedIds, true)) {
     $result["message"] = "Not authorized";
     die(json_encode($result));
 }

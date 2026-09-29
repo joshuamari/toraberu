@@ -343,93 +343,32 @@ $(document).on("click", "#confirmDateChangeOriginalDispatchIdBtn", function () {
 });
 
 $(document).on("click", "#btnApproveDateChange", function () {
-  pendingDateChangeAction = "approve";
-
-  $("#confirmActionTitle").text("Confirm Approval");
-  $("#confirmActionHeading").text("Approve this date change request?");
-  $("#confirmActionMessage").text(
-    "This will update the original approved dispatch dates to the newly proposed schedule.",
-  );
-
-  $("#confirmRequestId").text($("#modalOriginalRequestId").text());
-  $("#confirmEmpName").text($("#modalDCEmpName").text());
-  $("#confirmDateChangeRange").text(
-    `${$("#modalOldDateFrom").text()} - ${$("#modalOldDateTo").text()} → ${$("#modalNewDateFrom").text()} - ${$("#modalNewDateTo").text()}`,
-  );
-  $("#confirmNetChange")
-    .text(`${$("#modalSymbol").text()}${$("#modalTotalDiff").text()} days`)
-    .removeClass("text-rose-500")
-    .addClass("text-green-500");
-
-  $("#confirmActionIconWrap")
-    .removeClass("bg-[var(--red-100)]")
-    .addClass("bg-[var(--main)]");
-  $("#confirmActionIcon")
-    .removeClass("bx-x text-[var(--red-200)]")
-    .addClass("bx-check text-[var(--tertiary)]");
-
-  $("#confirmActionFooterText").text(
-    "Once approved, the original dispatch dates will be updated.",
-  );
-  $("#btnConfirmDateChangeAction")
-    .text("Approve Change")
-    .removeClass("bg-rose-500 hover:bg-rose-600 text-white")
-    .addClass(" bg-green-400 hover:bg-green-500");
-
-  $("#confirmActionNoteWrap").addClass("hidden");
-
-  $("#dateChangeModal").modal("hide");
-  $("#confirmDateChangeActionModal").modal("show");
+  if (!canReviewChangeRequest()) {
+    return;
+  }
+  openDateChangeConfirmModal("approve");
 });
 
 $(document).on("click", "#btnDenyDateChange", function () {
-  pendingDateChangeAction = "deny";
-
-  $("#confirmActionTitle").text("Confirm Denial");
-  $("#confirmActionHeading").text("Deny this date change request?");
-  $("#confirmActionMessage").text(
-    "This will keep the current approved dispatch dates unchanged.",
-  );
-
-  $("#confirmRequestId").text($("#modalOriginalRequestId").text());
-  $("#confirmEmpName").text($("#modalEmpName").text());
-  $("#confirmDateChangeRange").text(
-    `${$("#modalOldDateFrom").text()} - ${$("#modalOldDateTo").text()} → ${$("#modalNewDateFrom").text()} - ${$("#modalNewDateTo").text()}`,
-  );
-  $("#confirmNetChange")
-    .text(`${$("#modalSymbol").text()}${$("#modalTotalDiff").text()} days`)
-    .removeClass("text-[var(--tertiary)]")
-    .addClass("text-[var(--red-200)]");
-
-  $("#confirmActionIconWrap")
-    .removeClass("bg-[var(--main)]")
-    .addClass("bg-[var(--red-100)]");
-  $("#confirmActionIcon")
-    .removeClass("bx-check text-[var(--tertiary)]")
-    .addClass("bx-x text-[var(--red-200)]");
-
-  $("#confirmActionFooterText").text(
-    "Once denied, the proposed date change request will not be applied.",
-  );
-  $("#btnConfirmDateChangeAction")
-    .text("Deny Request")
-    .removeClass(" bg-green-400 hover:bg-green-500")
-    .addClass("bg-rose-500 hover:bg-rose-600 text-white");
-
-  $("#confirmActionNoteWrap").addClass("hidden");
-
-  $("#dateChangeModal").modal("hide");
-  $("#confirmDateChangeActionModal").modal("show");
+  if (!canReviewChangeRequest()) {
+    return;
+  }
+  openDateChangeConfirmModal("deny");
 });
 
 $(document).on("hidden.bs.modal", "#confirmDateChangeActionModal", function () {
   if ($("#dateChangeModal").data("keep-closed") !== true) {
-    $("#dateChangeModal").modal("show");
+    bootstrap.Modal.getOrCreateInstance(
+      document.getElementById("dateChangeModal"),
+    ).show();
   }
 });
 
 $(document).on("click", "#btnConfirmDateChangeAction", function () {
-  const changeRequestId = $("#dateChangeModal").data("active-request-id");
+  const changeRequestId =
+    pendingDateChangeRequestId ||
+    $("#confirmDateChangeActionModal").data("active-request-id") ||
+    $("#dateChangeModal").data("active-request-id");
   const action = pendingDateChangeAction;
 
   if (!changeRequestId || (action !== "approve" && action !== "deny")) {
@@ -447,8 +386,12 @@ $(document).on("click", "#btnConfirmDateChangeAction", function () {
   updateChangeRequestStatus(changeRequestId, action)
     .then(() => refreshChangeRequests())
     .then(() => {
+      pendingDateChangeAction = null;
+      pendingDateChangeRequestId = null;
       $("#dateChangeModal").data("keep-closed", true);
-      $("#confirmDateChangeActionModal").modal("hide");
+      bootstrap.Modal.getOrCreateInstance(
+        document.getElementById("confirmDateChangeActionModal"),
+      ).hide();
       showToast(
         "success",
         action === "approve"
@@ -462,7 +405,6 @@ $(document).on("click", "#btnConfirmDateChangeAction", function () {
     .finally(() => {
       setConfirmModalControlsDisabled($modal, false);
       $btn.prop("disabled", false).text(restoreLabel);
-      pendingDateChangeAction = null;
     });
 });
 
@@ -498,10 +440,16 @@ $(document).on("click", "#changeModalRequestIdBtn", function () {
   window.location.href = `../requestList/?open_request=${encodeURIComponent(requestId)}`;
 });
 $(document).on("click", "#btnApproveCancellation", function () {
+  if (!canReviewChangeRequest()) {
+    return;
+  }
   openCancellationConfirmModal("approve");
 });
 
 $(document).on("click", "#btnDenyCancellation", function () {
+  if (!canReviewChangeRequest()) {
+    return;
+  }
   openCancellationConfirmModal("deny");
 });
 
@@ -524,6 +472,7 @@ $(document).on("click", "#btnConfirmCancellationAction", function () {
   updateChangeRequestStatus(changeRequestId, action)
     .then(() => refreshChangeRequests())
     .then(() => {
+      pendingCancellationAction = null;
       const confirmModal = bootstrap.Modal.getOrCreateInstance(
         document.getElementById("confirmCancellationActionModal"),
       );
@@ -542,7 +491,6 @@ $(document).on("click", "#btnConfirmCancellationAction", function () {
     .finally(() => {
       setConfirmModalControlsDisabled($modal, false);
       $btn.prop("disabled", false).text(restoreLabel);
-      pendingCancellationAction = null;
     });
 });
 $(document).on("click", "#btnBackToCancellationModal", function () {
